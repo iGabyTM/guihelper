@@ -1,0 +1,13 @@
+name: GUIHelper
+version: ${project.version}
+main: me.gabytm.guihelper.GUIHelper
+authors: [GabyTM]
+website: https://gabytm.me/
+commands:
+  ghcreate:
+    description: aadsad
+    usage: ""
+permissions:
+  guihelper.use:
+    description: The permission required to access GUI Helper commands
+    default: op

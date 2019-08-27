@@ -31,7 +31,7 @@ public class GHCreateTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (command.getName().equals("ghcreate") && sender.hasPermission("guihelper.use")) {
-            String[] types = { "deluxemenus", "deluxemenuslocal" };
+            String[] types = { "DeluxeMenus", "DeluxeMenusLocal" };
 
             return Arrays.asList(types);
         }

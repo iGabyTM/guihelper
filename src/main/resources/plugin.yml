@@ -6,8 +6,8 @@ website: https://gabytm.me/
 api-version: 1.14
 commands:
   ghcreate:
-    description: aadsad
-    usage: ""
+    description: The main command
+    usage: "/ghcreate [type] (argument)"
 permissions:
   guihelper.use:
     description: The permission required to access GUI Helper commands

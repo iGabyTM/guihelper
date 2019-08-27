@@ -55,69 +55,24 @@ public class DeluxeMenus {
 
             plugin.getConfig().createSection("items");
 
-            for (int s = 0; s < gui.getSize(); s++) {
-                if (gui.getItem(s) != null && gui.getItem(s).getType() != Material.AIR) {
-                    ItemStack item = gui.getItem(s);
+            for (int slot = 0; slot < gui.getSize(); slot++) {
+                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
+                    ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
+                    String path = "items." + slot;
 
-                    plugin.getConfig().set("items." + s + ".material", item.getType().toString());
-
-                    if (item.getDurability() > 0) plugin.getConfig().set("items." + s + ".data", item.getDurability());
-
-                    if (item.getAmount() > 1) plugin.getConfig().set("items." + s + ".amount", item.getAmount());
-
-                    if (item.getType().equals(Material.LEATHER_HELMET) || item.getType().equals(Material.LEATHER_CHESTPLATE) || item.getType().equals(Material.LEATHER_LEGGINGS) || item.getType().equals(Material.LEATHER_BOOTS)) {
-                        LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
-
-                        plugin.getConfig().set("items." + s + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
-                    }
-
-                    /*if (item.getType().equals(Material.BANNER)) {
-                        BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-                        List<String> banner_meta = new ArrayList<>();
-
-                        if (bannerMeta.getPatterns().size() > 0) {
-                            for (Pattern pattern : bannerMeta.getPatterns()) {
-                                banner_meta.add(pattern.getColor() + ";" + pattern.getPattern());
-                            }
-
-                            plugin.getConfig().set("items." + s + ".banner_meta", banner_meta);
-                        }
-                    } */
-
-                    plugin.getConfig().set("items." + s + ".slot", s);
-
-                    if (meta.hasDisplayName()) plugin.getConfig().set("items." + s + ".display_name", meta.getDisplayName().replaceAll("§", "&"));
-
-                    if (meta.hasLore()) {
-                        List<String> lore = new ArrayList<>();
-
-                        for (String line : meta.getLore()) {
-                            lore.add(line.replaceAll("§", "&"));
-                        }
-
-                        plugin.getConfig().set("items." + s + ".lore", lore);
-                    }
-
-                    if (meta.getEnchants().size() > 0) {
-                        List<String> enchantments = new ArrayList<>();
-
-                        for (Enchantment en : meta.getEnchants().keySet()) {
-                            enchantments.add(en.getName() + ";" + meta.getEnchantLevel(en));
-                        }
-
-                        plugin.getConfig().set("items." + s + ".enchantments", enchantments);
-                    }
+                    addItem(path, item, meta, slot);
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(colorize("&a[GH] Done! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(colorize("&c[GH] Something went wrong, please check the console."));
+            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
         }
     }
+
     /**
      * Generate a DeluxeMenus local (config.yml) menu
      * @param gui the gui from where the items are took
@@ -133,22 +88,43 @@ public class DeluxeMenus {
 
             plugin.getConfig().createSection("gui_menus.GUIHelper.items");
 
-            for (int s = 0; s < gui.getSize(); s++) {
-                if (gui.getItem(s) != null && gui.getItem(s).getType() != Material.AIR) {
-                    ItemStack item = gui.getItem(s);
+            for (int slot = 0; slot < gui.getSize(); slot++) {
+                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
+                    ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
+                    String path = "gui_menus.GUIHelper.items." + slot;
 
-                    plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".material", item.getType().toString());
+                    addItem(path, item, meta, slot);
+                }
+            }
 
-                    if (item.getDurability() > 0) plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".data", item.getDurability());
+            plugin.saveConfig();
+            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
+        }
+    }
 
-                    if (item.getAmount() > 1) plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".amount", item.getAmount());
+    /**
+     * Add an item to the config
+     * @param path the config path
+     * @param item the item
+     * @param meta the item meta
+     * @param slot the item slot
+     */
+    private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
+        plugin.getConfig().set(path + ".material", item.getType().toString());
 
-                    if (item.getType().equals(Material.LEATHER_HELMET) || item.getType().equals(Material.LEATHER_CHESTPLATE) || item.getType().equals(Material.LEATHER_LEGGINGS) || item.getType().equals(Material.LEATHER_BOOTS)) {
-                        LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
+        if (item.getDurability() > 0) plugin.getConfig().set(path + ".data", item.getDurability());
 
-                        plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
-                    }
+        if (item.getAmount() > 1) plugin.getConfig().set(path + ".amount", item.getAmount());
+
+        if (item.getType().toString().contains("LEATHER_")) {
+            LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
+
+            plugin.getConfig().set(path + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
+        }
 
                     /*if (item.getType().equals(Material.BANNER)) {
                         BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
@@ -163,37 +139,28 @@ public class DeluxeMenus {
                         }
                     } */
 
-                    plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".slot", s);
+        plugin.getConfig().set(path + ".slot", slot);
 
-                    if (meta.hasDisplayName()) plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".display_name", meta.getDisplayName().replaceAll("§", "&"));
+        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".display_name", meta.getDisplayName().replaceAll("§", "&"));
 
-                    if (meta.hasLore()) {
-                        List<String> lore = new ArrayList<>();
+        if (meta.hasLore()) {
+            List<String> lore = new ArrayList<>();
 
-                        for (String line : meta.getLore()) {
-                            lore.add(line.replaceAll("§", "&"));
-                        }
-
-                        plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".lore", lore);
-                    }
-
-                    if (meta.getEnchants().size() > 0) {
-                        List<String> enchantments = new ArrayList<>();
-
-                        for (Enchantment en : meta.getEnchants().keySet()) {
-                            enchantments.add(en.getName() + ";" + meta.getEnchantLevel(en));
-                        }
-
-                        plugin.getConfig().set("gui_menus.GUIHelper.items." + s + ".enchantments", enchantments);
-                    }
-                }
+            for (String line : meta.getLore()) {
+                lore.add(line.replaceAll("§", "&"));
             }
 
-            plugin.saveConfig();
-            player.sendMessage(colorize("&a[GH] Done! &7(" + (System.currentTimeMillis() - start) + "ms)"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            player.sendMessage(colorize("&c[GH] Something went wrong, please check the console."));
+            plugin.getConfig().set(path + ".lore", lore);
+        }
+
+        if (meta.getEnchants().size() > 0) {
+            List<String> enchantments = new ArrayList<>();
+
+            for (Enchantment en : meta.getEnchants().keySet()) {
+                enchantments.add(en.getName() + ";" + meta.getEnchantLevel(en));
+            }
+
+            plugin.getConfig().set(path + ".enchantments", enchantments);
         }
     }
 }

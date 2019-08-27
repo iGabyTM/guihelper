@@ -21,19 +21,10 @@ package me.gabytm.guihelper.guis;
 
 import me.gabytm.guihelper.GUIHelper;
 
-public class GuiHandler {
-    private DeluxeMenus deluxeMenusType;
-    private ShopGuiPlus shopGuiPlusType;
+public class ShopGuiPlus {
+    private GUIHelper plugin;
 
-    public GuiHandler(GUIHelper plugin) {
-        deluxeMenusType = new DeluxeMenus(plugin);
-        shopGuiPlusType = new ShopGuiPlus(plugin);
-    }
-
-    public DeluxeMenus deluxeMenus() {
-        return deluxeMenusType;
-    }
-    public ShopGuiPlus shopGuiPlus() {
-        return shopGuiPlusType;
+    ShopGuiPlus(GUIHelper plugin) {
+        this.plugin = plugin;
     }
 }

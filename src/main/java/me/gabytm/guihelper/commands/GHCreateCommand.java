@@ -26,6 +26,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import static me.gabytm.guihelper.utils.StringUtils.*;
 
@@ -48,14 +49,12 @@ public class GHCreateCommand implements CommandExecutor {
 
                         player.openInventory(gui);
                         plugin.getGuiList().put(player.getUniqueId(), gui);
-                        player.sendMessage(colorize("&cGUI not found, creating one!"));
                     } else {
                         player.openInventory(plugin.getGuiList().get(player.getUniqueId()));
-                        player.sendMessage(colorize("&aGUI found."));
                     }
                 } else {
-                    if (!plugin.getGuiList().containsKey(player.getUniqueId())) {
-                        player.sendMessage(colorize("&c[GH] Please add some items to the GUI first!"));
+                    if (!plugin.getGuiList().containsKey(player.getUniqueId()) || isEmpty(plugin.getGuiList().get(player.getUniqueId()))) {
+                        player.sendMessage(colorize("&cPlease add some items to the GUI first!"));
                         return true;
                     } else {
                         Inventory gui = plugin.getGuiList().get(player.getUniqueId());
@@ -68,16 +67,29 @@ public class GHCreateCommand implements CommandExecutor {
                                 plugin.getGuiHandler().deluxeMenus().localMenu(gui, player);
                                 break;
                             default:
-                                player.sendMessage("default");
+                                player.sendMessage(colorize("&cValid options: &7DeluxeMenus, &cDeluxeMenusLocal."));
                                 break;
                         }
                     }
                 }
             }
         } else {
-            sender.sendMessage(colorize("&c[GUIHelper] Only players can run this command!"));
+            sender.sendMessage(colorize("&cOnly players can run this command!"));
             return true;
         }
+        return true;
+    }
+
+    /**
+     * Check if the gui it's empty or not
+     * @param gui the gh gui
+     * @return empty or not
+     */
+    private boolean isEmpty(Inventory gui) {
+        for(ItemStack item : gui.getContents()) {
+            if(item != null) return false;
+        }
+
         return true;
     }
 }

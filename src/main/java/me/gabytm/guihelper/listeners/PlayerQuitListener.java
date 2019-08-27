@@ -17,18 +17,22 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guis;
+package me.gabytm.guihelper.listeners;
 
 import me.gabytm.guihelper.GUIHelper;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class GuiHandler {
-    private DeluxeMenus deluxeMenusType;
+public class PlayerQuitListener implements Listener {
+    private GUIHelper plugin;
 
-    public GuiHandler(GUIHelper plugin) {
-        deluxeMenusType = new DeluxeMenus(plugin);
+    public PlayerQuitListener(GUIHelper plugin) {
+        this.plugin = plugin;
     }
 
-    public DeluxeMenus deluxeMenus() {
-        return deluxeMenusType;
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        plugin.getGuiList().remove(event.getPlayer().getUniqueId());
     }
 }

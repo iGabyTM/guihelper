@@ -14,6 +14,7 @@ Desktop.ini
 
 # Jetbrains
 .idea/*
+target
 
 # npm
 node_modules

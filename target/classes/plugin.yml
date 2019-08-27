@@ -3,6 +3,7 @@ version: 1.0
 main: me.gabytm.guihelper.GUIHelper
 authors: [GabyTM]
 website: https://gabytm.me/
+api-version: 1.14
 commands:
   ghcreate:
     description: aadsad

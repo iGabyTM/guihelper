@@ -17,42 +17,24 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper;
+package me.gabytm.guihelper.commands.tabcompleter;
 
-import me.gabytm.guihelper.commands.GHCreateCommand;
-import me.gabytm.guihelper.commands.tabcompleter.GHCreateTabCompleter;
-import me.gabytm.guihelper.guis.GuiHandler;
-import me.gabytm.guihelper.listeners.PlayerQuitListener;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Arrays;
+import java.util.List;
 
-public final class GUIHelper extends JavaPlugin {
-
-    private Map<UUID, Inventory> guiList;
-    private GuiHandler guiHandler;
+public class GHCreateTabCompleter implements TabCompleter {
 
     @Override
-    public void onEnable() {
-        guiList = new HashMap<>();
-        guiHandler = new GuiHandler(this);
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (command.getName().equals("ghcreate") && sender.hasPermission("guihelper.use")) {
+            String[] types = { "deluxemenus", "deluxemenuslocal" };
 
-        this.getCommand("ghcreate").setExecutor(new GHCreateCommand(this));
-        this.getCommand("ghcreate").setTabCompleter(new GHCreateTabCompleter());
-
-        this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+            return Arrays.asList(types);
+        }
+        return null;
     }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
-
-    public Map<UUID, Inventory> getGuiList() {
-        return guiList;
-    }
-    public GuiHandler getGuiHandler() { return guiHandler; }
 }

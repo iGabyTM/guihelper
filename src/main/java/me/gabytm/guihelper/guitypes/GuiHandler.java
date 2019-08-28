@@ -17,19 +17,22 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guis;
+package me.gabytm.guihelper.guitypes;
 
 import me.gabytm.guihelper.GUIHelper;
 
 public class GuiHandler {
+    private CrazyCrates crazyCratesType;
     private DeluxeMenus deluxeMenusType;
     private ShopGuiPlus shopGuiPlusType;
 
     public GuiHandler(GUIHelper plugin) {
+        crazyCratesType = new CrazyCrates(plugin);
         deluxeMenusType = new DeluxeMenus(plugin);
         shopGuiPlusType = new ShopGuiPlus(plugin);
     }
 
+    public CrazyCrates crazyCrates() { return crazyCratesType; }
     public DeluxeMenus deluxeMenus() {
         return deluxeMenusType;
     }

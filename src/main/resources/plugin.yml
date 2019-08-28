@@ -8,6 +8,12 @@ commands:
   ghcreate:
     description: The main command
     usage: "/ghcreate [type] (argument)"
+  ghhelp:
+    description: List the available commands
+    usage: "/ghhelp"
+  ghlist:
+    description: List the available types
+    usage: "/ghlist"
 permissions:
   guihelper.use:
     description: The permission required to access GUI Helper commands

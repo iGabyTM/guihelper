@@ -17,7 +17,7 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guis;
+package me.gabytm.guihelper.guitypes;
 
 import me.gabytm.guihelper.GUIHelper;
 import org.bukkit.Material;
@@ -90,9 +90,9 @@ public class DeluxeMenus {
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
+                    String path = "gui_menus.GUIHelper.items." + slot;
                     ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
-                    String path = "gui_menus.GUIHelper.items." + slot;
 
                     addItem(path, item, meta, slot);
                 }
@@ -113,6 +113,7 @@ public class DeluxeMenus {
      * @param meta the item meta
      * @param slot the item slot
      */
+    @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
         plugin.getConfig().set(path + ".material", item.getType().toString());
 

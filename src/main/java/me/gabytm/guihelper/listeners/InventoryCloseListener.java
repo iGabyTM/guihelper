@@ -17,14 +17,37 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guis;
+package me.gabytm.guihelper.listeners;
 
 import me.gabytm.guihelper.GUIHelper;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
-public class ShopGuiPlus {
+import static me.gabytm.guihelper.utils.StringUtils.colorize;
+
+public class InventoryCloseListener implements Listener {
     private GUIHelper plugin;
 
-    ShopGuiPlus(GUIHelper plugin) {
+    public InventoryCloseListener(GUIHelper plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    @SuppressWarnings("Duplicates")
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (plugin.getGuiList().containsValue(event.getInventory())) {
+            Player player = (Player) event.getPlayer();
+
+            player.sendMessage(" ");
+            player.sendMessage(colorize("&7GUIHelper v1.0"));
+            player.sendMessage(colorize("  &2CrazyCrates &8- &fCrate prizes"));
+            player.sendMessage(colorize("  &2DeluxeMenus &8- &fExternal menu"));
+            player.sendMessage(colorize("  &2DeluxeMenusLocal &8- &fLocal menu &7(config.yml)"));
+            player.sendMessage(colorize("  &2ShopGuiPlus &a(page) &8- &fShop items"));
+            player.sendMessage(" ");
+            player.sendMessage(colorize("&7Usage: &2&o/ghcreate [type] &a&o(argument)"));
+        }
     }
 }

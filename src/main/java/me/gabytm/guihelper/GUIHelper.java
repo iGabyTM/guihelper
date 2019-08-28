@@ -20,8 +20,11 @@
 package me.gabytm.guihelper;
 
 import me.gabytm.guihelper.commands.GHCreateCommand;
-import me.gabytm.guihelper.commands.tabcompleter.GHCreateTabCompleter;
-import me.gabytm.guihelper.guis.GuiHandler;
+import me.gabytm.guihelper.commands.GHHelpCommand;
+import me.gabytm.guihelper.commands.GHListCommand;
+import me.gabytm.guihelper.utils.TabCompleterUtil;
+import me.gabytm.guihelper.guitypes.GuiHandler;
+import me.gabytm.guihelper.listeners.InventoryCloseListener;
 import me.gabytm.guihelper.listeners.PlayerQuitListener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,10 +43,13 @@ public final class GUIHelper extends JavaPlugin {
         guiList = new HashMap<>();
         guiHandler = new GuiHandler(this);
 
-        this.getCommand("ghcreate").setExecutor(new GHCreateCommand(this));
-        this.getCommand("ghcreate").setTabCompleter(new GHCreateTabCompleter());
+        getCommand("ghcreate").setExecutor(new GHCreateCommand(this));
+        getCommand("ghcreate").setTabCompleter(new TabCompleterUtil());
+        getCommand("ghhelp").setExecutor(new GHHelpCommand(this));
+        getCommand("ghlist").setExecutor(new GHListCommand(this));
 
-        this.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryCloseListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
     }
 
     @Override

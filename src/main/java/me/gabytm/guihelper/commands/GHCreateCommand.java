@@ -33,9 +33,7 @@ import static me.gabytm.guihelper.utils.StringUtils.*;
 public class GHCreateCommand implements CommandExecutor {
     private GUIHelper plugin;
 
-    public GHCreateCommand(GUIHelper plugin) {
-        this.plugin = plugin;
-    }
+    public GHCreateCommand(GUIHelper plugin) { this.plugin = plugin; }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -60,14 +58,26 @@ public class GHCreateCommand implements CommandExecutor {
                         Inventory gui = plugin.getGuiList().get(player.getUniqueId());
 
                         switch (args[0].toLowerCase()) {
+                            case "crazycrates":
+                                plugin.getGuiHandler().crazyCrates().createCrate(gui, player);
+                                break;
                             case "deluxemenus":
                                 plugin.getGuiHandler().deluxeMenus().externalMenu(gui, player);
                                 break;
                             case "deluxemenuslocal":
                                 plugin.getGuiHandler().deluxeMenus().localMenu(gui, player);
                                 break;
+                            case "shopguiplus":
+                                if (args.length >= 2 && isInteger(args[1])) {
+                                    int page = Integer.parseInt(args[1]) >= 2 ? Integer.parseInt(args[1]) : 1;
+
+                                    plugin.getGuiHandler().shopGuiPlus().createShop(gui, player, page);
+                                } else {
+                                    plugin.getGuiHandler().shopGuiPlus().createShop(gui, player, 1);
+                                }
+                                break;
                             default:
-                                player.sendMessage(colorize("&cValid options: &7DeluxeMenus, &cDeluxeMenusLocal."));
+                                player.sendMessage(colorize("&cValid types: &7CrazyCrates, &cDeluxeMenus, &7DeluxeMenusLocal, &cShopGuiPlus."));
                                 break;
                         }
                     }
@@ -90,6 +100,15 @@ public class GHCreateCommand implements CommandExecutor {
             if(item != null) return false;
         }
 
+        return true;
+    }
+
+    private static boolean isInteger(String input) {
+        try {
+            Integer.parseInt(input);
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
         return true;
     }
 }

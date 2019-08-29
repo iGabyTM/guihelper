@@ -20,6 +20,7 @@
 package me.gabytm.guihelper.commands;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.types.GuiHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,7 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import static me.gabytm.guihelper.utils.StringUtils.*;
+import static me.gabytm.guihelper.utils.StringUtils.colorize;
 
 public class GHCreateCommand implements CommandExecutor {
     private GUIHelper plugin;
@@ -58,26 +59,33 @@ public class GHCreateCommand implements CommandExecutor {
                         Inventory gui = plugin.getGuiList().get(player.getUniqueId());
 
                         switch (args[0].toLowerCase()) {
+                            case "askyblock":
+                                plugin.getGuiHandler().aSkyBlock().generate(gui, player);
+                                break;
+                            case "chestcommands":
+                                plugin.getGuiHandler().chestCommands().generate(gui, player);
+                                break;
                             case "crazycrates":
-                                plugin.getGuiHandler().crazyCrates().createCrate(gui, player);
+                                plugin.getGuiHandler().crazyCrates().generate(gui, player);
                                 break;
                             case "deluxemenus":
-                                plugin.getGuiHandler().deluxeMenus().externalMenu(gui, player);
+                                plugin.getGuiHandler().deluxeMenus().generateExternal(gui, player);
                                 break;
                             case "deluxemenuslocal":
-                                plugin.getGuiHandler().deluxeMenus().localMenu(gui, player);
+                                plugin.getGuiHandler().deluxeMenus().generateLocal(gui, player);
                                 break;
                             case "shopguiplus":
                                 if (args.length >= 2 && isInteger(args[1])) {
                                     int page = Integer.parseInt(args[1]) >= 2 ? Integer.parseInt(args[1]) : 1;
 
-                                    plugin.getGuiHandler().shopGuiPlus().createShop(gui, player, page);
+                                    plugin.getGuiHandler().shopGuiPlus().generate(gui, player, page);
                                 } else {
-                                    plugin.getGuiHandler().shopGuiPlus().createShop(gui, player, 1);
+                                    plugin.getGuiHandler().shopGuiPlus().generate(gui, player, 1);
                                 }
                                 break;
                             default:
-                                player.sendMessage(colorize("&cValid types: &7CrazyCrates, &cDeluxeMenus, &7DeluxeMenusLocal, &cShopGuiPlus."));
+                                //player.sendMessage(colorize("&cValid types: &7ChestCommands, &cCrazyCrates, &7DeluxeMenus, &cDeluxeMenusLocal, &7ShopGuiPlus."));
+                                player.sendMessage(colorize("&c\"" + args[0] + "\" is not a valid type."));
                                 break;
                         }
                     }

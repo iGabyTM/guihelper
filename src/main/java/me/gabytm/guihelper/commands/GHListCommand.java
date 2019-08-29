@@ -24,7 +24,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import static me.gabytm.guihelper.utils.StringUtils.*;
+import static me.gabytm.guihelper.utils.StringUtils.colorize;
 
 public class GHListCommand implements CommandExecutor {
     private GUIHelper plugin;
@@ -38,7 +38,9 @@ public class GHListCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("guihelper.use")) {
             sender.sendMessage(" ");
-            sender.sendMessage(colorize("&7GUIHelper v1.0"));
+            sender.sendMessage(colorize("&7GUIHelper v1.1"));
+            sender.sendMessage(colorize("  &2ASkyBlock &8- &fIsland minishop items"));
+            sender.sendMessage(colorize("  &2ChestCommands &8- &fMenu items"));
             sender.sendMessage(colorize("  &2CrazyCrates &8- &fCrate prizes"));
             sender.sendMessage(colorize("  &2DeluxeMenus &8- &fExternal menu"));
             sender.sendMessage(colorize("  &2DeluxeMenusLocal &8- &fLocal menu &7(config.yml)"));

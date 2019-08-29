@@ -17,7 +17,7 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guitypes;
+package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import org.bukkit.Material;
@@ -31,7 +31,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.gabytm.guihelper.utils.StringUtils.*;
+import static me.gabytm.guihelper.utils.StringUtils.colorize;
 
 public class DeluxeMenus {
     private GUIHelper plugin;
@@ -41,11 +41,11 @@ public class DeluxeMenus {
     }
 
     /**
-     * Generate a DeluxeMenus external menu
+     * Generate items for a DeluxeMenus external menu
      * @param gui the gui from where the items are took
      * @param player the command sender
      */
-    public void externalMenu(Inventory gui, Player player) {
+    public void generateExternal(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
@@ -74,11 +74,11 @@ public class DeluxeMenus {
     }
 
     /**
-     * Generate a DeluxeMenus local (config.yml) menu
+     * Generate items for a DeluxeMenus local menu (config.yml)
      * @param gui the gui from where the items are took
      * @param player the command sender
      */
-    public void localMenu(Inventory gui, Player player) {
+    public void generateLocal(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 

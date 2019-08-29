@@ -17,7 +17,7 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guitypes;
+package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import org.bukkit.Material;
@@ -26,25 +26,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import static me.gabytm.guihelper.utils.StringUtils.colorize;
 
-import static me.gabytm.guihelper.utils.StringUtils.*;
+public class ASkyBlock {
 
-public class ShopGuiPlus {
     private GUIHelper plugin;
 
-    ShopGuiPlus(GUIHelper plugin) {
-        this.plugin = plugin;
-    }
+    ASkyBlock(GUIHelper plugin) { this.plugin = plugin; }
 
-    /**
-     * Create a shop config for ShopGUI+
-     * @param gui the gui from where the items are took
-     * @param player the command sender
-     * @param page the shop page (default 1)
-     */
-    public void createShop(Inventory gui, Player player, int page) {
+    @SuppressWarnings("Duplicates")
+    public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
@@ -52,15 +43,15 @@ public class ShopGuiPlus {
                 plugin.getConfig().set(key, null);
             }
 
-            plugin.getConfig().createSection("shops.GUIHelper.items");
+            plugin.getConfig().createSection("items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "shops.GUIHelper.items.P" + page + "-" + slot;
+                    String path = "items.item" + (slot + 1);
                     ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
 
-                    addItem(path, item, meta, slot, page);
+                    addItem(path, item, meta);
                 }
             }
 
@@ -73,28 +64,24 @@ public class ShopGuiPlus {
     }
 
     @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta, int slot, int page) {
-        plugin.getConfig().set(path + ".type", "item");
-        plugin.getConfig().set(path + ".item.material", item.getType().toString());
-        plugin.getConfig().set(path + ".item.quantity", item.getAmount());
-
-        if (item.getDurability() > 0) plugin.getConfig().set(path + ".item.damage", item.getDurability());
-
-        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".item.name", meta.getDisplayName().replaceAll("§", "&"));
+    private void addItem(String path, ItemStack item, ItemMeta meta) {
+        plugin.getConfig().set(path + ".material", item.getType().toString());
+        plugin.getConfig().set(path + ".quantity", item.getAmount());
+        plugin.getConfig().set(path + ".price", 100);
+        plugin.getConfig().set(path + ".sellprice", 10);
 
         if (meta.hasLore()) {
-            List<String> lore = new ArrayList<>();
+            StringBuilder description = new StringBuilder();
 
             for (String line : meta.getLore()) {
-                lore.add(line.replaceAll("§", "&"));
+                if (description.length() > 0) {
+                    description.append("|").append(line);
+                } else {
+                    description.append(line);
+                }
             }
 
-            plugin.getConfig().set(path + ".item.lore", lore);
+            plugin.getConfig().set(path + ".description", description.toString().replaceAll("§", "&"));
         }
-
-        plugin.getConfig().set(path + ".buyPrice", 10);
-        plugin.getConfig().set(path + ".sellPrice", 10);
-        plugin.getConfig().set(path + ".slot", slot);
-        plugin.getConfig().set(path + ".page", page);
     }
 }

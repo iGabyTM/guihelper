@@ -23,7 +23,7 @@ import me.gabytm.guihelper.commands.GHCreateCommand;
 import me.gabytm.guihelper.commands.GHHelpCommand;
 import me.gabytm.guihelper.commands.GHListCommand;
 import me.gabytm.guihelper.utils.TabCompleterUtil;
-import me.gabytm.guihelper.guitypes.GuiHandler;
+import me.gabytm.guihelper.types.GuiHandler;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
 import me.gabytm.guihelper.listeners.PlayerQuitListener;
 import org.bukkit.inventory.Inventory;

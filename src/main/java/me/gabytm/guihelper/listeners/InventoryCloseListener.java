@@ -41,7 +41,9 @@ public class InventoryCloseListener implements Listener {
             Player player = (Player) event.getPlayer();
 
             player.sendMessage(" ");
-            player.sendMessage(colorize("&7GUIHelper v1.0"));
+            player.sendMessage(colorize("&7GUIHelper v1.1"));
+            player.sendMessage(colorize("  &2ASkyBlock &8- &fIsland minishop items"));
+            player.sendMessage(colorize("  &2ChestCommands &8- &fMenu items"));
             player.sendMessage(colorize("  &2CrazyCrates &8- &fCrate prizes"));
             player.sendMessage(colorize("  &2DeluxeMenus &8- &fExternal menu"));
             player.sendMessage(colorize("  &2DeluxeMenusLocal &8- &fLocal menu &7(config.yml)"));

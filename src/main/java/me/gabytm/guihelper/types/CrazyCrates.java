@@ -17,7 +17,7 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.guitypes;
+package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import org.bukkit.Material;
@@ -40,7 +40,7 @@ public class CrazyCrates {
     }
 
     @SuppressWarnings("Duplicates")
-    public void createCrate(Inventory gui, Player player) {
+    public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
@@ -70,19 +70,38 @@ public class CrazyCrates {
 
     @SuppressWarnings("Duplicates")
     private void addPrize(String path, ItemStack item, ItemMeta meta) {
-        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".DisplayName", meta.getDisplayName().replaceAll("§", "&"));
+        StringBuilder rewardItem = new StringBuilder();
+        StringBuilder rewardItemMaterial = new StringBuilder();
+        StringBuilder rewardItemAmount = new StringBuilder();
+        StringBuilder rewardItemDisplayName = new StringBuilder();
+        StringBuilder rewardItemLore = new StringBuilder();
+        StringBuilder rewardItemEnchantments = new StringBuilder();
+        List<String> rewardItemsList = new ArrayList<>();
+
+        if (meta.hasDisplayName()) {
+            plugin.getConfig().set(path + ".DisplayName", meta.getDisplayName().replaceAll("§", "&"));
+            rewardItemDisplayName.append(", Name:").append(meta.getDisplayName().replaceAll("§", "&"));
+        }
 
         plugin.getConfig().set(path + ".DisplayItem", item.getType().toString());
+        rewardItemMaterial.append("Item:").append(item.getType().toString());
 
-        if (item.getDurability() > 0) plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + item.getDurability());
+        if (item.getDurability() > 0) {
+            plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + item.getDurability());
+            rewardItemMaterial.append(":").append(item.getDurability());
+        }
 
         plugin.getConfig().set(path + ".DisplayAmount", item.getAmount());
+        rewardItemAmount.append(", Amount:").append(item.getAmount());
 
         if (meta.hasLore()) {
             List<String> lore = new ArrayList<>();
 
+            rewardItemLore.append(", Lore:");
+
             for (String line : meta.getLore()) {
                 lore.add(line.replaceAll("§", "&"));
+                rewardItemLore.append(line.replaceAll("§", "&")).append(",");
             }
 
             plugin.getConfig().set(path + ".Lore", lore);
@@ -93,6 +112,7 @@ public class CrazyCrates {
 
             for (Enchantment en : meta.getEnchants().keySet()) {
                 enchantments.add(en.getName() + ":" + meta.getEnchantLevel(en));
+                rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
             }
 
             plugin.getConfig().set(path + ".DisplayEnchantments", enchantments);
@@ -101,5 +121,13 @@ public class CrazyCrates {
         plugin.getConfig().set(path + ".MaxRange", 100);
         plugin.getConfig().set(path + ".Chance", 10);
         plugin.getConfig().set(path + ".Firework", false);
+        rewardItem.append(rewardItemMaterial.toString()).append(rewardItemAmount.toString());
+
+        if (!rewardItemDisplayName.toString().equals("")) rewardItem.append(rewardItemDisplayName.toString());
+        if (!rewardItemLore.toString().equals("")) rewardItem.append(rewardItemLore.toString(), 0, rewardItemLore.length() - 1);
+        if (!rewardItemEnchantments.toString().equals("")) rewardItem.append(rewardItemEnchantments.toString());
+
+        rewardItemsList.add(rewardItem.toString());
+        plugin.getConfig().set(path + ".Items", rewardItemsList);
     }
 }

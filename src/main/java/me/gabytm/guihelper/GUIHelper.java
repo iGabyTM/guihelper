@@ -26,6 +26,7 @@ import me.gabytm.guihelper.utils.TabCompleterUtil;
 import me.gabytm.guihelper.types.GuiHandler;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
 import me.gabytm.guihelper.listeners.PlayerQuitListener;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,8 +39,13 @@ public final class GUIHelper extends JavaPlugin {
     private Map<UUID, Inventory> guiList;
     private GuiHandler guiHandler;
 
+    private int aSkyBlockCounter;
+    private int chestCommandsCounter;
+    private int deluxeMenusCounter;
+
     @Override
     public void onEnable() {
+        Metrics metrics = new Metrics(this);
         guiList = new HashMap<>();
         guiHandler = new GuiHandler(this);
 
@@ -50,6 +56,16 @@ public final class GUIHelper extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new InventoryCloseListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+
+        /*metrics.addCustomChart(new Metrics.AdvancedPie("configsGenerated", () -> {
+            Map<String, Integer> map = new HashMap<>();
+
+            map.put("aSkyBlock", aSkyBlockCounter);
+            map.put("ChestCommands", chestCommandsCounter);
+            map.put("DeluxeMenus", deluxeMenusCounter);
+
+            return map;
+        }));*/
     }
 
     @Override
@@ -61,4 +77,21 @@ public final class GUIHelper extends JavaPlugin {
         return guiList;
     }
     public GuiHandler getGuiHandler() { return guiHandler; }
+
+    public void updateMetrics(String chart, String type, int value) {
+    }
+
+    public void addMetrics(String type, int value) {
+        switch (type) {
+            case "aSkyBlock":
+                aSkyBlockCounter += value;
+                break;
+            case "ChestCommands":
+                chestCommandsCounter += value;
+                break;
+            case "DeluxeMenus":
+                deluxeMenusCounter += value;
+                break;
+        }
+    }
 }

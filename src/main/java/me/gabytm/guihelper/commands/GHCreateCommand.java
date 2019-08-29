@@ -20,7 +20,6 @@
 package me.gabytm.guihelper.commands;
 
 import me.gabytm.guihelper.GUIHelper;
-import me.gabytm.guihelper.types.GuiHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -61,15 +60,21 @@ public class GHCreateCommand implements CommandExecutor {
                         switch (args[0].toLowerCase()) {
                             case "askyblock":
                                 plugin.getGuiHandler().aSkyBlock().generate(gui, player);
+                                plugin.addMetrics("aSkyBlock", 1);
                                 break;
                             case "chestcommands":
                                 plugin.getGuiHandler().chestCommands().generate(gui, player);
+                                plugin.addMetrics("ChestCommands", 1);
                                 break;
                             case "crazycrates":
                                 plugin.getGuiHandler().crazyCrates().generate(gui, player);
                                 break;
+                            case "crazyenvoy":
+                                plugin.getGuiHandler().crazyEnvoy().generate(gui, player);
+                                break;
                             case "deluxemenus":
                                 plugin.getGuiHandler().deluxeMenus().generateExternal(gui, player);
+                                plugin.addMetrics("DeluxeMenus", 1);
                                 break;
                             case "deluxemenuslocal":
                                 plugin.getGuiHandler().deluxeMenus().generateLocal(gui, player);

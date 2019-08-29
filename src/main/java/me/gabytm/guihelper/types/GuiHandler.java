@@ -25,6 +25,7 @@ public class GuiHandler {
     private ASkyBlock aSkyBlockType;
     private ChestCommands chestCommandsType;
     private CrazyCrates crazyCratesType;
+    private CrazyEnvoy crazyEnvoyType;
     private DeluxeMenus deluxeMenusType;
     private ShopGuiPlus shopGuiPlusType;
 
@@ -32,12 +33,14 @@ public class GuiHandler {
         aSkyBlockType = new ASkyBlock(plugin);
         chestCommandsType = new ChestCommands(plugin);
         crazyCratesType = new CrazyCrates(plugin);
+        crazyEnvoyType = new CrazyEnvoy(plugin);
         deluxeMenusType = new DeluxeMenus(plugin);
         shopGuiPlusType = new ShopGuiPlus(plugin);
     }
 
     public ASkyBlock aSkyBlock() { return aSkyBlockType; }
     public ChestCommands chestCommands() { return chestCommandsType; }
+    public CrazyEnvoy crazyEnvoy() { return crazyEnvoyType; }
     public CrazyCrates crazyCrates() { return crazyCratesType; }
     public DeluxeMenus deluxeMenus() {
         return deluxeMenusType;

@@ -123,9 +123,9 @@ public class CrazyCrates {
         plugin.getConfig().set(path + ".Firework", false);
         rewardItem.append(rewardItemMaterial.toString()).append(rewardItemAmount.toString());
 
-        if (!rewardItemDisplayName.toString().equals("")) rewardItem.append(rewardItemDisplayName.toString());
-        if (!rewardItemLore.toString().equals("")) rewardItem.append(rewardItemLore.toString(), 0, rewardItemLore.length() - 1);
-        if (!rewardItemEnchantments.toString().equals("")) rewardItem.append(rewardItemEnchantments.toString());
+        if (rewardItemDisplayName.length() > 0) rewardItem.append(rewardItemDisplayName.toString());
+        if (rewardItemLore.length() > 0) rewardItem.append(rewardItemLore.toString(), 0, rewardItemLore.length() - 1);
+        if (rewardItemEnchantments.length() > 0) rewardItem.append(rewardItemEnchantments.toString());
 
         rewardItemsList.add(rewardItem.toString());
         plugin.getConfig().set(path + ".Items", rewardItemsList);

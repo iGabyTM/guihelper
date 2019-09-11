@@ -26,6 +26,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public class CrazyCrates {
     }
 
     @SuppressWarnings("Duplicates")
-    public void generate(Inventory gui, Player player) {
+    public void generate(Inventory gui, Player player, int page) {
         try {
             long start = System.currentTimeMillis();
 
@@ -52,7 +54,7 @@ public class CrazyCrates {
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "Crate.Prizes." + slot;
+                    String path = "Crate.Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
                     ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
 
@@ -85,6 +87,11 @@ public class CrazyCrates {
 
         plugin.getConfig().set(path + ".DisplayItem", item.getType().toString());
         rewardItemMaterial.append("Item:").append(item.getType().toString());
+
+        if (item.getType().toString().contains("TIPPED_ARROW")) {
+            plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + ((PotionMeta) meta).getBasePotionData().getType().toString());
+            rewardItemMaterial.append(":").append(((PotionMeta) meta).getBasePotionData().getType().toString());
+        }
 
         if (item.getDurability() > 0) {
             plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + item.getDurability());

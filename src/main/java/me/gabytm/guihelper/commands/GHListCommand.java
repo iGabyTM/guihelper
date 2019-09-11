@@ -40,8 +40,8 @@ public class GHListCommand implements CommandExecutor {
             sender.sendMessage(" ");
             sender.sendMessage(colorize("&7GUIHelper v1.1"));
             sender.sendMessage(colorize("  &2ASkyBlock &8- &fIsland minishop items"));
-            sender.sendMessage(colorize("  &2ChestCommands &8- &fMenu items"));
-            sender.sendMessage(colorize("  &2CrazyCrates &8- &fCrate prizes"));
+            sender.sendMessage(colorize("  &2CrazyCrates &a(page) &8- &fCrate prizes"));
+            sender.sendMessage(colorize("  &2CrazyEnvoy &a(page) &8- &fEnvoy items"));
             sender.sendMessage(colorize("  &2DeluxeMenus &8- &fExternal menu"));
             sender.sendMessage(colorize("  &2DeluxeMenusLocal &8- &fLocal menu &7(config.yml)"));
             sender.sendMessage(colorize("  &2ShopGuiPlus &a(page) &8- &fShop items"));

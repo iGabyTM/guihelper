@@ -67,10 +67,22 @@ public class GHCreateCommand implements CommandExecutor {
                                 plugin.addMetrics("ChestCommands", 1);
                                 break;
                             case "crazycrates":
-                                plugin.getGuiHandler().crazyCrates().generate(gui, player);
+                                if (args.length >= 2 && isInteger(args[1])) {
+                                    int page = Integer.parseInt(args[1]) >= 2 ? Integer.parseInt(args[1]) : 1;
+
+                                    plugin.getGuiHandler().crazyCrates().generate(gui, player, page);
+                                } else {
+                                    plugin.getGuiHandler().crazyCrates().generate(gui, player, 1);
+                                }
                                 break;
                             case "crazyenvoy":
-                                plugin.getGuiHandler().crazyEnvoy().generate(gui, player);
+                                if (args.length >= 2 && isInteger(args[1])) {
+                                    int page = Integer.parseInt(args[1]) >= 2 ? Integer.parseInt(args[1]) : 1;
+
+                                    plugin.getGuiHandler().crazyEnvoy().generate(gui, player, page);
+                                } else {
+                                    plugin.getGuiHandler().crazyEnvoy().generate(gui, player, 1);
+                                }
                                 break;
                             case "deluxemenus":
                                 plugin.getGuiHandler().deluxeMenus().generateExternal(gui, player);

@@ -38,7 +38,7 @@ public class CrazyEnvoy {
     CrazyEnvoy(GUIHelper plugin) { this.plugin = plugin; }
 
     @SuppressWarnings("Duplicates")
-    public void generate(Inventory gui, Player player) {
+    public void generate(Inventory gui, Player player, int page) {
         try {
             long start = System.currentTimeMillis();
 
@@ -50,7 +50,7 @@ public class CrazyEnvoy {
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "Prizes." + slot;
+                    String path = "Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
                     ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
 

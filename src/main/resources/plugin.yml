@@ -3,7 +3,7 @@ version: ${project.version}
 main: me.gabytm.guihelper.GUIHelper
 authors: [GabyTM]
 website: https://gabytm.me/
-api-version: 1.14
+api-version: 1.13
 commands:
   ghcreate:
     description: The main command

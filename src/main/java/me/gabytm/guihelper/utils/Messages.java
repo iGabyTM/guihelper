@@ -38,10 +38,10 @@ public enum Messages {
             "  &2CrazyEnvoy &a(page) &8- &fEnvoy items\n" +
             "  &2DeluxeMenus &8- &fExternal menu\n" +
             "  &2DeluxeMenusLocal &8- &fLocal menu &7(config.yml)\n" +
-            "  &2LemonMobCoins &8- &fShop items" +
+            "  &2LemonMobCoins &8- &fShop items\n" +
             "  &2ShopGuiPlus &a(page) &8- &fShop items\n" +
-            "\n" +
-            "&7Usage: &2&o/ghcreate [type] &a&o(argument)"),
+            " \n" +
+            "&7Usage: &2/ghcreate [type] &a&o(argument)"),
     WRONG_TYPE("&c{type} is not a valid type.");
 
     private String message;

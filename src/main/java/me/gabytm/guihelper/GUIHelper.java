@@ -38,10 +38,6 @@ public final class GUIHelper extends JavaPlugin {
     private Map<UUID, Inventory> guiList;
     private GuiHandler guiHandler;
 
-    private int aSkyBlockCounter;
-    private int chestCommandsCounter;
-    private int deluxeMenusCounter;
-
     @Override
     public void onEnable() {
         Metrics metrics = new Metrics(this);

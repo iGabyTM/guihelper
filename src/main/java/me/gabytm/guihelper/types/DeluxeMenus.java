@@ -20,6 +20,7 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.Messages;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -31,8 +32,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.gabytm.guihelper.utils.StringUtils.colorize;
-
 public class DeluxeMenus {
     private GUIHelper plugin;
 
@@ -41,7 +40,7 @@ public class DeluxeMenus {
     }
 
     /**
-     * Generate items for a DeluxeMenus external menu
+     * Generate an external menu config
      * @param gui the gui from where the items are took
      * @param player the command sender
      */
@@ -66,10 +65,10 @@ public class DeluxeMenus {
             }
 
             plugin.saveConfig();
-            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
+            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
         }
     }
 
@@ -99,10 +98,10 @@ public class DeluxeMenus {
             }
 
             plugin.saveConfig();
-            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
+            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
         }
     }
 

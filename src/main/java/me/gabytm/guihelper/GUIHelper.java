@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class GUIHelper extends JavaPlugin {
-
     private Map<UUID, Inventory> guiList;
     private GuiHandler guiHandler;
 
@@ -56,21 +55,6 @@ public final class GUIHelper extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new InventoryCloseListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
-
-        /*metrics.addCustomChart(new Metrics.AdvancedPie("configsGenerated", () -> {
-            Map<String, Integer> map = new HashMap<>();
-
-            map.put("aSkyBlock", aSkyBlockCounter);
-            map.put("ChestCommands", chestCommandsCounter);
-            map.put("DeluxeMenus", deluxeMenusCounter);
-
-            return map;
-        }));*/
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 
     public Map<UUID, Inventory> getGuiList() {
@@ -78,20 +62,5 @@ public final class GUIHelper extends JavaPlugin {
     }
     public GuiHandler getGuiHandler() { return guiHandler; }
 
-    public void updateMetrics(String chart, String type, int value) {
-    }
-
-    public void addMetrics(String type, int value) {
-        switch (type) {
-            case "aSkyBlock":
-                aSkyBlockCounter += value;
-                break;
-            case "ChestCommands":
-                chestCommandsCounter += value;
-                break;
-            case "DeluxeMenus":
-                deluxeMenusCounter += value;
-                break;
-        }
-    }
+    public String getVersion() { return this.getDescription().getVersion(); }
 }

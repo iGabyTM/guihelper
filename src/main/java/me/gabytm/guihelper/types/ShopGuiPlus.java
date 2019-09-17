@@ -20,6 +20,7 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.Messages;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -29,8 +30,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.gabytm.guihelper.utils.StringUtils.colorize;
-
 public class ShopGuiPlus {
     private GUIHelper plugin;
 
@@ -39,7 +38,7 @@ public class ShopGuiPlus {
     }
 
     /**
-     * Generate items for a ShopGUI+ shop
+     * Generate a shop config
      * @param gui the gui from where the items are took
      * @param player the command sender
      * @param page the shop page (default 1)
@@ -65,13 +64,21 @@ public class ShopGuiPlus {
             }
 
             plugin.saveConfig();
-            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
+            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
         }
     }
 
+    /**
+     * Create a shop item
+     * @param path the path
+     * @param item the item
+     * @param meta the {@param item} meta
+     * @param slot the {@param item} slot
+     * @param page the shop page (default 1)
+     */
     @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta, int slot, int page) {
         plugin.getConfig().set(path + ".type", "item");

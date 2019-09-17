@@ -21,28 +21,29 @@ package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.utils.RomanNumber;
+import me.gabytm.guihelper.utils.StringUtils;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChestCommands {
+public class LemonMobCoins {
     private GUIHelper plugin;
 
-    ChestCommands(GUIHelper plugin) { this.plugin = plugin; }
+    LemonMobCoins(GUIHelper plugin) { this.plugin = plugin; }
 
     /**
-     * Generate a menu config
+     * Generate a shop config
      * @param gui the gui from where the items are took
      * @param player the command sender
      */
-    @SuppressWarnings("Duplicates")
     public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
@@ -51,11 +52,11 @@ public class ChestCommands {
                 plugin.getConfig().set(key, null);
             }
 
+            plugin.getConfig().createSection("gui.items");
+
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    plugin.getConfig().createSection("item-" + slot);
-
-                    String path = "item-" + slot;
+                    String path = "gui.items.item-" + slot;
                     ItemStack item = gui.getItem(slot);
                     ItemMeta meta = item.getItemMeta();
 
@@ -72,7 +73,7 @@ public class ChestCommands {
     }
 
     /**
-     * Create a menu item
+     * Create a shop config
      * @param path the path
      * @param item the item
      * @param meta the {@param item} meta
@@ -80,57 +81,55 @@ public class ChestCommands {
      */
     @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
-        plugin.getConfig().set(path + ".ID", item.getType().toString());
+        StringBuilder rewardItem = new StringBuilder();
+        StringBuilder rewardItemDisplayName = new StringBuilder();
+        StringBuilder rewardItemLore = new StringBuilder();
+        StringBuilder rewardItemEnchantments = new StringBuilder();
+        List<String> rewardItemsList = new ArrayList<>();
 
-        if (item.getDurability() > 0) plugin.getConfig().set(path + ".DATA-VALUE", item.getDurability());
+        StringUtils.addToConfig(path + ".material", item.getType().toString());
+        StringUtils.addToConfig(path + ".slot", slot);
+        StringUtils.addToConfig(path + ".amount", item.getAmount());
+        StringUtils.addToConfig(path + ".glowing", meta.hasEnchants());
 
-        if (item.getAmount() > 1) plugin.getConfig().set(path + ".AMOUNT", item.getAmount());
+        if (meta.hasDisplayName()) {
+            StringUtils.addToConfig(path + ".displayname", meta.getDisplayName().replaceAll("§", "&"));
+            rewardItemDisplayName.append(" name:").append(meta.getDisplayName().replaceAll("§", "&").replaceAll(" ", "_"));
+        }
 
-        setItemPosition(path, slot);
+        if (meta.hasEnchants()) {
+            List<String> enchantments = new ArrayList<>();
 
-        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".NAME", meta.getDisplayName().replaceAll("§", "&"));
+            for (Enchantment en : meta.getEnchants().keySet()) {
+                enchantments.add(StringUtils.formatEnchantmentName(en) + " " + RomanNumber.toRoman(meta.getEnchantLevel(en)));
+                rewardItemEnchantments.append(" ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
+            }
+
+            StringUtils.addToConfig(path + ".lore", enchantments);
+        }
 
         if (meta.hasLore()) {
-            List<String> lore = new ArrayList<>();
+            List<String> lore = plugin.getConfig().getStringList(path + ".lore");
+
+            rewardItemLore.append(" lore:");
 
             for (String line : meta.getLore()) {
                 lore.add(line.replaceAll("§", "&"));
+                rewardItemLore.append(line.replaceAll("§", "&").replaceAll(" ", "_")).append("|");
             }
 
-            plugin.getConfig().set(path + ".LORE", lore);
+            StringUtils.addToConfig(path + ".lore", lore);
         }
 
-        if (meta.getEnchants().size() > 0) {
-            StringBuilder enchantments = new StringBuilder();
+        StringUtils.addToConfig(path + ".permission", false);
+        StringUtils.addToConfig(path + ".price", 100);
+        rewardItem.append("give %player% ").append(item.getType().toString()).append(" ").append(item.getAmount());
 
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                if (enchantments.length() > 0) {
-                    enchantments.append(";").append(en.getName()).append(",").append(meta.getEnchantLevel(en));
-                } else {
-                    enchantments.append(en.getName()).append(",").append(meta.getEnchantLevel(en));
-                }
-            }
+        if (rewardItemDisplayName.length() > 0) rewardItem.append(rewardItemDisplayName.toString());
+        if (rewardItemLore.length() > 0) rewardItem.append(rewardItemLore.toString(), 0, rewardItemLore.length() - 1);
+        if (rewardItemEnchantments.length() > 0) rewardItem.append(rewardItemEnchantments.toString());
 
-            plugin.getConfig().set(path + ".ENCHANTMENT", enchantments.toString());
-        }
-
-        if (item.getType().toString().contains("LEATHER_")) {
-            LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
-
-            plugin.getConfig().set(path + ".COLOR", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
-        }
-    }
-
-    /**
-     * Transform a slot into x and y position
-     * @param path the path where the position will be saved
-     * @param slot the item slot
-     */
-    private void setItemPosition(String path, int slot) {
-        int y = Math.toIntExact(slot / 9 + 1);
-        int x = slot + 1 - (9 * (y - 1));
-
-        plugin.getConfig().set(path + ".POSITION-X", x);
-        plugin.getConfig().set(path + ".POSITION-Y", y);
+        rewardItemsList.add(rewardItem.toString());
+        StringUtils.addToConfig(path + ".commands", rewardItemsList);
     }
 }

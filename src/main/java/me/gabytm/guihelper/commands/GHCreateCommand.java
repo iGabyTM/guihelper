@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import static me.gabytm.guihelper.utils.StringUtils.colorize;
+import me.gabytm.guihelper.utils.Messages;
 
 public class GHCreateCommand implements CommandExecutor {
     private GUIHelper plugin;
@@ -52,7 +52,7 @@ public class GHCreateCommand implements CommandExecutor {
                     }
                 } else {
                     if (!plugin.getGuiList().containsKey(player.getUniqueId()) || isEmpty(plugin.getGuiList().get(player.getUniqueId()))) {
-                        player.sendMessage(colorize("&cPlease add some items to the GUI first!"));
+                        player.sendMessage(Messages.EMPTY_GUI.format(null, null, null));
                         return true;
                     } else {
                         Inventory gui = plugin.getGuiList().get(player.getUniqueId());
@@ -60,11 +60,9 @@ public class GHCreateCommand implements CommandExecutor {
                         switch (args[0].toLowerCase()) {
                             case "askyblock":
                                 plugin.getGuiHandler().aSkyBlock().generate(gui, player);
-                                plugin.addMetrics("aSkyBlock", 1);
                                 break;
                             case "chestcommands":
                                 plugin.getGuiHandler().chestCommands().generate(gui, player);
-                                plugin.addMetrics("ChestCommands", 1);
                                 break;
                             case "crazycrates":
                                 if (args.length >= 2 && isInteger(args[1])) {
@@ -86,10 +84,12 @@ public class GHCreateCommand implements CommandExecutor {
                                 break;
                             case "deluxemenus":
                                 plugin.getGuiHandler().deluxeMenus().generateExternal(gui, player);
-                                plugin.addMetrics("DeluxeMenus", 1);
                                 break;
                             case "deluxemenuslocal":
                                 plugin.getGuiHandler().deluxeMenus().generateLocal(gui, player);
+                                break;
+                            case "lemonmobcoins":
+                                plugin.getGuiHandler().lemonMobCoins().generate(gui, player);
                                 break;
                             case "shopguiplus":
                                 if (args.length >= 2 && isInteger(args[1])) {
@@ -101,15 +101,14 @@ public class GHCreateCommand implements CommandExecutor {
                                 }
                                 break;
                             default:
-                                //player.sendMessage(colorize("&cValid types: &7ChestCommands, &cCrazyCrates, &7DeluxeMenus, &cDeluxeMenusLocal, &7ShopGuiPlus."));
-                                player.sendMessage(colorize("&c\"" + args[0] + "\" is not a valid type."));
+                                player.sendMessage(Messages.WRONG_TYPE.format(args[0], null, null));
                                 break;
                         }
                     }
                 }
             }
         } else {
-            sender.sendMessage(colorize("&cOnly players can run this command!"));
+            sender.sendMessage(Messages.PLAYERS_ONLY.format(null, null, null));
             return true;
         }
         return true;
@@ -117,8 +116,8 @@ public class GHCreateCommand implements CommandExecutor {
 
     /**
      * Check if the gui it's empty or not
-     * @param gui the gh gui
-     * @return empty or not
+     * @param gui the gui
+     * @return boolean
      */
     private boolean isEmpty(Inventory gui) {
         for(ItemStack item : gui.getContents()) {
@@ -128,6 +127,11 @@ public class GHCreateCommand implements CommandExecutor {
         return true;
     }
 
+    /**
+     * Check if the provided {@param input} it's an integer or not
+     * @param input the input
+     * @return boolean
+     */
     private static boolean isInteger(String input) {
         try {
             Integer.parseInt(input);

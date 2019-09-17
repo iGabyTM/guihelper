@@ -20,13 +20,12 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.Messages;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import static me.gabytm.guihelper.utils.StringUtils.colorize;
 
 public class ASkyBlock {
 
@@ -34,6 +33,11 @@ public class ASkyBlock {
 
     ASkyBlock(GUIHelper plugin) { this.plugin = plugin; }
 
+    /**
+     * Generate an island mini shop config
+     * @param gui the gui from where the items are took
+     * @param player the command sender
+     */
     @SuppressWarnings("Duplicates")
     public void generate(Inventory gui, Player player) {
         try {
@@ -56,13 +60,19 @@ public class ASkyBlock {
             }
 
             plugin.saveConfig();
-            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
+            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
         }
     }
 
+    /**
+     * Create a shop item
+     * @param path the path
+     * @param item the item
+     * @param meta the {@param item} meta
+     */
     @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta) {
         plugin.getConfig().set(path + ".material", item.getType().toString());

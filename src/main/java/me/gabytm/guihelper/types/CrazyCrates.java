@@ -20,6 +20,7 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.Messages;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -27,12 +28,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static me.gabytm.guihelper.utils.StringUtils.colorize;
 
 public class CrazyCrates {
     private GUIHelper plugin;
@@ -41,6 +39,12 @@ public class CrazyCrates {
         this.plugin = plugin;
     }
 
+    /**
+     * Generate a crate config
+     * @param gui the gui from where the items are took
+     * @param player the command sender
+     * @param page the crate page
+     */
     @SuppressWarnings("Duplicates")
     public void generate(Inventory gui, Player player, int page) {
         try {
@@ -63,13 +67,19 @@ public class CrazyCrates {
             }
 
             plugin.saveConfig();
-            player.sendMessage(colorize("&aDone! &7(" + (System.currentTimeMillis() - start) + "ms)"));
+            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(colorize("&cSomething went wrong, please check the console."));
+            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
         }
     }
 
+    /**
+     * Generate a crate prize
+     * @param path the path
+     * @param item the item
+     * @param meta the {@param item} meta
+     */
     @SuppressWarnings("Duplicates")
     private void addPrize(String path, ItemStack item, ItemMeta meta) {
         StringBuilder rewardItem = new StringBuilder();
@@ -114,7 +124,7 @@ public class CrazyCrates {
             plugin.getConfig().set(path + ".Lore", lore);
         }
 
-        if (meta.getEnchants().size() > 0) {
+        if (meta.hasEnchants()) {
             List<String> enchantments = new ArrayList<>();
 
             for (Enchantment en : meta.getEnchants().keySet()) {

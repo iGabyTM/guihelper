@@ -27,6 +27,7 @@ public class GuiHandler {
     private CrazyCrates crazyCratesType;
     private CrazyEnvoy crazyEnvoyType;
     private DeluxeMenus deluxeMenusType;
+    private GuiShop guiShopType;
     private LemonMobCoins lemonMobCoinsType;
     private ShopGuiPlus shopGuiPlusType;
 
@@ -35,6 +36,7 @@ public class GuiHandler {
     public CrazyEnvoy crazyEnvoy() { return crazyEnvoyType; }
     public CrazyCrates crazyCrates() { return crazyCratesType; }
     public DeluxeMenus deluxeMenus() { return deluxeMenusType; }
+    public GuiShop guiShop() { return guiShopType; }
     public LemonMobCoins lemonMobCoins() { return lemonMobCoinsType; }
     public ShopGuiPlus shopGuiPlus() { return shopGuiPlusType; }
 
@@ -44,6 +46,7 @@ public class GuiHandler {
         crazyCratesType = new CrazyCrates(plugin);
         crazyEnvoyType = new CrazyEnvoy(plugin);
         deluxeMenusType = new DeluxeMenus(plugin);
+        guiShopType = new GuiShop(plugin);
         lemonMobCoinsType = new LemonMobCoins(plugin);
         shopGuiPlusType = new ShopGuiPlus(plugin);
     }

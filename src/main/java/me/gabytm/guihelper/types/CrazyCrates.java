@@ -28,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +98,11 @@ public class CrazyCrates {
 
         plugin.getConfig().set(path + ".DisplayItem", item.getType().toString());
         rewardItemMaterial.append("Item:").append(item.getType().toString());
+
+        if (item.getType().toString().contains("MONSTER_EGG")) {
+            plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+            rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+        }
 
         if (item.getType().toString().contains("TIPPED_ARROW")) {
             plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + ((PotionMeta) meta).getBasePotionData().getType().toString());

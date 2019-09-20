@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +93,7 @@ public class CrazyEnvoy {
         rewardItemMaterial.append("Item:").append(item.getType().toString());
 
         if (item.getDurability() > 0) rewardItemMaterial.append(":").append(item.getDurability());
+        if (item.getType().toString().contains("MONSTER_EGG")) rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
         rewardItemAmount.append(", Amount:").append(item.getAmount());
 

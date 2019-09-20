@@ -88,6 +88,9 @@ public class GHCreateCommand implements CommandExecutor {
                             case "deluxemenuslocal":
                                 plugin.getGuiHandler().deluxeMenus().generateLocal(gui, player);
                                 break;
+                            /*case "guishop":
+                                plugin.getGuiHandler().guiShop().generate(gui, player);
+                                break;*/
                             case "lemonmobcoins":
                                 plugin.getGuiHandler().lemonMobCoins().generate(gui, player);
                                 break;

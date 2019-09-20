@@ -38,6 +38,7 @@ public enum Messages {
             "  &2CrazyEnvoy &a(page) &8- &fEnvoy items\n" +
             "  &2DeluxeMenus &8- &fExternal menu\n" +
             "  &2DeluxeMenusLocal &8- &fLocal menu &7(config.yml)\n" +
+            //"  &2GUIShop &8- &fShop items\n" +
             "  &2LemonMobCoins &8- &fShop items\n" +
             "  &2ShopGuiPlus &a(page) &8- &fShop items\n" +
             " \n" +

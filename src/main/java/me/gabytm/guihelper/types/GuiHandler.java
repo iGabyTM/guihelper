@@ -24,6 +24,7 @@ import me.gabytm.guihelper.GUIHelper;
 public class GuiHandler {
     private ASkyBlock aSkyBlockType;
     private ChestCommands chestCommandsType;
+    private CratesPlus cratesPlusType;
     private CrazyCrates crazyCratesType;
     private CrazyEnvoy crazyEnvoyType;
     private DeluxeMenus deluxeMenusType;
@@ -33,6 +34,7 @@ public class GuiHandler {
 
     public ASkyBlock aSkyBlock() { return aSkyBlockType; }
     public ChestCommands chestCommands() { return chestCommandsType; }
+    public CratesPlus cratesPlus() { return cratesPlusType; }
     public CrazyEnvoy crazyEnvoy() { return crazyEnvoyType; }
     public CrazyCrates crazyCrates() { return crazyCratesType; }
     public DeluxeMenus deluxeMenus() { return deluxeMenusType; }
@@ -43,6 +45,7 @@ public class GuiHandler {
     public GuiHandler(GUIHelper plugin) {
         aSkyBlockType = new ASkyBlock(plugin);
         chestCommandsType = new ChestCommands(plugin);
+        cratesPlusType = new CratesPlus(plugin);
         crazyCratesType = new CrazyCrates(plugin);
         crazyEnvoyType = new CrazyEnvoy(plugin);
         deluxeMenusType = new DeluxeMenus(plugin);

@@ -105,7 +105,7 @@ public class CrazyEnvoy {
             }
         }
 
-        if (meta.getEnchants().size() > 0) {
+        if (meta.hasEnchants()) {
             for (Enchantment en : meta.getEnchants().keySet()) {
                 rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
             }

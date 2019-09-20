@@ -21,6 +21,7 @@ package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -114,16 +115,16 @@ public class DeluxeMenus {
      */
     @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
-        plugin.getConfig().set(path + ".material", item.getType().toString());
+        StringUtils.addToConfig(path + ".material", item.getType().toString());
 
-        if (item.getDurability() > 0) plugin.getConfig().set(path + ".data", item.getDurability());
+        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".data", item.getDurability());
 
-        if (item.getAmount() > 1) plugin.getConfig().set(path + ".amount", item.getAmount());
+        if (item.getAmount() > 1) StringUtils.addToConfig(path + ".amount", item.getAmount());
 
         if (item.getType().toString().contains("LEATHER_")) {
             LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
 
-            plugin.getConfig().set(path + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
+            StringUtils.addToConfig(path + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
         }
 
                     /*if (item.getType().equals(Material.BANNER)) {
@@ -139,9 +140,9 @@ public class DeluxeMenus {
                         }
                     } */
 
-        plugin.getConfig().set(path + ".slot", slot);
+        StringUtils.addToConfig(path + ".slot", slot);
 
-        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".display_name", meta.getDisplayName().replaceAll("§", "&"));
+        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".display_name", meta.getDisplayName().replaceAll("§", "&"));
 
         if (meta.hasLore()) {
             List<String> lore = new ArrayList<>();
@@ -150,17 +151,17 @@ public class DeluxeMenus {
                 lore.add(line.replaceAll("§", "&"));
             }
 
-            plugin.getConfig().set(path + ".lore", lore);
+            StringUtils.addToConfig(path + ".lore", lore);
         }
 
-        if (meta.getEnchants().size() > 0) {
+        if (meta.hasEnchants()) {
             List<String> enchantments = new ArrayList<>();
 
             for (Enchantment en : meta.getEnchants().keySet()) {
                 enchantments.add(en.getName() + ";" + meta.getEnchantLevel(en));
             }
 
-            plugin.getConfig().set(path + ".enchantments", enchantments);
+            StringUtils.addToConfig(path + ".enchantments", enchantments);
         }
     }
 }

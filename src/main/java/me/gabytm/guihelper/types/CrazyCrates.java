@@ -21,6 +21,7 @@ package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -92,29 +93,29 @@ public class CrazyCrates {
         List<String> rewardItemsList = new ArrayList<>();
 
         if (meta.hasDisplayName()) {
-            plugin.getConfig().set(path + ".DisplayName", meta.getDisplayName().replaceAll("§", "&"));
+            StringUtils.addToConfig(path + ".DisplayName", meta.getDisplayName().replaceAll("§", "&"));
             rewardItemDisplayName.append(", Name:").append(meta.getDisplayName().replaceAll("§", "&"));
         }
 
-        plugin.getConfig().set(path + ".DisplayItem", item.getType().toString());
+        StringUtils.addToConfig(path + ".DisplayItem", item.getType().toString());
         rewardItemMaterial.append("Item:").append(item.getType().toString());
 
         if (item.getType().toString().contains("MONSTER_EGG")) {
-            plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+            StringUtils.addToConfig(path + ".DisplayItem", item.getType().toString() + ":" + ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
             rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
         }
 
         if (item.getType().toString().contains("TIPPED_ARROW")) {
-            plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + ((PotionMeta) meta).getBasePotionData().getType().toString());
+            StringUtils.addToConfig(path + ".DisplayItem", item.getType().toString() + ":" + ((PotionMeta) meta).getBasePotionData().getType().toString());
             rewardItemMaterial.append(":").append(((PotionMeta) meta).getBasePotionData().getType().toString());
         }
 
         if (item.getDurability() > 0) {
-            plugin.getConfig().set(path + ".DisplayItem", item.getType().toString() + ":" + item.getDurability());
+            StringUtils.addToConfig(path + ".DisplayItem", item.getType().toString() + ":" + item.getDurability());
             rewardItemMaterial.append(":").append(item.getDurability());
         }
 
-        plugin.getConfig().set(path + ".DisplayAmount", item.getAmount());
+        StringUtils.addToConfig(path + ".DisplayAmount", item.getAmount());
         rewardItemAmount.append(", Amount:").append(item.getAmount());
 
         if (meta.hasLore()) {
@@ -127,7 +128,7 @@ public class CrazyCrates {
                 rewardItemLore.append(line.replaceAll("§", "&")).append(",");
             }
 
-            plugin.getConfig().set(path + ".Lore", lore);
+            StringUtils.addToConfig(path + ".Lore", lore);
         }
 
         if (meta.hasEnchants()) {
@@ -138,12 +139,12 @@ public class CrazyCrates {
                 rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
             }
 
-            plugin.getConfig().set(path + ".DisplayEnchantments", enchantments);
+            StringUtils.addToConfig(path + ".DisplayEnchantments", enchantments);
         }
 
-        plugin.getConfig().set(path + ".MaxRange", 100);
-        plugin.getConfig().set(path + ".Chance", 10);
-        plugin.getConfig().set(path + ".Firework", false);
+        StringUtils.addToConfig(path + ".MaxRange", 100);
+        StringUtils.addToConfig(path + ".Chance", 10);
+        StringUtils.addToConfig(path + ".Firework", false);
         rewardItem.append(rewardItemMaterial.toString()).append(rewardItemAmount.toString());
 
         if (rewardItemDisplayName.length() > 0) rewardItem.append(rewardItemDisplayName.toString());
@@ -151,6 +152,6 @@ public class CrazyCrates {
         if (rewardItemEnchantments.length() > 0) rewardItem.append(rewardItemEnchantments.toString());
 
         rewardItemsList.add(rewardItem.toString());
-        plugin.getConfig().set(path + ".Items", rewardItemsList);
+        StringUtils.addToConfig(path + ".Items", rewardItemsList);
     }
 }

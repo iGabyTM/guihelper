@@ -21,6 +21,7 @@ package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -81,13 +82,13 @@ public class ShopGuiPlus {
      */
     @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta, int slot, int page) {
-        plugin.getConfig().set(path + ".type", "item");
-        plugin.getConfig().set(path + ".item.material", item.getType().toString());
-        plugin.getConfig().set(path + ".item.quantity", item.getAmount());
+        StringUtils.addToConfig(path + ".type", "item");
+        StringUtils.addToConfig(path + ".item.material", item.getType().toString());
+        StringUtils.addToConfig(path + ".item.quantity", item.getAmount());
 
-        if (item.getDurability() > 0) plugin.getConfig().set(path + ".item.damage", item.getDurability());
+        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".item.damage", item.getDurability());
 
-        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".item.name", meta.getDisplayName().replaceAll("§", "&"));
+        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".item.name", meta.getDisplayName().replaceAll("§", "&"));
 
         if (meta.hasLore()) {
             List<String> lore = new ArrayList<>();
@@ -96,12 +97,12 @@ public class ShopGuiPlus {
                 lore.add(line.replaceAll("§", "&"));
             }
 
-            plugin.getConfig().set(path + ".item.lore", lore);
+            StringUtils.addToConfig(path + ".item.lore", lore);
         }
 
-        plugin.getConfig().set(path + ".buyPrice", 10);
-        plugin.getConfig().set(path + ".sellPrice", 10);
-        plugin.getConfig().set(path + ".slot", slot);
-        plugin.getConfig().set(path + ".page", page);
+        StringUtils.addToConfig(path + ".buyPrice", 10);
+        StringUtils.addToConfig(path + ".sellPrice", 10);
+        StringUtils.addToConfig(path + ".slot", slot);
+        StringUtils.addToConfig(path + ".page", page);
     }
 }

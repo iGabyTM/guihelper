@@ -21,6 +21,7 @@ package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -80,15 +81,15 @@ public class ChestCommands {
      */
     @SuppressWarnings("Duplicates")
     private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
-        plugin.getConfig().set(path + ".ID", item.getType().toString());
+        StringUtils.addToConfig(path + ".ID", item.getType().toString());
 
-        if (item.getDurability() > 0) plugin.getConfig().set(path + ".DATA-VALUE", item.getDurability());
+        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".DATA-VALUE", item.getDurability());
 
-        if (item.getAmount() > 1) plugin.getConfig().set(path + ".AMOUNT", item.getAmount());
+        if (item.getAmount() > 1) StringUtils.addToConfig(path + ".AMOUNT", item.getAmount());
 
         setItemPosition(path, slot);
 
-        if (meta.hasDisplayName()) plugin.getConfig().set(path + ".NAME", meta.getDisplayName().replaceAll("§", "&"));
+        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".NAME", meta.getDisplayName().replaceAll("§", "&"));
 
         if (meta.hasLore()) {
             List<String> lore = new ArrayList<>();
@@ -97,10 +98,10 @@ public class ChestCommands {
                 lore.add(line.replaceAll("§", "&"));
             }
 
-            plugin.getConfig().set(path + ".LORE", lore);
+            StringUtils.addToConfig(path + ".LORE", lore);
         }
 
-        if (meta.getEnchants().size() > 0) {
+        if (meta.hasEnchants()) {
             StringBuilder enchantments = new StringBuilder();
 
             for (Enchantment en : meta.getEnchants().keySet()) {
@@ -111,13 +112,13 @@ public class ChestCommands {
                 }
             }
 
-            plugin.getConfig().set(path + ".ENCHANTMENT", enchantments.toString());
+            StringUtils.addToConfig(path + ".ENCHANTMENT", enchantments.toString());
         }
 
         if (item.getType().toString().contains("LEATHER_")) {
             LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
 
-            plugin.getConfig().set(path + ".COLOR", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
+            StringUtils.addToConfig(path + ".COLOR", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
         }
     }
 
@@ -130,7 +131,7 @@ public class ChestCommands {
         int y = Math.toIntExact(slot / 9 + 1);
         int x = slot + 1 - (9 * (y - 1));
 
-        plugin.getConfig().set(path + ".POSITION-X", x);
-        plugin.getConfig().set(path + ".POSITION-Y", y);
+        StringUtils.addToConfig(path + ".POSITION-X", x);
+        StringUtils.addToConfig(path + ".POSITION-Y", y);
     }
 }

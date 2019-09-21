@@ -6,7 +6,7 @@
 
     <groupId>me.gabytm</groupId>
     <artifactId>GUIHelper</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <packaging>jar</packaging>
 
     <name>GUIHelper</name>

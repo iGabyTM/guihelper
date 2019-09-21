@@ -29,6 +29,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +120,8 @@ public class ChestCommands {
             LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
 
             StringUtils.addToConfig(path + ".COLOR", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
+        } else if (item.getType().toString().contains("MONSTER_EGG")) {
+            StringUtils.addToConfig(path + ".DATA-VALUE", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
         }
     }
 

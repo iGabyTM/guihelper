@@ -23,6 +23,7 @@ import me.gabytm.guihelper.GUIHelper;
 
 public class GuiHandler {
     private ASkyBlock aSkyBlockType;
+    private BossShopPro bossShopProType;
     private ChestCommands chestCommandsType;
     private CratesPlus cratesPlusType;
     private CrazyCrates crazyCratesType;
@@ -33,6 +34,7 @@ public class GuiHandler {
     private ShopGuiPlus shopGuiPlusType;
 
     public ASkyBlock aSkyBlock() { return aSkyBlockType; }
+    public BossShopPro bossShopPro() { return bossShopProType; }
     public ChestCommands chestCommands() { return chestCommandsType; }
     public CratesPlus cratesPlus() { return cratesPlusType; }
     public CrazyEnvoy crazyEnvoy() { return crazyEnvoyType; }
@@ -44,6 +46,7 @@ public class GuiHandler {
 
     public GuiHandler(GUIHelper plugin) {
         aSkyBlockType = new ASkyBlock(plugin);
+        bossShopProType = new BossShopPro(plugin);
         chestCommandsType = new ChestCommands(plugin);
         cratesPlusType = new CratesPlus(plugin);
         crazyCratesType = new CrazyCrates(plugin);

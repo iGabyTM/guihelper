@@ -19,6 +19,7 @@
 
 package me.gabytm.guihelper.types;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Messages;
 import me.gabytm.guihelper.utils.StringUtils;
@@ -126,6 +127,9 @@ public class DeluxeMenus {
 
             StringUtils.addToConfig(path + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
         }
+
+        //TODO
+        // Add support for banners
 
                     /*if (item.getType().equals(Material.BANNER)) {
                         BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();

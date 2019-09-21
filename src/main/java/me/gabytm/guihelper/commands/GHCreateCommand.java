@@ -61,6 +61,9 @@ public class GHCreateCommand implements CommandExecutor {
                             case "askyblock":
                                 plugin.getGuiHandler().aSkyBlock().generate(gui, player);
                                 break;
+                            case "bossshoppro":
+                                plugin.getGuiHandler().bossShopPro().generate(gui, player);
+                                break;
                             case "chestcommands":
                                 plugin.getGuiHandler().chestCommands().generate(gui, player);
                                 break;

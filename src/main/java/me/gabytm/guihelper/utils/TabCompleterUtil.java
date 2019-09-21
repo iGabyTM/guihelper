@@ -35,7 +35,7 @@ public class TabCompleterUtil implements TabCompleter {
             if (args.length > 1) {
                 return Collections.singletonList("");
             } else {
-                String[] types = { "ASkyBlock", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus" };
+                String[] types = { "ASkyBlock", "BossShopPro", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus" };
 
                 return Arrays.asList(types);
             }

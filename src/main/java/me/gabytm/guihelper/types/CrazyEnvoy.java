@@ -93,6 +93,7 @@ public class CrazyEnvoy {
         rewardItemMaterial.append("Item:").append(item.getType().toString());
 
         if (item.getDurability() > 0) rewardItemMaterial.append(":").append(item.getDurability());
+
         if (item.getType().toString().contains("MONSTER_EGG")) rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
         rewardItemAmount.append(", Amount:").append(item.getAmount());

@@ -85,6 +85,7 @@ public class CratesPlus {
         StringUtils.addToConfig(path + ".Item Type", item.getType().toString());
 
         if (item.getDurability() > 0) StringUtils.addToConfig(path + ".Item Data", item.getDurability());
+
         if (item.getType().toString().contains("MONSTER_EGG")) StringUtils.addToConfig(path + ".Item Data", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
         StringUtils.addToConfig(path + ".Percentage", 10);

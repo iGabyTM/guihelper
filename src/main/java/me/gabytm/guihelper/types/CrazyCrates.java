@@ -103,9 +103,7 @@ public class CrazyCrates {
         if (item.getType().toString().contains("MONSTER_EGG")) {
             StringUtils.addToConfig(path + ".DisplayItem", item.getType().toString() + ":" + ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
             rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
-        }
-
-        if (item.getType().toString().contains("TIPPED_ARROW")) {
+        } else if (item.getType().toString().contains("TIPPED_ARROW")) {
             StringUtils.addToConfig(path + ".DisplayItem", item.getType().toString() + ":" + ((PotionMeta) meta).getBasePotionData().getType().toString());
             rewardItemMaterial.append(":").append(((PotionMeta) meta).getBasePotionData().getType().toString());
         }

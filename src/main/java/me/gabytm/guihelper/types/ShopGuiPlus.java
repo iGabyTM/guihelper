@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,8 @@ public class ShopGuiPlus {
         StringUtils.addToConfig(path + ".item.quantity", item.getAmount());
 
         if (item.getDurability() > 0) StringUtils.addToConfig(path + ".item.damage", item.getDurability());
+
+        if (item.getType().toString().contains("MONSTER_EGG")) StringUtils.addToConfig(path + ".item.damage", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
         if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".item.name", meta.getDisplayName().replaceAll("§", "&"));
 

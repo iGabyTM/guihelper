@@ -19,28 +19,34 @@
 
 package me.gabytm.guihelper.utils;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TabCompleterUtil implements TabCompleter {
+public class ItemUtil {
+    public static boolean slotIsEmpty(ItemStack item) {
+        return item == null || item.getType().equals(Material.AIR);
+    }
 
-    @Override
-    public List<String> onTabComplete(CommandSender s, Command cmd, String alias, String[] args) {
-        if (cmd.getName().equals("ghcreate") && s.hasPermission("guihelper.use")) {
-            if (args.length > 1) {
-                return Collections.singletonList("");
-            }
+    public static boolean isLeatherArmor(ItemStack item) {
+        return item.getType().toString().contains("LEATHER_");
+    }
 
-            String[] types = { "ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus" };
+    public static boolean isMonsterEgg(ItemStack item) {
+        return item.getType().toString().contains("MONSTER_EGG");
+    }
 
-            return Arrays.asList(types);
-        }
+    public static String getDisplayName(ItemMeta meta) {
+        return meta.getDisplayName().replaceAll("§", "&");
+    }
 
-        return null;
+    public static List<String> getLore(ItemMeta meta) {
+        List<String> lore = meta.getLore();
+
+        Collections.replaceAll(lore, "§", "&");
+        return lore;
     }
 }

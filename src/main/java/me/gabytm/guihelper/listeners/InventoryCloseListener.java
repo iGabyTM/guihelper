@@ -33,10 +33,9 @@ public class InventoryCloseListener implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("Duplicates")
-    public void onInventoryClose(InventoryCloseEvent event) {
-        if (plugin.getGuiList().containsValue(event.getInventory())) {
-            event.getPlayer().sendMessage(Messages.TYPES_LIST.format(null, null, plugin.getVersion()));
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (plugin.getGuiList().containsValue(e.getInventory())) {
+            e.getPlayer().sendMessage(Messages.TYPES_LIST.format(plugin.getVersion()));
         }
     }
 }

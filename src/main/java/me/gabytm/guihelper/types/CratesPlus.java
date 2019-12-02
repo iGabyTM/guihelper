@@ -20,13 +20,11 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.StringUtils;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
@@ -37,91 +35,74 @@ import java.util.List;
 public class CratesPlus {
     private GUIHelper plugin;
 
-    CratesPlus(GUIHelper plugin) { this.plugin = plugin; }
+    CratesPlus(GUIHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generate a shop config
-     * @param gui the gui from where the items are took
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
      */
-    @SuppressWarnings("Duplicates")
     public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("Crates.GUIHelper.Winnings");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "Crates.GUIHelper.Winnings." + (slot + 1);
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-
-                    addItem(path, item, meta);
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addItem("Crates.GUIHelper.Winnings." + (slot + 1) + ".", gui.getItem(slot));
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
      * Create a shop config
+     *
      * @param path the path
      * @param item the item
-     * @param meta the {@param item} meta
      */
-    @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta) {
-        StringUtils.addToConfig(path + ".Type", "ITEM");
-        StringUtils.addToConfig(path + ".Item Type", item.getType().toString());
+    private void addItem(String path, ItemStack item) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
 
-        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".Item Data", item.getDurability());
+        config.set(path + "Type", "ITEM");
+        config.set(path + "Item Type", item.getType().toString());
 
-        if (item.getType().toString().contains("MONSTER_EGG")) StringUtils.addToConfig(path + ".Item Data", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+        if (item.getDurability() > 0) config.set(path + "Item Data", item.getDurability());
 
-        StringUtils.addToConfig(path + ".Percentage", 10);
+        if (ItemUtil.isMonsterEgg(item)) config.set(path + ".Item Data", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
-        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".Name", meta.getDisplayName().replaceAll("§", "&"));
+        config.set(path + "Percentage", 10);
 
-        StringUtils.addToConfig(path + ".Amount", item.getAmount());
+        if (meta.hasDisplayName()) config.set(path + "Name", meta.getDisplayName().replaceAll("§", "&"));
+
+        config.set(path + "Amount", item.getAmount());
 
         if (meta.hasEnchants()) {
             List<String> enchantments = new ArrayList<>();
 
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                enchantments.add(en.getName() + "-" + meta.getEnchantLevel(en));
-            }
-
-            StringUtils.addToConfig(path + ".Enchantments", enchantments);
+            meta.getEnchants().keySet().forEach(en -> enchantments.add(en.getName() + "-" + meta.getEnchantLevel(en)));
+            config.set(path + "Enchantments", enchantments);
         }
 
-        if (meta.hasLore()) {
-            List<String> lore = new ArrayList<>();
-
-            for (String line : meta.getLore()) {
-                lore.add(line.replaceAll("§", "&"));
-            }
-
-            StringUtils.addToConfig(path + ".Lore", lore);
-        }
+        if (meta.hasLore()) config.set(path + "Lore", ItemUtil.getLore(meta));
 
         if (meta.getItemFlags().size() > 0) {
             List<String> flags = new ArrayList<>();
 
-            for (ItemFlag flag : meta.getItemFlags()) {
-                flags.add(flag.toString());
-            }
-
-            StringUtils.addToConfig(path + ".Flags", flags);
+            meta.getItemFlags().forEach(flag -> flags.add(flag.toString()));
+            config.set(path + "Flags", flags);
         }
     }
 }

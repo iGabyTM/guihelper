@@ -20,9 +20,9 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.StringUtils;
-import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -33,71 +33,98 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BossShopPro {
     private GUIHelper plugin;
 
-    BossShopPro(GUIHelper plugin) { this.plugin = plugin; }
+    BossShopPro(GUIHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
-     * Generate a menu config
-     * @param gui the gui from where the items are took
+     * Generate a shop config
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
      */
-    @SuppressWarnings("Duplicates")
-    public void generate(Inventory gui, Player player) {
+    @SuppressWarnings("DuplicatedCode")
+    public void generateShop(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("shop");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "shop.item-" + (slot + 1);
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-
-                    addItem(path, item, meta, (slot + 1));
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addShopItem("shop.item-" + (slot + 1) + ".", gui.getItem(slot), (slot + 1));
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
-     * Create a menu item
+     * Generate a menu config
+     *
+     * @param gui    the gui from where the items are took
+     * @param player the command sender
+     */
+    @SuppressWarnings("DuplicatedCode")
+    public void generateMenu(Inventory gui, Player player) {
+        try {
+            long start = System.currentTimeMillis();
+
+            plugin.emptyConfig();
+            plugin.getConfig().createSection("shop");
+
+            for (int slot = 0; slot < gui.getSize(); slot++) {
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addMenuItem("shop.item-" + (slot + 1) + ".", gui.getItem(slot), (slot + 1));
+                }
+            }
+
+            plugin.saveConfig();
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
+        } catch (Exception e) {
+            e.printStackTrace();
+            player.sendMessage(Messages.CREATION_ERROR.value());
+        }
+    }
+
+    /**
+     * Create a shop item
+     *
      * @param path the path
      * @param item the item
-     * @param meta the {@param item} meta
      * @param slot the {@param item} slot
      */
-    @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
+    @SuppressWarnings("DuplicatedCode")
+    private void addShopItem(String path, ItemStack item, int slot) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
         List<String> rewardItem = new ArrayList<>();
         List<String> menuItem = new ArrayList<>();
 
-        StringUtils.addToConfig(path + ".RewardType", "ITEM");
-        StringUtils.addToConfig(path + ".PriceType", "MONEY");
-        StringUtils.addToConfig(path + ".Price", 10);
+        config.set(path + "RewardType", "ITEM");
+        config.set(path + "PriceType", "MONEY");
+        config.set(path + "Price", 10);
 
-        if (item.getType().toString().contains("MONSTER_EGG")) {
+        if (ItemUtil.isMonsterEgg(item)) {
             String monsterEgg = "type:" + item.getType().toString() + ":" + ((SpawnEggMeta) meta).getSpawnedType().getTypeId();
 
             rewardItem.add(monsterEgg);
             menuItem.add(monsterEgg);
-        } else if (item.getType().toString().contains("LEATHER_")) {
-            LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
-            String color = "color:" + armorMeta.getColor().getRed() + "#" + armorMeta.getColor().getGreen() + "#" + armorMeta.getColor().getBlue();
+        } else if (ItemUtil.isLeatherArmor(item)) {
+            LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
+            String color = "color:" + lam.getColor().getRed() + "#" + lam.getColor().getGreen() + "#" + lam.getColor().getBlue();
 
             rewardItem.add("type:" + item.getType().toString());
             menuItem.add("type:" + item.getType().toString());
@@ -157,9 +184,81 @@ public class BossShopPro {
             menuItem.add("hideflags:" + flags.toString());
         }
 
-        StringUtils.addToConfig(path + ".Reward", rewardItem);
-        StringUtils.addToConfig(path + ".MenuItem", menuItem);
-        StringUtils.addToConfig(path + ".Message", "&aYou've purchased &e%reward%&a for &e$%price%");
-        StringUtils.addToConfig(path + ".InventoryLocation", slot);
+        config.set(path + "Reward", rewardItem);
+        config.set(path + "MenuItem", menuItem);
+        config.set(path + "Message", "&aYou've purchased &e%reward%&a for &e$%price%");
+        config.set(path + "InventoryLocation", slot);
+    }
+
+    /**
+     * Create a menu item
+     *
+     * @param path the path
+     * @param item the item
+     * @param slot the {@param item} slot
+     */
+    @SuppressWarnings("DuplicatedCode")
+    private void addMenuItem(String path, ItemStack item, int slot) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
+        List<String> menuItem = new ArrayList<>();
+
+        config.set(path + "RewardType", "playercommand");
+        config.set(path + "PriceType", "free");
+
+        if (ItemUtil.isMonsterEgg(item)) {
+            String monsterEgg = "type:" + item.getType().toString() + ":" + ((SpawnEggMeta) meta).getSpawnedType().getTypeId();
+
+            menuItem.add(monsterEgg);
+        } else if (ItemUtil.isLeatherArmor(item)) {
+            LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
+            String color = "color:" + lam.getColor().getRed() + "#" + lam.getColor().getGreen() + "#" + lam.getColor().getBlue();
+
+            menuItem.add("type:" + item.getType().toString());
+            menuItem.add(color);
+        } else {
+            String type = "type:" + (item.getDurability() > 0 ? item.getType().toString() + ":" + item.getDurability() : item.getType().toString());
+
+            menuItem.add(type);
+        }
+
+        menuItem.add("amount:" + item.getAmount());
+
+        if (meta.hasDisplayName()) menuItem.add("name:" + ItemUtil.getDisplayName(meta));
+
+        if (meta.hasLore()) {
+            StringBuilder lore = new StringBuilder();
+
+            for (String line : meta.getLore()) {
+                if (lore.length() > 1) {
+                    lore.append("#").append(line.replaceAll("§", "&"));
+                } else {
+                    lore.append(line.replaceAll("§", "&"));
+                }
+            }
+
+            menuItem.add("lore:" + lore.toString());
+        }
+
+        if (meta.hasEnchants()) meta.getEnchants().keySet().forEach(en -> menuItem.add("enchantment:" + en.getName() + "#" + meta.getEnchantLevel(en)));
+
+        if (meta.getItemFlags().size() > 0) {
+            StringBuilder flags = new StringBuilder();
+
+            for (ItemFlag flag : meta.getItemFlags()) {
+                if (flags.length() > 1) {
+                    flags.append("#").append(flag.toString());
+                } else {
+                    flags.append(flag.toString());
+                }
+            }
+
+            menuItem.add("hideflags:" + flags.toString());
+        }
+
+        config.set(path + "Reward", Collections.singletonList("say Change me @ " + path + "Reward"));
+        config.set(path + "MenuItem", menuItem);
+        config.set(path + "Message", "&aChange me @ " + path + "Message");
+        config.set(path + "InventoryLocation", slot);
     }
 }

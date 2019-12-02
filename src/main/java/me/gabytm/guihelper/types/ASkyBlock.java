@@ -20,66 +20,62 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.StringUtils;
-import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ASkyBlock {
-
     private GUIHelper plugin;
 
-    ASkyBlock(GUIHelper plugin) { this.plugin = plugin; }
+    ASkyBlock(GUIHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generate an island mini shop config
-     * @param gui the gui from where the items are took
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
      */
-    @SuppressWarnings("Duplicates")
     public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "items.item" + (slot + 1);
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-
-                    addItem(path, item, meta);
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addItem("items.item" + (slot + 1) + ".", gui.getItem(slot));
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
      * Create a shop item
+     *
      * @param path the path
      * @param item the item
-     * @param meta the {@param item} meta
      */
-    @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta) {
-        StringUtils.addToConfig(path + ".material", item.getType().toString());
-        StringUtils.addToConfig(path + ".quantity", item.getAmount());
-        StringUtils.addToConfig(path + ".price", 100);
-        StringUtils.addToConfig(path + ".sellprice", 10);
+    private void addItem(String path, ItemStack item) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
+
+        config.set(path + "material", item.getType().toString());
+        config.set(path + "quantity", item.getAmount());
+        config.set(path + "price", 100);
+        config.set(path + "sellprice", 10);
 
         if (meta.hasLore()) {
             StringBuilder description = new StringBuilder();
@@ -92,7 +88,7 @@ public class ASkyBlock {
                 }
             }
 
-            StringUtils.addToConfig(path + ".description", description.toString().replaceAll("§", "&"));
+            config.set(path + "description", description.toString().replaceAll("§", "&"));
         }
     }
 }

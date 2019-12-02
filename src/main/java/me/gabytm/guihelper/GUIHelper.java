@@ -22,8 +22,9 @@ package me.gabytm.guihelper;
 import me.gabytm.guihelper.commands.GHCreateCommand;
 import me.gabytm.guihelper.commands.GHHelpCommand;
 import me.gabytm.guihelper.commands.GHListCommand;
+import me.gabytm.guihelper.utils.StringUtil;
 import me.gabytm.guihelper.utils.TabCompleterUtil;
-import me.gabytm.guihelper.types.GuiHandler;
+import me.gabytm.guihelper.types.GuiManager;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
 import me.gabytm.guihelper.listeners.PlayerQuitListener;
 import org.bstats.bukkit.Metrics;
@@ -36,13 +37,15 @@ import java.util.UUID;
 
 public final class GUIHelper extends JavaPlugin {
     private Map<UUID, Inventory> guiList;
-    private GuiHandler guiHandler;
+    private GuiManager guiManager;
 
     @Override
     public void onEnable() {
         Metrics metrics = new Metrics(this);
         guiList = new HashMap<>();
-        guiHandler = new GuiHandler(this);
+        guiManager = new GuiManager(this);
+
+        StringUtil.consoleText(getServer().getConsoleSender(), getVersion());
 
         getCommand("ghcreate").setExecutor(new GHCreateCommand(this));
         getCommand("ghcreate").setTabCompleter(new TabCompleterUtil());
@@ -56,7 +59,12 @@ public final class GUIHelper extends JavaPlugin {
     public Map<UUID, Inventory> getGuiList() {
         return guiList;
     }
-    public GuiHandler getGuiHandler() { return guiHandler; }
+
+    public GuiManager getGuiManager() { return guiManager; }
 
     public String getVersion() { return this.getDescription().getVersion(); }
+
+    public void emptyConfig() {
+        getConfig().getKeys(false).forEach(key -> getConfig().set(key, null));
+    }
 }

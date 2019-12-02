@@ -20,9 +20,9 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -35,51 +35,51 @@ import java.util.List;
 public class CrazyEnvoy {
     private GUIHelper plugin;
 
-    CrazyEnvoy(GUIHelper plugin) { this.plugin = plugin; }
+    CrazyEnvoy(GUIHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generate an envoy config
-     * @param gui the gui from where the items are took
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
-     * @param page the page
+     * @param page   the page
      */
-    @SuppressWarnings("Duplicates")
+    @SuppressWarnings("DuplicatedCode")
     public void generate(Inventory gui, Player player, int page) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("Prizes");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    String path = "Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot) + ".";
 
-                    addPrize(path, item, meta);
+                    addPrize(path, gui.getItem(slot));
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
      * Crate an envoy prize
+     *
      * @param path the path
      * @param item the item
-     * @param meta the {@param item} meta
      */
-    @SuppressWarnings("Duplicates")
-    private void addPrize(String path, ItemStack item, ItemMeta meta) {
+    @SuppressWarnings("DuplicatedCode")
+    private void addPrize(String path, ItemStack item) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
         StringBuilder rewardItem = new StringBuilder();
         StringBuilder rewardItemMaterial = new StringBuilder();
         StringBuilder rewardItemAmount = new StringBuilder();
@@ -94,26 +94,21 @@ public class CrazyEnvoy {
 
         if (item.getDurability() > 0) rewardItemMaterial.append(":").append(item.getDurability());
 
-        if (item.getType().toString().contains("MONSTER_EGG")) rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+        if (ItemUtil.isMonsterEgg(item)) rewardItemMaterial.append(":").append(((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
         rewardItemAmount.append(", Amount:").append(item.getAmount());
 
         if (meta.hasLore()) {
             rewardItemLore.append(", Lore:");
-
-            for (String line : meta.getLore()) {
-                rewardItemLore.append(line.replaceAll("§", "&")).append(",");
-            }
+            meta.getLore().forEach(l -> rewardItemLore.append(l.replaceAll("§", "&")).append(","));
         }
 
         if (meta.hasEnchants()) {
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
-            }
+            meta.getEnchants().keySet().forEach(en -> rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en)));
         }
 
-        plugin.getConfig().set(path + ".Chance", 10);
-        plugin.getConfig().set(path + ".Drop-Items", false);
+        config.set(path + "Chance", 10);
+        config.set(path + "Drop-Items", false);
         rewardItem.append(rewardItemMaterial.toString()).append(rewardItemAmount.toString());
 
         if (rewardItemDisplayName.length() > 0) rewardItem.append(rewardItemDisplayName.toString());
@@ -121,6 +116,6 @@ public class CrazyEnvoy {
         if (rewardItemEnchantments.length() > 0) rewardItem.append(rewardItemEnchantments.toString());
 
         rewardItemsList.add(rewardItem.toString());
-        plugin.getConfig().set(path + ".Items", rewardItemsList);
+        config.set(path + "Items", rewardItemsList);
     }
 }

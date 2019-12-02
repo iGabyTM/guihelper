@@ -19,11 +19,10 @@
 
 package me.gabytm.guihelper.types;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.StringUtils;
-import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -43,89 +42,79 @@ public class DeluxeMenus {
 
     /**
      * Generate an external menu config
-     * @param gui the gui from where the items are took
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
      */
     public void generateExternal(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-                    String path = "items." + slot;
-
-                    addItem(path, item, meta, slot);
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addItem("items." + slot + ".", gui.getItem(slot), slot);
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
      * Generate items for a DeluxeMenus local menu (config.yml)
-     * @param gui the gui from where the items are took
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
      */
     public void generateLocal(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("gui_menus.GUIHelper.items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "gui_menus.GUIHelper.items." + slot;
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-
-                    addItem(path, item, meta, slot);
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addItem("gui_menus.GUIHelper.items." + slot + ".", gui.getItem(slot), slot);
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
      * Add an item to the config
+     *
      * @param path the config path
      * @param item the item
-     * @param meta the item meta
      * @param slot the item slot
      */
-    @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
-        StringUtils.addToConfig(path + ".material", item.getType().toString());
+    private void addItem(String path, ItemStack item, int slot) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
 
-        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".data", item.getDurability());
+        config.set(path + "material", item.getType().toString());
 
-        if (item.getAmount() > 1) StringUtils.addToConfig(path + ".amount", item.getAmount());
+        if (item.getDurability() > 0) config.set(path + "data", item.getDurability());
+
+        if (item.getAmount() > 1) config.set(path + "amount", item.getAmount());
 
         if (item.getType().toString().contains("LEATHER_")) {
-            LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
+            LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
 
-            StringUtils.addToConfig(path + ".color", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
+            config.set(path + "color", lam.getColor().getRed() + ", " + lam.getColor().getGreen() + ", " + lam.getColor().getBlue());
         }
 
         //TODO
@@ -144,28 +133,17 @@ public class DeluxeMenus {
                         }
                     } */
 
-        StringUtils.addToConfig(path + ".slot", slot);
+        config.set(path + "slot", slot);
 
-        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".display_name", meta.getDisplayName().replaceAll("§", "&"));
+        if (meta.hasDisplayName()) config.set(path + "display_name", meta.getDisplayName().replaceAll("§", "&"));
 
-        if (meta.hasLore()) {
-            List<String> lore = new ArrayList<>();
-
-            for (String line : meta.getLore()) {
-                lore.add(line.replaceAll("§", "&"));
-            }
-
-            StringUtils.addToConfig(path + ".lore", lore);
-        }
+        if (meta.hasLore()) config.set(path + "lore", ItemUtil.getLore(meta));
 
         if (meta.hasEnchants()) {
             List<String> enchantments = new ArrayList<>();
 
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                enchantments.add(en.getName() + ";" + meta.getEnchantLevel(en));
-            }
-
-            StringUtils.addToConfig(path + ".enchantments", enchantments);
+            meta.getEnchants().keySet().forEach(en -> enchantments.add(en.getName() + ";" + meta.getEnchantLevel(en)));
+            config.set(path + "enchantments", enchantments);
         }
     }
 }

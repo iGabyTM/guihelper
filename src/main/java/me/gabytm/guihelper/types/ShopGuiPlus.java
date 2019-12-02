@@ -20,17 +20,14 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.StringUtils;
-import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShopGuiPlus {
     private GUIHelper plugin;
@@ -49,27 +46,20 @@ public class ShopGuiPlus {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
-
+            plugin.emptyConfig();
             plugin.getConfig().createSection("shops.GUIHelper.items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
-                    String path = "shops.GUIHelper.items.P" + page + "-" + slot;
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-
-                    addItem(path, item, meta, slot, page);
+                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
+                    addItem("shops.GUIHelper.items.P" + page + "-" + slot + ".", gui.getItem(slot), slot, page);
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
@@ -77,35 +67,29 @@ public class ShopGuiPlus {
      * Create a shop item
      * @param path the path
      * @param item the item
-     * @param meta the {@param item} meta
      * @param slot the {@param item} slot
      * @param page the shop page (default 1)
      */
     @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta, int slot, int page) {
-        StringUtils.addToConfig(path + ".type", "item");
-        StringUtils.addToConfig(path + ".item.material", item.getType().toString());
-        StringUtils.addToConfig(path + ".item.quantity", item.getAmount());
+    private void addItem(String path, ItemStack item, int slot, int page) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
 
-        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".item.damage", item.getDurability());
+        config.set(path + "type", "item");
+        config.set(path + "item.material", item.getType().toString());
+        config.set(path + "item.quantity", item.getAmount());
 
-        if (item.getType().toString().contains("MONSTER_EGG")) StringUtils.addToConfig(path + ".item.damage", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+        if (item.getDurability() > 0) config.set(path + "item.damage", item.getDurability());
 
-        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".item.name", meta.getDisplayName().replaceAll("§", "&"));
+        if (ItemUtil.isMonsterEgg(item)) config.set(path + "item.damage", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
 
-        if (meta.hasLore()) {
-            List<String> lore = new ArrayList<>();
+        if (meta.hasDisplayName()) config.set(path + "item.name", ItemUtil.getDisplayName(meta));
 
-            for (String line : meta.getLore()) {
-                lore.add(line.replaceAll("§", "&"));
-            }
+        if (meta.hasLore()) config.set(path + "item.lore", ItemUtil.getLore(meta));
 
-            StringUtils.addToConfig(path + ".item.lore", lore);
-        }
-
-        StringUtils.addToConfig(path + ".buyPrice", 10);
-        StringUtils.addToConfig(path + ".sellPrice", 10);
-        StringUtils.addToConfig(path + ".slot", slot);
-        StringUtils.addToConfig(path + ".page", page);
+        config.set(path + "buyPrice", 10);
+        config.set(path + "sellPrice", 10);
+        config.set(path + "slot", slot);
+        config.set(path + "page", page);
     }
 }

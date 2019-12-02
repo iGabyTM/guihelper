@@ -19,20 +19,19 @@
 
 package me.gabytm.guihelper.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 public enum Messages {
     CREATION_DONE("&aDone! &7({duration}ms)"),
     CREATION_ERROR("&cSomething went wrong, please check the console."),
     EMPTY_GUI("&cPlease add some items to the GUI first!"),
     HELP("\n" +
-            "&7GUIHelper v{version}\n" +
+            "&7GUIHelper &fv{version} &7GabyTM\n" +
             "  &2/ghcreate\n" +
             "  &2/ghcreate [type] &a(argument)\n" +
-            "  &2/ghhelp\n  &2/ghlist"),
+            "  &2/ghhelp\n" +
+            "  &2/ghlist"),
     PLAYERS_ONLY("&cOnly players can run this command!"),
     TYPES_LIST("\n" +
-            "&7GUIHelper v{version}\n" +
+            "&7GUIHelper &fv{version} &7GabyTM\n" +
             "  &2ASkyBlock &8- &fIsland minishop items\n" +
             "  &2BossShopPro &8- &fMenu items\n" +
             "  &2ChestCommands &8- &fMenu items\n" +
@@ -52,13 +51,15 @@ public enum Messages {
 
     Messages(String message) { this.message = message; }
 
-    public String format(@Nullable String type, @Nullable Long duration, @Nullable String version) {
-        String msg = StringUtils.colorize(message);
+    public String value() {
+        return StringUtil.color(message);
+    }
 
-        if (type != null) msg = msg.replaceAll("\\{type}", type);
-        if (duration != null) msg = msg.replaceAll("\\{duration}", duration.toString());
-        if (version != null) msg = msg.replaceAll("\\{version}", version);
+    public String format(String string) {
+        return StringUtil.color(message).replaceAll("\\{type}", string).replaceAll("\\{version}", string);
+    }
 
-        return msg;
+    public String format(long duration) {
+        return StringUtil.color(message).replaceAll("\\{duration}", String.valueOf(duration));
     }
 }

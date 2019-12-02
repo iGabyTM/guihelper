@@ -33,11 +33,11 @@ public class GHHelpCommand implements CommandExecutor {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("guihelper.use")) {
-            sender.sendMessage(Messages.HELP.format(null, null, plugin.getVersion()));
+            sender.sendMessage(Messages.HELP.format(plugin.getVersion()));
         }
+
         return true;
     }
 }

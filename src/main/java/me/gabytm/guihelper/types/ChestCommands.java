@@ -20,9 +20,9 @@
 package me.gabytm.guihelper.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.StringUtils;
-import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -31,75 +31,69 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ChestCommands {
     private GUIHelper plugin;
 
-    ChestCommands(GUIHelper plugin) { this.plugin = plugin; }
+    ChestCommands(GUIHelper plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Generate a menu config
-     * @param gui the gui from where the items are took
+     *
+     * @param gui    the gui from where the items are took
      * @param player the command sender
      */
-    @SuppressWarnings("Duplicates")
     public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
 
-            for (String key : plugin.getConfig().getKeys(false)) {
-                plugin.getConfig().set(key, null);
-            }
+            plugin.emptyConfig();
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (gui.getItem(slot) != null && gui.getItem(slot).getType() != Material.AIR) {
+                if (ItemUtil.slotIsEmpty(gui.getItem(slot))) {
                     plugin.getConfig().createSection("item-" + slot);
-
-                    String path = "item-" + slot;
-                    ItemStack item = gui.getItem(slot);
-                    ItemMeta meta = item.getItemMeta();
-
-                    addItem(path, item, meta, slot);
+                    addItem("item-" + slot + ".", gui.getItem(slot), slot);
                 }
             }
 
             plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(null, (System.currentTimeMillis() - start), null));
+            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.format(null, null, null));
+            player.sendMessage(Messages.CREATION_ERROR.value());
         }
     }
 
     /**
      * Create a menu item
+     *
      * @param path the path
      * @param item the item
-     * @param meta the {@param item} meta
      * @param slot the {@param item} slot
      */
-    @SuppressWarnings("Duplicates")
-    private void addItem(String path, ItemStack item, ItemMeta meta, int slot) {
-        StringUtils.addToConfig(path + ".ID", item.getType().toString());
+    private void addItem(String path, ItemStack item, int slot) {
+        FileConfiguration config = plugin.getConfig();
+        ItemMeta meta = item.getItemMeta();
 
-        if (item.getDurability() > 0) StringUtils.addToConfig(path + ".DATA-VALUE", item.getDurability());
+        config.set(path + "ID", item.getType().toString());
 
-        if (item.getAmount() > 1) StringUtils.addToConfig(path + ".AMOUNT", item.getAmount());
+        if (item.getDurability() > 0) config.set(path + "DATA-VALUE", item.getDurability());
 
-        setItemPosition(path, slot);
+        if (item.getAmount() > 1) config.set(path + "AMOUNT", item.getAmount());
 
-        if (meta.hasDisplayName()) StringUtils.addToConfig(path + ".NAME", meta.getDisplayName().replaceAll("§", "&"));
+        setItemPosition(config, path, slot);
+
+        if (meta.hasDisplayName()) config.set(path + "NAME", meta.getDisplayName().replaceAll("§", "&"));
 
         if (meta.hasLore()) {
-            List<String> lore = new ArrayList<>();
+            List<String> lore = meta.getLore();
 
-            for (String line : meta.getLore()) {
-                lore.add(line.replaceAll("§", "&"));
-            }
-
-            StringUtils.addToConfig(path + ".LORE", lore);
+            Collections.replaceAll(lore, "§", "&");
+            config.set(path + "LORE", lore);
         }
 
         if (meta.hasEnchants()) {
@@ -113,28 +107,29 @@ public class ChestCommands {
                 }
             }
 
-            StringUtils.addToConfig(path + ".ENCHANTMENT", enchantments.toString());
+            config.set(path + "ENCHANTMENT", enchantments.toString());
         }
 
-        if (item.getType().toString().contains("LEATHER_")) {
-            LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
+        if (ItemUtil.isLeatherArmor(item)) {
+            LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
 
-            StringUtils.addToConfig(path + ".COLOR", armorMeta.getColor().getRed() + ", " + armorMeta.getColor().getGreen() + ", " + armorMeta.getColor().getBlue());
-        } else if (item.getType().toString().contains("MONSTER_EGG")) {
-            StringUtils.addToConfig(path + ".DATA-VALUE", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+            config.set(path + "COLOR", lam.getColor().getRed() + ", " + lam.getColor().getGreen() + ", " + lam.getColor().getBlue());
+        } else if (ItemUtil.isMonsterEgg(item)) {
+            config.set(path + "DATA-VALUE", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
         }
     }
 
     /**
      * Transform a slot into x and y position
+     *
      * @param path the path where the position will be saved
      * @param slot the item slot
      */
-    private void setItemPosition(String path, int slot) {
+    private void setItemPosition(FileConfiguration config, String path, int slot) {
         int y = Math.toIntExact(slot / 9 + 1);
         int x = slot + 1 - (9 * (y - 1));
 
-        StringUtils.addToConfig(path + ".POSITION-X", x);
-        StringUtils.addToConfig(path + ".POSITION-Y", y);
+        config.set(path + "POSITION-X", x);
+        config.set(path + "POSITION-Y", y);
     }
 }

@@ -33,12 +33,11 @@ public class GHListCommand implements CommandExecutor {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("guihelper.use")) {
-            sender.sendMessage(Messages.TYPES_LIST.format(null, null, plugin.getVersion()));
-            return true;
+            sender.sendMessage(Messages.TYPES_LIST.format(plugin.getVersion()));
         }
+
         return true;
     }
 }

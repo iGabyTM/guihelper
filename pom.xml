@@ -44,7 +44,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>me.gabytm.guihelper</shadedPattern>
+                                    <shadedPattern>me.gabytm.guihelper.utils.bstats</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -81,12 +81,6 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>1.5</version>
             <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>17.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

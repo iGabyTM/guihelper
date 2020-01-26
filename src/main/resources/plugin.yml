@@ -1,10 +1,15 @@
 name: GUIHelper
-version: ${project.version}
+version: @version@
 main: me.gabytm.guihelper.GUIHelper
 authors: [GabyTM]
 website: https://gabytm.me/
-api-version: 1.13
+description: The ultimate solution to creating professional GUIs
+api-version: "1.13"
+
 commands:
+  ghempty:
+    description: Use the command when you want to empty the GUI faster
+    usage: "/ghempty"
   ghcreate:
     description: The main command
     usage: "/ghcreate [type] (argument)"
@@ -14,6 +19,10 @@ commands:
   ghlist:
     description: List the available types
     usage: "/ghlist"
+  ghreload:
+    description: Reload the plugin
+    usage: "/ghreload"
+
 permissions:
   guihelper.use:
     description: The permission required to access GUI Helper commands

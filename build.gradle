@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+group = 'me.gabytm.guihelper'
+version = '1.6'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+
+    maven {
+        url = 'https://repo.codemc.org/repository/maven-public'
+    }
+
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+dependencies {
+    implementation 'org.bstats:bstats-bukkit:1.5'
+
+    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version, name: 'GUIHelper']
+    }
+}
+
+shadowJar {
+    archiveFileName = "${project.name} [${project.version}].jar"
+    relocate 'org.bstats', 'me.gabytm.guihelper.utils.bstats'
+    destinationDir file("D:/Projects/Server/1.8/plugins")
+    // destinationDir file("D:/Projects/Server/1.12.2/plugins")
+}

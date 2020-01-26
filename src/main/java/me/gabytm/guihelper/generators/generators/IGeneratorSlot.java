@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -17,27 +17,14 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.commands;
+package me.gabytm.guihelper.generators.generators;
 
-import me.gabytm.guihelper.GUIHelper;
-import me.gabytm.guihelper.utils.Messages;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-public class GHHelpCommand implements CommandExecutor {
-    private GUIHelper plugin;
-
-    public GHHelpCommand(GUIHelper plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender.hasPermission("guihelper.use")) {
-            sender.sendMessage(Messages.HELP.format(plugin.getVersion()));
-        }
-
-        return true;
-    }
+public interface IGeneratorSlot {
+    void generate(Inventory inventory, Player player);
+    void addItem(ConfigurationSection section, ItemStack item, int slot);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -19,20 +19,20 @@
 
 package me.gabytm.guihelper.listeners;
 
-import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.data.IManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerQuitListener implements Listener {
-    private GUIHelper plugin;
+public final class PlayerQuitListener implements Listener {
+    private IManager iManager;
 
-    public PlayerQuitListener(GUIHelper plugin) {
-        this.plugin = plugin;
+    public PlayerQuitListener(IManager iManager) {
+        this.iManager = iManager;
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getGuiList().remove(event.getPlayer().getUniqueId());
+        iManager.remove(event.getPlayer().getUniqueId());
     }
 }

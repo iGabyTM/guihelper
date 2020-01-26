@@ -1,0 +1,46 @@
+#
+# @version@ @name@ by GabyTM
+#
+# Default values that will be used in the config creation process
+#
+
+ASkyBlock:
+  price: 100
+  sellprice: 10
+
+BossShopPro:
+  menu:
+    RewardType: playercommand
+    PriceType: free
+    Reward: # Must be a list
+      - 'say This is a reward'
+      - 'say This is another reward'
+    Message: '&aThis is a message!'
+  shop:
+    RewardType: ITEM
+    PriceType: MONEY
+    Price: 10
+    Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
+    lore: '#&eClick to buy for &e$%price%' # This line will be added after the item lore
+
+CratesPlus:
+  Type: ITEM
+  Percentage: 10
+
+CrazyCrates:
+  MaxRange: 100
+  Chance: 10
+  Firework: false
+
+CrazyEnvoy:
+  Chance: 10
+  Drop-Items: false
+
+LemonMobCoins:
+  permission: false
+  price: 100
+
+ShopGUIPlus:
+  type: item
+  buyPrice: 10
+  sellPrice: 10

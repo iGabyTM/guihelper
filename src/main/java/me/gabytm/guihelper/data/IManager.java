@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -17,36 +17,32 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.utils;
+package me.gabytm.guihelper.data;
 
-import java.util.TreeMap;
+import me.gabytm.guihelper.HelperHolder;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
 
-public class RomanNumber {
-    private final static TreeMap<Integer, String> map = new TreeMap<>();
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-    static {
-        map.put(1000, "M");
-        map.put(900, "CM");
-        map.put(500, "D");
-        map.put(400, "CD");
-        map.put(100, "C");
-        map.put(90, "XC");
-        map.put(50, "L");
-        map.put(40, "XL");
-        map.put(10, "X");
-        map.put(9, "IX");
-        map.put(5, "V");
-        map.put(4, "IV");
-        map.put(1, "I");
+public final class IManager {
+    private final Map<UUID, Inventory> inventories = new HashMap<>();
+
+    public boolean exists(UUID uuid) {
+        return inventories.get(uuid) != null;
     }
 
-    public static String toRoman(int number) {
-        int l=  map.floorKey(number);
+    public void add(UUID uuid, Inventory inventory) {
+        inventories.put(uuid, inventory);
+    }
 
-        if (number == l) {
-            return map.get(number);
-        }
+    public void remove(UUID uuid) {
+        inventories.remove(uuid);
+    }
 
-        return map.get(l) + toRoman(number - l);
+    public Inventory get(UUID uuid) {
+        return inventories.getOrDefault(uuid, Bukkit.createInventory(new HelperHolder(), 54, "GUIHelper"));
     }
 }

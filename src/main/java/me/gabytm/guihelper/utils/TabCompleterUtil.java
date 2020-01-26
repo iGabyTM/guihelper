@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -27,16 +27,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TabCompleterUtil implements TabCompleter {
+public final class TabCompleterUtil implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender s, Command cmd, String alias, String[] args) {
         if (cmd.getName().equals("ghcreate") && s.hasPermission("guihelper.use")) {
-            if (args.length > 1) {
-                return Collections.singletonList("");
-            }
+            if (args.length > 1) return Collections.singletonList("");
 
-            String[] types = { "ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus" };
+            final String[] types = { "ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus" };
 
             return Arrays.asList(types);
         }

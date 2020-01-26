@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -19,20 +19,30 @@
 
 package me.gabytm.guihelper.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 
-public class StringUtil {
+import java.util.logging.Level;
+import java.util.stream.Stream;
+
+public final class StringUtil {
     public static String color(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
-    public static void consoleText(ConsoleCommandSender c, String version) {
-        c.sendMessage(color("&2 _____   _____   "));
-        c.sendMessage(color("&2|   __| |  |  |  &fGUIHelper &av" + version + " &fby &aGabyTM"));
-        c.sendMessage(color("&2|  |  | |     |  &7The ultimate solution to creating professional GUIs"));
-        c.sendMessage(color("&2|_____| |__|__|  "));
+    public static void saveError(Exception exception) {
+        Bukkit.getLogger().log(Level.SEVERE, "[GUIHelper] An error occurred while saving the config.", exception);
+    }
+
+    public static void consoleText(ConsoleCommandSender ccs, String version) {
+        Stream.of(
+                "&2 _____   _____   ",
+                "&2|   __| |  |  |  &fGUIHelper &av" + version + " &fby &aGabyTM",
+                "&2|  |  | |     |  &7The ultimate solution for creating professional GUIs",
+                "&2|_____| |__|__|  "
+        ).forEach(line -> ccs.sendMessage(color(line)));
     }
 
     public static String formatEnchantmentName(Enchantment enchantment) {

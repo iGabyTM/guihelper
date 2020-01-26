@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -19,52 +19,52 @@
 
 package me.gabytm.guihelper;
 
-import me.gabytm.guihelper.commands.GHCreateCommand;
-import me.gabytm.guihelper.commands.GHHelpCommand;
-import me.gabytm.guihelper.commands.GHListCommand;
-import me.gabytm.guihelper.utils.StringUtil;
-import me.gabytm.guihelper.utils.TabCompleterUtil;
-import me.gabytm.guihelper.types.GuiManager;
+import me.gabytm.guihelper.commands.*;
+import me.gabytm.guihelper.data.IManager;
+import me.gabytm.guihelper.generators.TypesManager;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
 import me.gabytm.guihelper.listeners.PlayerQuitListener;
+import me.gabytm.guihelper.utils.StringUtil;
+import me.gabytm.guihelper.utils.TabCompleterUtil;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public final class GUIHelper extends JavaPlugin {
-    private Map<UUID, Inventory> guiList;
-    private GuiManager guiManager;
+    private IManager iManager;
+    private TypesManager typesManager;
+    private final String version = getDescription().getVersion();
 
     @Override
     public void onEnable() {
-        Metrics metrics = new Metrics(this);
-        guiList = new HashMap<>();
-        guiManager = new GuiManager(this);
+        final Metrics metrics = new Metrics(this);
+        iManager = new IManager();
+        typesManager = new TypesManager(this);
 
-        StringUtil.consoleText(getServer().getConsoleSender(), getVersion());
+        saveDefaultConfig();
+        StringUtil.consoleText(getServer().getConsoleSender(), version);
+        loadCommands();
+        loadEvents();
+    }
 
-        getCommand("ghcreate").setExecutor(new GHCreateCommand(this));
+    private void loadCommands() {
+        getCommand("ghcreate").setExecutor(new CreateCommand(typesManager, iManager));
         getCommand("ghcreate").setTabCompleter(new TabCompleterUtil());
-        getCommand("ghhelp").setExecutor(new GHHelpCommand(this));
-        getCommand("ghlist").setExecutor(new GHListCommand(this));
-
-        getServer().getPluginManager().registerEvents(new InventoryCloseListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        getCommand("ghempty").setExecutor(new EmptyCommand(iManager));
+        getCommand("ghhelp").setExecutor(new HelpCommand(version));
+        getCommand("ghlist").setExecutor(new ListCommand(version));
+        getCommand("ghreload").setExecutor(new ReloadCommand(this));
     }
 
-    public Map<UUID, Inventory> getGuiList() {
-        return guiList;
+    private void loadEvents() {
+        getServer().getPluginManager().registerEvents(new InventoryCloseListener(version), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(iManager), this);
     }
 
-    public GuiManager getGuiManager() { return guiManager; }
+    public IManager getIManager() {
+        return iManager;
+    }
 
-    public String getVersion() { return this.getDescription().getVersion(); }
-
-    public void emptyConfig() {
-        getConfig().getKeys(false).forEach(key -> getConfig().set(key, null));
+    public TypesManager getTypesManager() {
+        return typesManager;
     }
 }

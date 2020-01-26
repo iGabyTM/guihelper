@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -19,23 +19,23 @@
 
 package me.gabytm.guihelper.listeners;
 
-import me.gabytm.guihelper.GUIHelper;
-import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.HelperHolder;
+import me.gabytm.guihelper.utils.Message;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-public class InventoryCloseListener implements Listener {
-    private GUIHelper plugin;
+public final class InventoryCloseListener implements Listener {
+    private String version;
 
-    public InventoryCloseListener(GUIHelper plugin) {
-        this.plugin = plugin;
+    public InventoryCloseListener(String version) {
+        this.version = version;
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
-        if (plugin.getGuiList().containsValue(e.getInventory())) {
-            e.getPlayer().sendMessage(Messages.TYPES_LIST.format(plugin.getVersion()));
+        if (e.getInventory().getHolder() instanceof HelperHolder) {
+            Message.TYPES_LIST.format(version).send(e.getPlayer());
         }
     }
 }

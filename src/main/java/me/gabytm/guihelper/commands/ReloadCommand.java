@@ -17,34 +17,27 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.utils;
+package me.gabytm.guihelper.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.Message;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
-import java.util.List;
-import java.util.stream.Collectors;
+public class ReloadCommand implements CommandExecutor {
+    private GUIHelper plugin;
 
-public final class ItemUtil {
-    public static boolean isItem(ItemStack item) {
-        return item != null && item.getType() != Material.AIR;
+    public ReloadCommand(GUIHelper plugin) {
+        this.plugin = plugin;
     }
 
-    public static boolean isLeatherArmor(ItemStack item) {
-        return item.getType().toString().contains("LEATHER_");
-    }
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("guihelper.use")) return true;
 
-    public static boolean isMonsterEgg(ItemStack item) {
-        return item.getType().toString().contains("MONSTER_EGG");
-    }
-
-    public static String getDisplayName(ItemMeta meta) {
-        return meta.getDisplayName().replace(String.valueOf(ChatColor.COLOR_CHAR), "&");
-    }
-
-    public static List<String> getLore(ItemMeta meta) {
-        return meta.getLore().stream().map(line -> line.replace(String.valueOf(ChatColor.COLOR_CHAR), "&")).collect(Collectors.toList());
+        plugin.reloadConfig();
+        Message.RELOAD.send(sender);
+        return true;
     }
 }

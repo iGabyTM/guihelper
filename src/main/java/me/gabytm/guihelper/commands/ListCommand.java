@@ -17,34 +17,25 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.utils;
+package me.gabytm.guihelper.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import me.gabytm.guihelper.utils.Message;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
-import java.util.List;
-import java.util.stream.Collectors;
+public class ListCommand implements CommandExecutor {
+    private String version;
 
-public final class ItemUtil {
-    public static boolean isItem(ItemStack item) {
-        return item != null && item.getType() != Material.AIR;
+    public ListCommand(String version) {
+        this.version = version;
     }
 
-    public static boolean isLeatherArmor(ItemStack item) {
-        return item.getType().toString().contains("LEATHER_");
-    }
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender.hasPermission("guihelper.use")) return true;
 
-    public static boolean isMonsterEgg(ItemStack item) {
-        return item.getType().toString().contains("MONSTER_EGG");
-    }
-
-    public static String getDisplayName(ItemMeta meta) {
-        return meta.getDisplayName().replace(String.valueOf(ChatColor.COLOR_CHAR), "&");
-    }
-
-    public static List<String> getLore(ItemMeta meta) {
-        return meta.getLore().stream().map(line -> line.replace(String.valueOf(ChatColor.COLOR_CHAR), "&")).collect(Collectors.toList());
+        Message.TYPES_LIST.format(version).send(sender);
+        return true;
     }
 }

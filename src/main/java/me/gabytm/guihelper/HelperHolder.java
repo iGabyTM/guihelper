@@ -17,34 +17,14 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.utils;
+package me.gabytm.guihelper;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-public final class ItemUtil {
-    public static boolean isItem(ItemStack item) {
-        return item != null && item.getType() != Material.AIR;
-    }
-
-    public static boolean isLeatherArmor(ItemStack item) {
-        return item.getType().toString().contains("LEATHER_");
-    }
-
-    public static boolean isMonsterEgg(ItemStack item) {
-        return item.getType().toString().contains("MONSTER_EGG");
-    }
-
-    public static String getDisplayName(ItemMeta meta) {
-        return meta.getDisplayName().replace(String.valueOf(ChatColor.COLOR_CHAR), "&");
-    }
-
-    public static List<String> getLore(ItemMeta meta) {
-        return meta.getLore().stream().map(line -> line.replace(String.valueOf(ChatColor.COLOR_CHAR), "&")).collect(Collectors.toList());
+public final class HelperHolder implements InventoryHolder {
+    @Override
+    public Inventory getInventory() {
+        return null;
     }
 }

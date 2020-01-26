@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -17,12 +17,13 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.types;
+package me.gabytm.guihelper.generators.types;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.utils.ItemUtil;
-import me.gabytm.guihelper.utils.Messages;
-import me.gabytm.guihelper.utils.RomanNumber;
+import me.gabytm.guihelper.utils.Message;
+import me.gabytm.guihelper.utils.NumberUtil;
 import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -37,7 +38,7 @@ import java.util.List;
 public class LemonMobCoins {
     private GUIHelper plugin;
 
-    LemonMobCoins(GUIHelper plugin) { this.plugin = plugin; }
+    public LemonMobCoins(GUIHelper plugin) { this.plugin = plugin; }
 
     /**
      * Generate a shop config
@@ -47,21 +48,24 @@ public class LemonMobCoins {
     public void generate(Inventory gui, Player player) {
         try {
             long start = System.currentTimeMillis();
+            Config config = new Config("LemonMobCoins");
 
-            plugin.emptyConfig();
-            plugin.getConfig().createSection("gui.items");
+            config.empty();
+            config.get().createSection("gui.items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
-                if (!ItemUtil.slotIsEmpty(gui.getItem(slot))) {
-                    addItem("gui.items.item-" + slot + ".", gui.getItem(slot), slot);
+                if (ItemUtil.isItem(gui.getItem(slot))) {
+                    String path = "gui.items.item-" + slot + ".";
+
+                    addItem(config.get(), path, gui.getItem(slot), slot);
                 }
             }
 
-            plugin.saveConfig();
-            player.sendMessage(Messages.CREATION_DONE.format(System.currentTimeMillis() - start));
+            config.save();
+            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
         } catch (Exception e) {
             e.printStackTrace();
-            player.sendMessage(Messages.CREATION_ERROR.value());
+            Message.CREATION_ERROR.send(player);
         }
     }
 
@@ -72,8 +76,8 @@ public class LemonMobCoins {
      * @param slot the {@param item} slot
      */
     @SuppressWarnings("DuplicatedCode")
-    private void addItem(String path, ItemStack item, int slot) {
-        FileConfiguration config = plugin.getConfig();
+    private void addItem(FileConfiguration config, String path, ItemStack item, int slot) {
+        FileConfiguration defaults = plugin.getConfig();
         ItemMeta meta = item.getItemMeta();
         StringBuilder rewardItem = new StringBuilder();
         StringBuilder rewardItemDisplayName = new StringBuilder();
@@ -95,7 +99,7 @@ public class LemonMobCoins {
             List<String> enchantments = new ArrayList<>();
 
             for (Enchantment en : meta.getEnchants().keySet()) {
-                enchantments.add(StringUtil.formatEnchantmentName(en) + " " + RomanNumber.toRoman(meta.getEnchantLevel(en)));
+                enchantments.add(StringUtil.formatEnchantmentName(en) + " " + NumberUtil.toRoman(meta.getEnchantLevel(en)));
                 rewardItemEnchantments.append(" ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
             }
 
@@ -108,8 +112,8 @@ public class LemonMobCoins {
             config.set(path + "lore", ItemUtil.getLore(meta));
         }
 
-        config.set(path + "permission", false);
-        config.set(path + "price", 100);
+        config.set(path + "permission", defaults.getBoolean("LemonMobCoins.permission"));
+        config.set(path + "price", defaults.getInt("LemonMobCoins.price", 100));
         rewardItem.append("give %player% ").append(item.getType().toString()).append(" ").append(item.getAmount());
 
         if (rewardItemDisplayName.length() > 0) rewardItem.append(rewardItemDisplayName.toString());

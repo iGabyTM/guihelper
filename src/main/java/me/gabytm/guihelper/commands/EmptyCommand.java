@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 GabyTM
+ * Copyright 2020 GabyTM
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -19,25 +19,33 @@
 
 package me.gabytm.guihelper.commands;
 
-import me.gabytm.guihelper.GUIHelper;
-import me.gabytm.guihelper.utils.Messages;
+import me.gabytm.guihelper.data.IManager;
+import me.gabytm.guihelper.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-public class GHListCommand implements CommandExecutor {
-    private GUIHelper plugin;
+public class EmptyCommand implements CommandExecutor {
+    private IManager iManager;
 
-    public GHListCommand(GUIHelper plugin) {
-        this.plugin = plugin;
+    public EmptyCommand(IManager iManager) {
+        this.iManager = iManager;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender.hasPermission("guihelper.use")) {
-            sender.sendMessage(Messages.TYPES_LIST.format(plugin.getVersion()));
+        if (!(sender instanceof Player)) {
+            Message.PLAYERS_ONLY.send(sender);
+            return true;
         }
 
+        Player player = (Player) sender;
+
+        if (!player.hasPermission("guihelper.use")) return true;
+
+        iManager.remove(player.getUniqueId());
+        Message.CLEAR.send(player);
         return true;
     }
 }

@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class ItemUtil {
-    public static boolean isItem(ItemStack item) {
-        return item != null && item.getType() != Material.AIR;
+    public static boolean isNull(ItemStack item) {
+        return item == null || item.getType() == Material.AIR;
     }
 
     public static boolean isLeatherArmor(ItemStack item) {

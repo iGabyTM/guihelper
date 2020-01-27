@@ -38,19 +38,19 @@ public final class ChestCommands implements IGeneratorSlot {
     @Override
     public void generate(Inventory gui, Player player) {
         try {
-            long start = System.currentTimeMillis();
-            Config config = new Config("ChestCommands/menu");
+            final long start = System.currentTimeMillis();
+            final Config config = new Config("ChestCommands/menu");
 
             config.empty();
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    String path = "item-" + slot;
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().getConfigurationSection(path), item, slot);
-                }
+                final String path = "item-" + slot;
+
+                addItem(config.get().getConfigurationSection(path), item, slot);
             }
 
             config.save();

@@ -22,6 +22,7 @@ package me.gabytm.guihelper.generators.types;
 import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
+import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -31,8 +32,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public final class DeluxeMenus {
@@ -48,8 +47,8 @@ public final class DeluxeMenus {
             for (int slot = 0; slot < inventory.getSize(); slot++) {
                 final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    String path = "items." + slot;
+                if (ItemUtil.isNull(item)) {
+                    final String path = "items." + slot;
 
                     addItem(config.get().createSection(path), item, slot);
                 }
@@ -58,7 +57,7 @@ public final class DeluxeMenus {
             config.save();
             Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
         } catch (Exception e) {
-            e.printStackTrace();
+            StringUtil.saveError(e);
             Message.CREATION_ERROR.send(player);
         }
     }
@@ -69,22 +68,21 @@ public final class DeluxeMenus {
             final Config config = new Config("DeluxeMenus");
 
             config.empty();
-            config.get().createSection("gui_menus.GUIHelper.items");
 
             for (int slot = 0; slot < inventory.getSize(); slot++) {
                 final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    String path = "gui_menus.GUIHelper.items." + slot;
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().createSection(path), item, slot);
-                }
+                final String path = "gui_menus.GUIHelper.items." + slot;
+
+                addItem(config.get().createSection(path), item, slot);
             }
 
             config.save();
             Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
         } catch (Exception e) {
-            e.printStackTrace();
+            StringUtil.saveError(e);
             Message.CREATION_ERROR.send(player);
         }
     }

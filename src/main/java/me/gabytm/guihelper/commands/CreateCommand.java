@@ -118,18 +118,19 @@ public class CreateCommand implements CommandExecutor {
                 break;
             }
 
+            // Updated
             case "deluxemenus": {
                 manager.deluxeMenus().generateExternal(inventory, player);
                 break;
             }
 
+            // Updated
             case "deluxemenuslocal": {
                 manager.deluxeMenus().generateLocal(inventory, player);
                 break;
             }
-                            /*case "guishop":
-                                plugin.getGuiHandler().guiShop().generate(gui, player);
-                                break;*/
+
+            // Updated
             case "lemonmobcoins": {
                 manager.lemonMobCoins().generate(inventory, player);
                 break;

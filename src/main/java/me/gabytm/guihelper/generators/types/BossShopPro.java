@@ -53,16 +53,15 @@ public class BossShopPro implements IGeneratorSlot {
             final Config config = new Config("BossShopPro/shops");
 
             config.empty();
-            config.get().createSection("shop");
 
             for (int slot = 0; slot < inventory.getSize(); slot++) {
                 final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    final String path = "shop.item-" + (slot + 1);
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().createSection(path), item, (slot + 1));
-                }
+                final String path = "shop.item-" + (slot + 1);
+
+                addItem(config.get().createSection(path), item, (slot + 1));
             }
 
             config.save();

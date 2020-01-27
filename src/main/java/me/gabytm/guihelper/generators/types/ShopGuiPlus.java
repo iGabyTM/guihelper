@@ -50,16 +50,15 @@ public final class ShopGuiPlus implements IGeneratorPageSlot {
             final Config config = new Config("ShopGUIPlus");
 
             config.empty();
-            config.get().createSection("shops.GUIHelper.items");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    final String path = "shops.GUIHelper.items.P" + page + "-" + slot;
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().createSection(path), item, slot, page);
-                }
+                final String path = "shops.GUIHelper.items.P" + page + "-" + slot;
+
+                addItem(config.get().createSection(path), item, slot, page);
             }
 
             config.save();

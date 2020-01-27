@@ -46,20 +46,19 @@ public class CratesPlus implements IGenerator {
     @Override
     public void generate(Inventory gui, Player player) {
         try {
-            long start = System.currentTimeMillis();
-            Config config = new Config("CratesPlus");
+            final long start = System.currentTimeMillis();
+            final Config config = new Config("CratesPlus");
 
             config.empty();
-            config.get().createSection("Crates.GUIHelper.Winnings");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    String path = "Crates.GUIHelper.Winnings." + (slot + 1);
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().createSection(path), gui.getItem(slot));
-                }
+                final String path = "Crates.GUIHelper.Winnings." + (slot + 1);
+
+                addItem(config.get().createSection(path), gui.getItem(slot));
             }
 
             config.save();

@@ -47,20 +47,19 @@ public final class CrazyCrates implements IGeneratorPage {
     @Override
     public void generate(Inventory gui, Player player, int page) {
         try {
-            long start = System.currentTimeMillis();
-            Config config = new Config("CrazyCrates/crates");
+            final long start = System.currentTimeMillis();
+            final Config config = new Config("CrazyCrates/crates");
 
             config.empty();
-            config.get().createSection("Crates.Prizes");
 
             for (int slot = 0; slot < gui.getSize(); slot++) {
                 final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    String path = "Crate.Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().createSection(path), item);
-                }
+                String path = "Crate.Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
+
+                addItem(config.get().createSection(path), item);
             }
 
             config.save();

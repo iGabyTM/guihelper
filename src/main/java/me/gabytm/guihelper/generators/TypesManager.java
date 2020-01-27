@@ -43,7 +43,6 @@ public final class TypesManager {
     public CrazyEnvoy crazyEnvoy() { return crazyEnvoy; }
     public CrazyCrates crazyCrates() { return crazyCrates; }
     public DeluxeMenus deluxeMenus() { return deluxeMenus; }
-    //public GuiShop guiShop() { return guiShop; }
     public LemonMobCoins lemonMobCoins() { return lemonMobCoins; }
     public ShopGuiPlus shopGuiPlus() { return shopGuiPlus; }
 
@@ -56,7 +55,6 @@ public final class TypesManager {
         crazyCrates = new CrazyCrates(plugin);
         crazyEnvoy = new CrazyEnvoy(plugin);
         deluxeMenus = new DeluxeMenus();
-        //guiShop = new GuiShop(plugin);
         lemonMobCoins = new LemonMobCoins(plugin);
         shopGuiPlus = new ShopGuiPlus(plugin);
     }

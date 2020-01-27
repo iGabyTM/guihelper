@@ -53,16 +53,15 @@ public final class ASkyBlock implements IGenerator {
             final Config config = new Config("ASkyBlock");
 
             config.empty();
-            config.get().createSection("items");
 
             for (int slot = 0; slot < inventory.getSize(); slot++) {
                 final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isItem(item)) {
-                    final String path = "items.item" + (slot + 1);
+                if (ItemUtil.isNull(item)) continue;
 
-                    addItem(config.get().createSection(path), item);
-                }
+                final String path = "items.item" + (slot + 1);
+
+                addItem(config.get().createSection(path), item);
             }
 
             config.save();

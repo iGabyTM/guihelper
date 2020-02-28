@@ -19,35 +19,46 @@
 
 package me.gabytm.guihelper.utils;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.Bukkit;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public final class ItemUtil {
-    public static boolean isNull(ItemStack item) {
-        return item == null || item.getType() == Material.AIR;
+public final class Logging {
+    private static final Logger LOGGER = Bukkit.getLogger();
+    private static final String PREFIX = "[GUIHelper] ";
+
+    public static void log(final Level level, final String message) {
+        LOGGER.log(level, StringUtil.color(PREFIX + message));
     }
 
-    public static boolean isLeatherArmor(ItemStack item) {
-        return item.getType().toString().contains("LEATHER_");
+    public static void info(final String message) {
+        log(Level.INFO, message);
     }
 
-    public static boolean isMonsterEgg(ItemStack item) {
-        return item.getType().toString().contains("MONSTER_EGG");
+    public static void warning(final String message) {
+        log(Level.WARNING, message);
     }
 
-    public static String getDisplayName(ItemMeta meta) {
-        return meta.getDisplayName().replace(String.valueOf(ChatColor.COLOR_CHAR), "&");
+    public static void error(final String message, final Exception error) {
+        LOGGER.log(Level.SEVERE, PREFIX + message, error);
     }
 
-    public static List<String> getLore(ItemMeta meta) {
-        return meta.getLore()
-                .stream()
-                .map(line -> line.replace(String.valueOf(ChatColor.COLOR_CHAR), "&"))
-                .collect(Collectors.toList());
+    public static void error(final Message message, final Exception error) {
+        LOGGER.log(Level.SEVERE, message.getMessage(), error);
+    }
+
+    public enum Message {
+        SAVE_ERROR("[GUIHelper] An error occurred while saving the config.");
+
+        private String message;
+
+        Message(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return PREFIX + message;
+        }
     }
 }

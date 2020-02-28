@@ -24,7 +24,6 @@ import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGeneratorPage;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -38,42 +37,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class CrazyCrates implements IGeneratorPage {
-    private ConfigurationSection defaultConfig;
+    private GUIHelper plugin;
+    private ConfigurationSection defaults;
 
-    public CrazyCrates(GUIHelper plugin) {
-        defaultConfig = plugin.getConfig();
+    public CrazyCrates(final GUIHelper plugin) {
+        this.plugin = plugin;
+        defaults = plugin.getConfig().getConfigurationSection("CrazyCrates");
     }
 
     @Override
-    public void generate(Inventory gui, Player player, int page) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("CrazyCrates/crates");
+    public void generate(final Inventory gui, final Player player, final int page) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("CrazyCrates/crates", plugin);
 
-            config.empty();
+        config.empty();
 
-            for (int slot = 0; slot < gui.getSize(); slot++) {
-                final ItemStack item = gui.getItem(slot);
+        for (int slot = 0; slot < gui.getSize(); slot++) {
+            final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) continue;
 
-                String path = "Crate.Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
+            String path = "Crate.Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
 
-                addItem(config.get().createSection(path), item);
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            addItem(config.get().createSection(path), item);
         }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item) {
-        final ConfigurationSection defaults = defaultConfig.getConfigurationSection("CrazyCrates");
+    public void addItem(final ConfigurationSection section, final ItemStack item) {
         final ItemMeta meta = item.getItemMeta();
         final StringBuilder rewardItem = new StringBuilder();
         final StringBuilder rewardItemMaterial = new StringBuilder();

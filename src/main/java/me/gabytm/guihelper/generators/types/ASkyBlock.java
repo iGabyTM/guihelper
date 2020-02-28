@@ -24,20 +24,20 @@ import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGenerator;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public final class ASkyBlock implements IGenerator {
-    private FileConfiguration defaultConfig;
+    private GUIHelper plugin;
+    private ConfigurationSection defaults;
 
     public ASkyBlock(GUIHelper plugin) {
-        this.defaultConfig = plugin.getConfig();
+        this.plugin = plugin;
+        defaults = plugin.getConfig().getConfigurationSection("ASkyBlock");
     }
 
     /**
@@ -47,29 +47,24 @@ public final class ASkyBlock implements IGenerator {
      * @param player    the command sender
      */
     @Override
-    public void generate(Inventory inventory, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("ASkyBlock");
+    public void generate(final Inventory inventory, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("ASkyBlock", plugin);
 
-            config.empty();
+        config.empty();
 
-            for (int slot = 0; slot < inventory.getSize(); slot++) {
-                final ItemStack item = inventory.getItem(slot);
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) continue;
 
-                final String path = "items.item" + (slot + 1);
+            final String path = "items.item" + (slot + 1);
 
-                addItem(config.get().createSection(path), item);
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            addItem(config.get().createSection(path), item);
         }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
     /**
@@ -78,8 +73,7 @@ public final class ASkyBlock implements IGenerator {
      * @param item the item
      */
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item) {
-        final ConfigurationSection defaults = defaultConfig.getConfigurationSection("ASkyBlock");
+    public void addItem(final ConfigurationSection section, final ItemStack item) {
         final ItemMeta meta = item.getItemMeta();
 
         section.set("material", item.getType().toString());

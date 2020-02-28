@@ -43,18 +43,30 @@ public final class NumberUtil {
     }
 
     public static String toRoman(int number) {
-        if (number < 1) return "";
-        if (number > 3999) return String.valueOf(number);
+        if (number < 1 || number > 3999) {
+            return String.valueOf(number);
+        }
 
         final int l = romanNumerals.floorKey(number);
 
-        if (number == l) romanNumerals.get(number);
+        if (number == l) {
+            return romanNumerals.get(number);
+        }
 
         return romanNumerals.get(l) + toRoman(number - l);
     }
 
-    public static int getPage(String[] args, int index, int defaultValue) {
-        if (args.length < index + 1 || Ints.tryParse(args[index]) == null) return defaultValue;
-        else return Integer.parseInt(args[index]);
+    public static int getPage(final String[] args, final int index, final int defaultValue) {
+        if (args.length < index + 1) {
+            return defaultValue;
+        }
+
+        final Integer page = Ints.tryParse(args[index]);
+
+        if (page == null) {
+            return defaultValue;
+        }
+
+        return page;
     }
 }

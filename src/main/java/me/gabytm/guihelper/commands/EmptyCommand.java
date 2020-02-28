@@ -19,7 +19,7 @@
 
 package me.gabytm.guihelper.commands;
 
-import me.gabytm.guihelper.data.IManager;
+import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,10 +27,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EmptyCommand implements CommandExecutor {
-    private IManager iManager;
+    private InventoryManager inventoryManager;
 
-    public EmptyCommand(IManager iManager) {
-        this.iManager = iManager;
+    public EmptyCommand(InventoryManager inventoryManager) {
+        this.inventoryManager = inventoryManager;
     }
 
     @Override
@@ -42,9 +42,11 @@ public class EmptyCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("guihelper.use")) return true;
+        if (!player.hasPermission("guihelper.use")) {
+            return true;
+        }
 
-        iManager.remove(player.getUniqueId());
+        inventoryManager.remove(player.getUniqueId());
         Message.CLEAR.send(player);
         return true;
     }

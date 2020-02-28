@@ -44,3 +44,30 @@ ShopGUIPlus:
   type: item
   buyPrice: 10
   sellPrice: 10
+
+SuperLobbyDeluxe:
+  keep-open: true
+  commands:
+    - 'server: example'
+
+#
+# Generate your own configs using templates!
+#
+# Placeholders:
+#  • {amount}          - (number) the item amount
+#  • {data}            - (number) the item data / damage value
+#  • {enchanted}       - (boolean) check if the item is enchanted or not
+#  • {flag_(flag)}     - (boolean) check if the item have the specified flag (http://bit.ly/itemflag)
+#  • {material}        - (string) the item material
+#  • {name}            - (string) the item display name
+#  • {essentials_name} - (string) the item display name following the format used by Essentials
+#  • {essentials_lore} - (string) the item lore following the format used by Essentials
+#  • {slot}            - (number) the item position in the GUI
+#
+templates:
+  deluxemenus-example:
+    'item-{slot}':
+      material: '{material}'
+      slot: '{slot}'
+      hide_attributes: '{flag_hide_attributes}'
+      display_name: '&c{name}'

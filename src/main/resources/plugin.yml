@@ -22,6 +22,8 @@ commands:
   ghreload:
     description: Reload the plugin
     usage: "/ghreload"
+  ghtemplate:
+    description: a
 
 permissions:
   guihelper.use:

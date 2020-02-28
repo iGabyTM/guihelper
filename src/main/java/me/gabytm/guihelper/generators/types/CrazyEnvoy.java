@@ -26,7 +26,6 @@ import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
 import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -37,10 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class CrazyEnvoy implements IGeneratorPage {
-    private FileConfiguration defaultConfig;
+    private GUIHelper plugin;
+    private ConfigurationSection defaults;
 
     public CrazyEnvoy(GUIHelper plugin) {
-        defaultConfig = plugin.getConfig();
+        this.plugin = plugin;
+        defaults = plugin.getConfig().getConfigurationSection("CrazyCrates");
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -48,7 +49,7 @@ public final class CrazyEnvoy implements IGeneratorPage {
     public void generate(Inventory gui, Player player, int page) {
         try {
             final long start = System.currentTimeMillis();
-            final Config config = new Config("CrazyEnvoy/tiers");
+            final Config config = new Config("CrazyEnvoy/tiers", plugin);
 
             config.empty();
 
@@ -73,7 +74,6 @@ public final class CrazyEnvoy implements IGeneratorPage {
     @SuppressWarnings("DuplicatedCode")
     @Override
     public void addItem(ConfigurationSection section, ItemStack item) {
-        final ConfigurationSection defaults = defaultConfig.getConfigurationSection("CrazyCrates");
         final ItemMeta meta = item.getItemMeta();
         final StringBuilder rewardItem = new StringBuilder();
         final StringBuilder rewardItemMaterial = new StringBuilder();

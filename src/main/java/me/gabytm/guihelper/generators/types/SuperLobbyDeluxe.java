@@ -21,73 +21,62 @@ package me.gabytm.guihelper.generators.types;
 
 import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.data.Config;
-import me.gabytm.guihelper.generators.generators.IGeneratorPageSlot;
+import me.gabytm.guihelper.generators.generators.IGeneratorSlot;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 
-import java.util.stream.Collectors;
-
-public final class ShopGuiPlus implements IGeneratorPageSlot {
+public final class SuperLobbyDeluxe implements IGeneratorSlot {
     private GUIHelper plugin;
     private ConfigurationSection defaults;
 
-    public ShopGuiPlus(final GUIHelper plugin) {
+    public SuperLobbyDeluxe(GUIHelper plugin) {
         this.plugin = plugin;
-        defaults = plugin.getConfig().getConfigurationSection("ShopGUIPlus");
+        defaults = plugin.getConfig().getConfigurationSection("SuperLobbyDeluxe");
     }
 
     @Override
-    public void generate(final Inventory gui, final Player player, final int page) {
+    public void generate(final Inventory inventory, final Player player) {
         final long start = System.currentTimeMillis();
-        final Config config = new Config("ShopGUIPlus", plugin);
+        final Config config = new Config("SuperLobbyDeluxe", plugin);
 
         config.empty();
+        config.get().createSection("GUIHelper");
 
-        for (int slot = 0; slot < gui.getSize(); slot++) {
-            final ItemStack item = gui.getItem(slot);
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            final ItemStack item = inventory.getItem(slot);
 
-            if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) {
+                final String path = "GUIHelper.items." + slot;
 
-            final String path = "shops.GUIHelper.items.P" + page + "-" + slot;
-
-            addItem(config.get().createSection(path), item, slot, page);
+                addItem(config.get().createSection(path), item, slot);
+            }
         }
 
         config.save();
         Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
-    public void addItem(final ConfigurationSection section, final ItemStack item, final int slot, final int page) {
+    public void addItem(final ConfigurationSection section, final ItemStack item, final int slot) {
         final ItemMeta meta = item.getItemMeta();
 
-        section.set("type", defaults.getString("type"));
-        section.set("item.material", item.getType().toString());
-        section.set("item.quantity", item.getAmount());
-
-        if (item.getDurability() > 0) section.set("item.damage", item.getDurability());
-
-        if (ItemUtil.isMonsterEgg(item)) section.set("item.damage", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
-
-        if (meta.hasDisplayName()) section.set("item.name", ItemUtil.getDisplayName(meta));
-
-        if (meta.hasLore()) section.set("item.lore", ItemUtil.getLore(meta));
-
-        if (meta.getItemFlags().size() > 0) {
-            section.set("flags", meta.getItemFlags().stream().map(ItemFlag::toString).collect(Collectors.toList()));
+        if (meta.hasDisplayName()) {
+            section.set("name", ItemUtil.getDisplayName(meta));
         }
 
-        section.set("buyPrice", defaults.getInt("buyPrice"));
-        section.set("sellPrice", defaults.getInt("sellPrice"));
+        if (meta.hasLore()) {
+            section.set("lore", ItemUtil.getLore(meta));
+        }
+
+        section.set("material", item.getType().toString());
+        section.set("material-old", item.getType().toString() + ":" + item.getDurability());
         section.set("slot", slot);
-        section.set("page", page);
+        section.set("keep-open", defaults.getBoolean("keep-open"));
+        section.set("commands", defaults.getStringList("commands"));
     }
 }

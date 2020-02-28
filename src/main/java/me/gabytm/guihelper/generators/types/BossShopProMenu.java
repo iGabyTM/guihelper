@@ -24,9 +24,7 @@ import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGeneratorSlot;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -39,41 +37,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class BossShopProMenu implements IGeneratorSlot {
-    private FileConfiguration defaultConfig;
+    private GUIHelper plugin;
+    private ConfigurationSection defaults;
 
-    public BossShopProMenu(GUIHelper plugin) {
-        this.defaultConfig = plugin.getConfig();
+    public BossShopProMenu(final GUIHelper plugin) {
+        this.plugin = plugin;
+        defaults = plugin.getConfig().getConfigurationSection("BossShopPro.menu");
     }
 
     @Override
-    public void generate(Inventory inventory, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("BossShopPro/shops");
+    public void generate(final Inventory inventory, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("BossShopPro/shops", plugin);
 
-            config.empty();
+        config.empty();
 
-            for (int slot = 0; slot < inventory.getSize(); slot++) {
-                final ItemStack item = inventory.getItem(slot);
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) continue;
 
-                final String path = "shop.item-" + (slot + 1);
+            final String path = "shop.item-" + (slot + 1);
 
-                addItem(config.get().getConfigurationSection(path), item, slot);
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            addItem(config.get().getConfigurationSection(path), item, slot);
         }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item, int slot) {
-        final ConfigurationSection defaults = defaultConfig.getConfigurationSection("BossShopPro.menu");
+    public void addItem(final ConfigurationSection section, final ItemStack item, final int slot) {
         final ItemMeta meta = item.getItemMeta();
         final List<String> menuItem = new ArrayList<>();
         final String itemType = item.getType().toString();

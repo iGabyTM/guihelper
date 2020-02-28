@@ -19,7 +19,7 @@
 
 package me.gabytm.guihelper.listeners;
 
-import me.gabytm.guihelper.HelperHolder;
+import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +34,7 @@ public final class InventoryCloseListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
-        if (e.getInventory().getHolder() instanceof HelperHolder) {
+        if (e.getInventory().getHolder() instanceof InventoryManager) {
             Message.TYPES_LIST.format(version).send(e.getPlayer());
         }
     }

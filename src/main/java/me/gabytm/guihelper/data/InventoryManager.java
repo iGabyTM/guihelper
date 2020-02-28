@@ -19,30 +19,43 @@
 
 package me.gabytm.guihelper.data;
 
-import me.gabytm.guihelper.HelperHolder;
+import me.gabytm.guihelper.utils.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class IManager {
+public final class InventoryManager implements InventoryHolder {
     private final Map<UUID, Inventory> inventories = new HashMap<>();
 
-    public boolean exists(UUID uuid) {
+    public boolean exists(final UUID uuid) {
         return inventories.get(uuid) != null;
     }
 
-    public void add(UUID uuid, Inventory inventory) {
+    public void add(final UUID uuid, final Inventory inventory) {
         inventories.put(uuid, inventory);
     }
 
-    public void remove(UUID uuid) {
+    public void remove(final UUID uuid) {
         inventories.remove(uuid);
     }
 
-    public Inventory get(UUID uuid) {
-        return inventories.getOrDefault(uuid, Bukkit.createInventory(new HelperHolder(), 54, "GUIHelper"));
+    public Inventory get(final UUID uuid) {
+        final Inventory defaultInventory = Bukkit.createInventory(this, 54, "GUIHelper");
+        inventories.putIfAbsent(uuid, defaultInventory);
+        return inventories.get(uuid);
+    }
+
+    public boolean isEmpty(final Inventory inventory) {
+        return Arrays.stream(inventory.getContents()).allMatch(ItemUtil::isNull);
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return null;
     }
 }

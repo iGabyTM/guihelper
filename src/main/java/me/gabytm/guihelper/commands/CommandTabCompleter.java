@@ -17,28 +17,57 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.guihelper.utils;
+package me.gabytm.guihelper.commands;
 
+import me.gabytm.guihelper.template.TemplateManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class TabCompleterUtil implements TabCompleter {
+public final class CommandTabCompleter implements TabCompleter {
+    private TemplateManager templateManager;
+
+    public CommandTabCompleter(TemplateManager templateManager) {
+        this.templateManager = templateManager;
+    }
 
     @Override
     public List<String> onTabComplete(CommandSender s, Command cmd, String alias, String[] args) {
-        if (cmd.getName().equals("ghcreate") && s.hasPermission("guihelper.use")) {
-            if (args.length > 1) return Collections.singletonList("");
+        if (!s.hasPermission("guihelper.use")) {
+            return null;
+        }
 
-            final String[] types = { "ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus" };
+        if (cmd.getName().equalsIgnoreCase("ghcreate")) {
+            if (args.length > 1) {
+                return Collections.singletonList("");
+            }
 
-            return Arrays.asList(types);
+            final List<String> types = Arrays.asList("ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe");
+            return order(args[0], types);
+        }
+
+        if (cmd.getName().equalsIgnoreCase("ghtemplate")) {
+            if (args.length > 1) {
+                return Collections.singletonList("");
+            }
+
+            return order(args[0], templateManager.getTemplates());
         }
 
         return null;
+    }
+
+    private List<String> order(String arg, List<String> list) {
+        final List<String> completions = new ArrayList<>();
+
+        StringUtil.copyPartialMatches(arg, list, completions);
+        Collections.sort(completions);
+        return completions;
     }
 }

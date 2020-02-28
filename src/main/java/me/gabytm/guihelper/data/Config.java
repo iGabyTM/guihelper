@@ -19,6 +19,8 @@
 
 package me.gabytm.guihelper.data;
 
+import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.utils.Logging;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -26,45 +28,38 @@ import java.io.File;
 import java.io.IOException;
 
 public class Config {
-    private String name;
     private File configFile;
     private FileConfiguration config;
 
-    public Config(String name) {
-        this.name = name;
-    }
+    public Config(final String path, final GUIHelper plugin) {
+        if (path.endsWith(".yml")) {
+            this.configFile = new File(plugin.getDataFolder(), path);
+        } else {
+            this.configFile = new File(plugin.getDataFolder().getParent(),path + "/GUIHelper.yml");
+        }
 
-    public void empty() {
-        File directory = new File("plugins/" + name);
+        configFile.getParentFile().mkdirs();
 
-        if (!directory.exists()) directory.mkdir();
-
-        File file = new File(directory + "/GUIHelper.yml");
-
-        if (!file.exists()) {
+        if (!configFile.exists()) {
             try {
-                file.createNewFile();
-
-                this.config = YamlConfiguration.loadConfiguration(file);
-                configFile = file;
-
-                return;
+                configFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                Logging.error(String.format("An error occurred while creating %s", configFile.getPath()), e);
             }
         }
 
-        configFile = file;
-        this.config = YamlConfiguration.loadConfiguration(file);
+        config = YamlConfiguration.loadConfiguration(configFile);
+    }
 
-        config.getKeys(false).forEach(k -> config.set(k, null));
+    public void empty() {
+        config.getKeys(false).forEach(key -> config.set(key, null));
     }
 
     public void save() {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logging.error(String.format("An error occurred while saving %s", configFile.getPath()), e);
         }
     }
 

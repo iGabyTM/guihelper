@@ -20,6 +20,7 @@
 package me.gabytm.guihelper.commands;
 
 import me.gabytm.guihelper.GUIHelper;
+import me.gabytm.guihelper.template.TemplateManager;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,16 +28,21 @@ import org.bukkit.command.CommandSender;
 
 public class ReloadCommand implements CommandExecutor {
     private GUIHelper plugin;
+    private TemplateManager templateManager;
 
-    public ReloadCommand(GUIHelper plugin) {
+    public ReloadCommand(GUIHelper plugin, TemplateManager templateManager) {
         this.plugin = plugin;
+        this.templateManager = templateManager;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("guihelper.use")) return true;
+        if (!sender.hasPermission("guihelper.use")) {
+            return true;
+        }
 
         plugin.reloadConfig();
+        templateManager.loadTemplates(plugin.getConfig().getConfigurationSection("templates"));
         Message.RELOAD.send(sender);
         return true;
     }

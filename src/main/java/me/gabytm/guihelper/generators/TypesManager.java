@@ -34,6 +34,7 @@ public final class TypesManager {
     //private GuiShop guiShop;
     private LemonMobCoins lemonMobCoins;
     private ShopGuiPlus shopGuiPlus;
+    private SuperLobbyDeluxe superLobbyDeluxe;
 
     public ASkyBlock aSkyBlock() { return aSkyBlock; }
     public BossShopPro bossShopPro() { return bossShopPro; }
@@ -45,17 +46,19 @@ public final class TypesManager {
     public DeluxeMenus deluxeMenus() { return deluxeMenus; }
     public LemonMobCoins lemonMobCoins() { return lemonMobCoins; }
     public ShopGuiPlus shopGuiPlus() { return shopGuiPlus; }
+    public SuperLobbyDeluxe superLobbyDeluxe() { return superLobbyDeluxe; }
 
     public TypesManager(GUIHelper plugin) {
         aSkyBlock = new ASkyBlock(plugin);
         bossShopPro = new BossShopPro(plugin);
         bossShopProMenu = new BossShopProMenu(plugin);
-        chestCommands = new ChestCommands();
+        chestCommands = new ChestCommands(plugin);
         cratesPlus = new CratesPlus(plugin);
         crazyCrates = new CrazyCrates(plugin);
         crazyEnvoy = new CrazyEnvoy(plugin);
-        deluxeMenus = new DeluxeMenus();
+        deluxeMenus = new DeluxeMenus(plugin);
         lemonMobCoins = new LemonMobCoins(plugin);
         shopGuiPlus = new ShopGuiPlus(plugin);
+        superLobbyDeluxe = new SuperLobbyDeluxe(plugin);
     }
 }

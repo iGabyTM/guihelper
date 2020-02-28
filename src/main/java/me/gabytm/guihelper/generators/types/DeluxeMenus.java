@@ -19,10 +19,10 @@
 
 package me.gabytm.guihelper.generators.types;
 
+import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -35,61 +35,59 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import java.util.stream.Collectors;
 
 public final class DeluxeMenus {
+    private GUIHelper plugin;
 
-    public void generateExternal(Inventory inventory, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("DeluxeMenus/gui_menus");
-
-            config.empty();
-            config.get().createSection("items");
-
-            for (int slot = 0; slot < inventory.getSize(); slot++) {
-                final ItemStack item = inventory.getItem(slot);
-
-                if (ItemUtil.isNull(item)) {
-                    final String path = "items." + slot;
-
-                    addItem(config.get().createSection(path), item, slot);
-                }
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
-        }
+    public DeluxeMenus(GUIHelper plugin) {
+        this.plugin = plugin;
     }
 
-    public void generateLocal(Inventory inventory, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("DeluxeMenus");
+    public void generateExternal(final Inventory inventory, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("DeluxeMenus/gui_menus", plugin);
 
-            config.empty();
+        config.empty();
+        config.get().createSection("items");
 
-            for (int slot = 0; slot < inventory.getSize(); slot++) {
-                final ItemStack item = inventory.getItem(slot);
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            final ItemStack item = inventory.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
-
-                final String path = "gui_menus.GUIHelper.items." + slot;
-
-                addItem(config.get().createSection(path), item, slot);
+            if (ItemUtil.isNull(item)) {
+                continue;
             }
 
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            final String path = "items." + slot;
+
+            addItem(config.get().createSection(path), item, slot);
         }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
-    private void addItem(ConfigurationSection section, ItemStack item, int slot) {
+    public void generateLocal(final Inventory inventory, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("DeluxeMenus", plugin);
+
+        config.empty();
+
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            final ItemStack item = inventory.getItem(slot);
+
+            if (ItemUtil.isNull(item)) {
+                continue;
+            }
+
+            final String path = "gui_menus.GUIHelper.items." + slot;
+
+            addItem(config.get().createSection(path), item, slot);
+        }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+    }
+
+    private void addItem(final ConfigurationSection section, final ItemStack item, final int slot) {
         final ItemMeta meta = item.getItemMeta();
-
         section.set("material", item.getType().toString());
 
         if (item.getDurability() > 0) {

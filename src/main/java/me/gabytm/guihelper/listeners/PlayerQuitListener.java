@@ -19,20 +19,20 @@
 
 package me.gabytm.guihelper.listeners;
 
-import me.gabytm.guihelper.data.IManager;
+import me.gabytm.guihelper.data.InventoryManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public final class PlayerQuitListener implements Listener {
-    private IManager iManager;
+    private InventoryManager inventoryManager;
 
-    public PlayerQuitListener(IManager iManager) {
-        this.iManager = iManager;
+    public PlayerQuitListener(InventoryManager inventoryManager) {
+        this.inventoryManager = inventoryManager;
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        iManager.remove(event.getPlayer().getUniqueId());
+        inventoryManager.remove(event.getPlayer().getUniqueId());
     }
 }

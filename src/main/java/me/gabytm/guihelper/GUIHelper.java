@@ -20,51 +20,50 @@
 package me.gabytm.guihelper;
 
 import me.gabytm.guihelper.commands.*;
-import me.gabytm.guihelper.data.IManager;
+import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.generators.TypesManager;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
 import me.gabytm.guihelper.listeners.PlayerQuitListener;
+import me.gabytm.guihelper.template.TemplateManager;
 import me.gabytm.guihelper.utils.StringUtil;
-import me.gabytm.guihelper.utils.TabCompleterUtil;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class GUIHelper extends JavaPlugin {
-    private IManager iManager;
+    private InventoryManager inventoryManager;
+    private TemplateManager templateManager;
     private TypesManager typesManager;
     private final String version = getDescription().getVersion();
 
     @Override
     public void onEnable() {
         final Metrics metrics = new Metrics(this);
-        iManager = new IManager();
+        inventoryManager = new InventoryManager();
+        templateManager = new TemplateManager();
         typesManager = new TypesManager(this);
 
         saveDefaultConfig();
+        templateManager.loadTemplates(getConfig().getConfigurationSection("templates"));
         StringUtil.consoleText(getServer().getConsoleSender(), version);
         loadCommands();
         loadEvents();
     }
 
     private void loadCommands() {
-        getCommand("ghcreate").setExecutor(new CreateCommand(typesManager, iManager));
-        getCommand("ghcreate").setTabCompleter(new TabCompleterUtil());
-        getCommand("ghempty").setExecutor(new EmptyCommand(iManager));
+        final CommandTabCompleter tabCompleter = new CommandTabCompleter(templateManager);
+
+        getCommand("ghcreate").setExecutor(new CreateCommand(typesManager, inventoryManager));
+        getCommand("ghcreate").setTabCompleter(tabCompleter);
+        getCommand("ghempty").setExecutor(new EmptyCommand(inventoryManager));
         getCommand("ghhelp").setExecutor(new HelpCommand(version));
         getCommand("ghlist").setExecutor(new ListCommand(version));
-        getCommand("ghreload").setExecutor(new ReloadCommand(this));
+        getCommand("ghreload").setExecutor(new ReloadCommand(this, templateManager));
+        getCommand("ghtemplate").setExecutor(new TemplateCommand(this, inventoryManager, templateManager));
+        getCommand("ghtemplate").setTabCompleter(tabCompleter);
     }
 
     private void loadEvents() {
         getServer().getPluginManager().registerEvents(new InventoryCloseListener(version), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(iManager), this);
-    }
-
-    public IManager getIManager() {
-        return iManager;
-    }
-
-    public TypesManager getTypesManager() {
-        return typesManager;
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(inventoryManager), this);
     }
 }

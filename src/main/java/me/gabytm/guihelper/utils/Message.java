@@ -27,14 +27,17 @@ public enum Message {
     CREATION_ERROR("&cSomething went wrong, please check the console."),
     EMPTY_GUI("&cPlease add some items to the GUI first!"),
     HELP("\n" +
-            "&7GUIHelper &fv{version} &7GabyTM\n" +
+            "&7GUIHelper &fv{version} &7by GabyTM\n" +
             "  &2/ghcreate [type] &a(argument) &8- &fCreate a config\n" +
-            "  &2/ghempty\n &8- &fEmpty the GUI faster" +
+            "  &2/ghempty &8- &fEmpty the GUI faster\n" +
             "  &2/ghhelp &8- &fDisplay the commands list\n" +
             "  &2/ghlist &8- &fDisplay the supported plugins list\n" +
-            "  &2/ghreload &8- &fReload the plugin"),
+            "  &2/ghreload &8- &fReload the plugin\n" +
+            "  &2/ghtemplate [list|template] &8- &fList all available templates or create a config following a template"),
+    NO_TEMPLATES("&cNo templates found."),
     PLAYERS_ONLY("&cOnly players can run this command!"),
     RELOAD("&aThe plugin has been successfully reloaded!"),
+    TEMPLATE_USAGE("&cUsage: &7/ghtemplate [list|template]"),
     TYPES_LIST("\n" +
             "&7GUIHelper &fv{version} &7GabyTM\n" +
             "  &2ASkyBlock &8- &fIsland minishop items\n" +
@@ -49,8 +52,10 @@ public enum Message {
             //"  &2GUIShop &8- &fShop items\n" +
             "  &2LemonMobCoins &8- &fShop items\n" +
             "  &2ShopGuiPlus &a(page) &8- &fShop items\n" +
+            "  &2SuperLobbyDeluxe &8- &f" +
             " \n" +
             "&7Usage: &2/ghcreate [type] &a(argument)"),
+    WRONG_TEMPLATE("&c{type} is not a valid template."),
     WRONG_TYPE("&c{type} is not a valid type.");
 
     private String messageFormatted;

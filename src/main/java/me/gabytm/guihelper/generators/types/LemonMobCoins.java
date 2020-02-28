@@ -27,7 +27,6 @@ import me.gabytm.guihelper.utils.Message;
 import me.gabytm.guihelper.utils.NumberUtil;
 import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -38,42 +37,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class LemonMobCoins implements IGeneratorSlot {
-    private FileConfiguration defaultConfig;
+    private GUIHelper plugin;
+    private ConfigurationSection defaults;
 
-    public LemonMobCoins(GUIHelper plugin) {
-        defaultConfig = plugin.getConfig();
+    public LemonMobCoins(final GUIHelper plugin) {
+        this.plugin = plugin;
+        defaults = plugin.getConfig().getConfigurationSection("LemonMobCoins");
     }
 
     @Override
-    public void generate(Inventory gui, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("LemonMobCoins");
+    public void generate(final Inventory gui, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("LemonMobCoins", plugin);
 
-            config.empty();
+        config.empty();
 
-            for (int slot = 0; slot < gui.getSize(); slot++) {
-                final ItemStack item = gui.getItem(slot);
+        for (int slot = 0; slot < gui.getSize(); slot++) {
+            final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) continue;
 
-                final String path = "gui.items.item-" + slot;
+            final String path = "gui.items.item-" + slot;
 
-                addItem(config.get().createSection(path), item, slot);
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            addItem(config.get().createSection(path), item, slot);
         }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item, int slot) {
-        final ConfigurationSection defaults = defaultConfig.getConfigurationSection("LemonMobCoins");
+    public void addItem(final ConfigurationSection section, final ItemStack item, final int slot) {
         final ItemMeta meta = item.getItemMeta();
         final StringBuilder rewardItem = new StringBuilder();
         final StringBuilder rewardItemDisplayName = new StringBuilder();

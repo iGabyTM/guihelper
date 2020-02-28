@@ -33,7 +33,9 @@ public class ListCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender.hasPermission("guihelper.use")) return true;
+        if (!sender.hasPermission("guihelper.use")) {
+            return true;
+        }
 
         Message.TYPES_LIST.format(version).send(sender);
         return true;

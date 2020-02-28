@@ -19,11 +19,11 @@
 
 package me.gabytm.guihelper.generators.types;
 
+import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGeneratorSlot;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -34,35 +34,35 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
 public final class ChestCommands implements IGeneratorSlot {
+    private GUIHelper plugin;
 
-    @Override
-    public void generate(Inventory gui, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("ChestCommands/menu");
-
-            config.empty();
-
-            for (int slot = 0; slot < gui.getSize(); slot++) {
-                final ItemStack item = gui.getItem(slot);
-
-                if (ItemUtil.isNull(item)) continue;
-
-                final String path = "item-" + slot;
-
-                addItem(config.get().getConfigurationSection(path), item, slot);
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
-        }
+    public ChestCommands(final GUIHelper plugin) {
+        this.plugin = plugin;
     }
 
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item, int slot) {
+    public void generate(final Inventory gui, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("ChestCommands/menu", plugin);
+
+        config.empty();
+
+        for (int slot = 0; slot < gui.getSize(); slot++) {
+            final ItemStack item = gui.getItem(slot);
+
+            if (ItemUtil.isNull(item)) continue;
+
+            final String path = "item-" + slot;
+
+            addItem(config.get().getConfigurationSection(path), item, slot);
+        }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+    }
+
+    @Override
+    public void addItem(final ConfigurationSection section, final ItemStack item, final int slot) {
         final ItemMeta meta = item.getItemMeta();
 
         section.set("ID", item.getType().toString());

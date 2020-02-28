@@ -19,28 +19,25 @@
 
 package me.gabytm.guihelper.commands;
 
-import me.gabytm.guihelper.HelperHolder;
-import me.gabytm.guihelper.data.IManager;
+import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.generators.TypesManager;
 import me.gabytm.guihelper.utils.Message;
 import me.gabytm.guihelper.utils.NumberUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 public class CreateCommand implements CommandExecutor {
     private TypesManager manager;
-    private IManager iManager;
+    private InventoryManager inventoryManager;
 
-    public CreateCommand(TypesManager manager, IManager iManager) {
+    public CreateCommand(TypesManager manager, InventoryManager inventoryManager) {
         this.manager = manager;
-        this.iManager = iManager;
+        this.inventoryManager = inventoryManager;
     }
 
     @Override
@@ -53,27 +50,21 @@ public class CreateCommand implements CommandExecutor {
         final Player player = (Player) sender;
         final UUID uuid = player.getUniqueId();
 
-        if (!player.hasPermission("guihelper.use")) return true;
-
-        if (args.length == 0) {
-            if (!iManager.exists(uuid)) {
-                final Inventory inventory = Bukkit.createInventory(new HelperHolder(), 54, "GUIHelper");
-
-                player.openInventory(inventory);
-                iManager.add(uuid, inventory);
-                return true;
-            }
-
-            player.openInventory(iManager.get(uuid));
+        if (!player.hasPermission("guihelper.use")) {
             return true;
         }
 
-        if (!iManager.exists(uuid) || isEmpty(iManager.get(uuid))) {
+        if (args.length == 0) {
+            player.openInventory(inventoryManager.get(uuid));
+            return true;
+        }
+
+        final Inventory inventory = inventoryManager.get(uuid);
+
+        if (inventoryManager.isEmpty(inventory)) {
             Message.EMPTY_GUI.send(player);
             return true;
         }
-
-        final Inventory inventory = iManager.get(uuid);
 
         switch (args[0].toLowerCase()) {
             // Updated
@@ -142,24 +133,15 @@ public class CreateCommand implements CommandExecutor {
                 break;
             }
 
+            case "superlobbydeluxe": {
+                manager.superLobbyDeluxe().generate(inventory, player);
+                break;
+            }
+
             default: {
                 Message.WRONG_TYPE.format(args[0]).send(player);
                 break;
             }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if the gui it's empty or not
-     *
-     * @param gui the gui
-     * @return boolean
-     */
-    private boolean isEmpty(Inventory gui) {
-        for (ItemStack item : gui.getContents()) {
-            if (item != null) return false;
         }
 
         return true;

@@ -24,9 +24,7 @@ import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGenerator;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -37,41 +35,37 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import java.util.stream.Collectors;
 
 public class CratesPlus implements IGenerator {
-    private FileConfiguration defaultConfig;
+    private GUIHelper plugin;
+    private ConfigurationSection defaults;
 
-    public CratesPlus(GUIHelper plugin) {
-        defaultConfig = plugin.getConfig();
+    public CratesPlus(final GUIHelper plugin) {
+        this.plugin = plugin;
+        defaults = plugin.getConfig().getConfigurationSection("CratesPlus");
     }
 
     @Override
-    public void generate(Inventory gui, Player player) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("CratesPlus");
+    public void generate(final Inventory gui, final Player player) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("CratesPlus", plugin);
 
-            config.empty();
+        config.empty();
 
-            for (int slot = 0; slot < gui.getSize(); slot++) {
-                final ItemStack item = gui.getItem(slot);
+        for (int slot = 0; slot < gui.getSize(); slot++) {
+            final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) continue;
 
-                final String path = "Crates.GUIHelper.Winnings." + (slot + 1);
+            final String path = "Crates.GUIHelper.Winnings." + (slot + 1);
 
-                addItem(config.get().createSection(path), gui.getItem(slot));
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            addItem(config.get().createSection(path), gui.getItem(slot));
         }
+
+        config.save();
+        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item) {
-        final ConfigurationSection defaults = defaultConfig.getConfigurationSection("CratesPlus");
+    public void addItem(final ConfigurationSection section, final ItemStack item) {
         final ItemMeta meta = item.getItemMeta();
 
         section.set("Type", defaults.getString("Type", "ITEM"));

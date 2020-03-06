@@ -19,6 +19,7 @@
 
 package me.gabytm.guihelper.commands;
 
+import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.command.Command;
@@ -42,7 +43,7 @@ public class EmptyCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("guihelper.use")) {
+        if (!player.hasPermission(GUIHelper.PERMISSION)) {
             return true;
         }
 

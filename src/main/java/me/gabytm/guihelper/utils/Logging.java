@@ -19,17 +19,17 @@
 
 package me.gabytm.guihelper.utils;
 
-import org.bukkit.Bukkit;
+import me.gabytm.guihelper.GUIHelper;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class Logging {
-    private static final Logger LOGGER = Bukkit.getLogger();
-    private static final String PREFIX = "[GUIHelper] ";
+    private static final Logger LOGGER = JavaPlugin.getProvidingPlugin(GUIHelper.class).getLogger();
 
     public static void log(final Level level, final String message) {
-        LOGGER.log(level, StringUtil.color(PREFIX + message));
+        LOGGER.log(level, StringUtil.color(message));
     }
 
     public static void info(final String message) {
@@ -41,7 +41,7 @@ public final class Logging {
     }
 
     public static void error(final String message, final Exception error) {
-        LOGGER.log(Level.SEVERE, PREFIX + message, error);
+        LOGGER.log(Level.SEVERE, message, error);
     }
 
     public static void error(final Message message, final Exception error) {
@@ -49,16 +49,16 @@ public final class Logging {
     }
 
     public enum Message {
-        SAVE_ERROR("[GUIHelper] An error occurred while saving the config.");
+        SAVE_ERROR("An error occurred while saving the config.");
 
-        private String message;
+        private final String message;
 
         Message(String message) {
             this.message = message;
         }
 
         public String getMessage() {
-            return PREFIX + message;
+            return message;
         }
     }
 }

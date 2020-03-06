@@ -45,16 +45,16 @@ public final class CommandTabCompleter implements TabCompleter {
 
         if (cmd.getName().equalsIgnoreCase("ghcreate")) {
             if (args.length > 1) {
-                return Collections.singletonList("");
+                return Collections.emptyList();
             }
 
-            final List<String> types = Arrays.asList("ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe");
-            return order(args[0], types);
+            final List<String> TYPES = Arrays.asList("ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe");
+            return order(args[0], TYPES);
         }
 
         if (cmd.getName().equalsIgnoreCase("ghtemplate")) {
             if (args.length > 1) {
-                return Collections.singletonList("");
+                return Collections.emptyList();
             }
 
             return order(args[0], templateManager.getTemplates());

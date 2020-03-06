@@ -19,6 +19,7 @@
 
 package me.gabytm.guihelper.commands;
 
+import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.generators.TypesManager;
 import me.gabytm.guihelper.utils.Message;
@@ -50,7 +51,7 @@ public class CreateCommand implements CommandExecutor {
         final Player player = (Player) sender;
         final UUID uuid = player.getUniqueId();
 
-        if (!player.hasPermission("guihelper.use")) {
+        if (!player.hasPermission(GUIHelper.PERMISSION)) {
             return true;
         }
 

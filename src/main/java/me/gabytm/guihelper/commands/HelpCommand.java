@@ -19,6 +19,7 @@
 
 package me.gabytm.guihelper.commands;
 
+import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +34,7 @@ public class HelpCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("guihelper.use")) {
+        if (!sender.hasPermission(GUIHelper.PERMISSION)) {
             return true;
         }
 

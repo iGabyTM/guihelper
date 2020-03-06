@@ -51,10 +51,12 @@ public final class SuperLobbyDeluxe implements IGeneratorSlot {
             final ItemStack item = inventory.getItem(slot);
 
             if (ItemUtil.isNull(item)) {
-                final String path = "GUIHelper.items." + slot;
-
-                addItem(config.get().createSection(path), item, slot);
+                continue;
             }
+
+            final String path = "GUIHelper.items." + slot;
+
+            addItem(config.get().createSection(path), item, slot);
         }
 
         config.save();

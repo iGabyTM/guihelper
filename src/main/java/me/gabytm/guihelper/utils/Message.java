@@ -33,7 +33,7 @@ public enum Message {
             "  &2/ghhelp &8- &fDisplay the commands list\n" +
             "  &2/ghlist &8- &fDisplay the supported plugins list\n" +
             "  &2/ghreload &8- &fReload the plugin\n" +
-            "  &2/ghtemplate [list|template] &8- &fList all available templates or create a config following a template"),
+            "  &2/ghtemplate [list|template] &a(arguments) &8- &fList all available templates or create a config following a template"),
     NO_TEMPLATES("&cNo templates found."),
     PLAYERS_ONLY("&cOnly players can run this command!"),
     RELOAD("&aThe plugin has been successfully reloaded!"),
@@ -52,22 +52,22 @@ public enum Message {
             //"  &2GUIShop &8- &fShop items\n" +
             "  &2LemonMobCoins &8- &fShop items\n" +
             "  &2ShopGuiPlus &a(page) &8- &fShop items\n" +
-            "  &2SuperLobbyDeluxe &8- &f" +
+            "  &2SuperLobbyDeluxe &8- &fMenu items" +
             " \n" +
             "&7Usage: &2/ghcreate [type] &a(argument)"),
     WRONG_TEMPLATE("&c{type} is not a valid template."),
     WRONG_TYPE("&c{type} is not a valid type.");
 
     private String messageFormatted;
-    private String message;
+    private final String message;
 
-    Message(String message) { this.message = message; }
+    Message(final String message) { this.message = message; }
 
     public String getMessage() {
         return StringUtil.color(message);
     }
 
-    public Message format(String string) {
+    public Message format(final String string) {
         if (messageFormatted == null) messageFormatted = getMessage();
 
         messageFormatted = messageFormatted
@@ -76,7 +76,7 @@ public enum Message {
         return this;
     }
 
-    public Message format(long duration) {
+    public Message format(final long duration) {
         if (messageFormatted == null) messageFormatted = getMessage();
 
         messageFormatted = messageFormatted
@@ -84,7 +84,7 @@ public enum Message {
         return this;
     }
 
-    public void send(CommandSender sender) {
+    public void send(final CommandSender sender) {
         if (messageFormatted != null) sender.sendMessage(messageFormatted);
         else sender.sendMessage(getMessage());
 

@@ -23,11 +23,13 @@ import com.google.common.primitives.Ints;
 import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +59,6 @@ public class TemplateManager {
 
                 if (templateSection != null) {
                     sections.add(templateSection);
-                    continue;
                 }
             }
 
@@ -69,20 +70,23 @@ public class TemplateManager {
         return templates.getOrDefault(key, null);
     }
 
-    public void generate(final String template, final Config config, final Inventory inventory, final Player player) {
+    public void generate(final String template, final Config config, final Inventory inventory, final Player player, final String[] args) {
         final List<ConfigurationSection> sections = templates.get(template);
         final long start = System.currentTimeMillis();
 
         for (int slot = 0; slot < inventory.getContents().length; slot++) {
             final ItemStack item = inventory.getItem(slot);
+            final Map<String, String> placeholders = loadPlaceholders(slot, item, args);
 
             if (ItemUtil.isNull(item)) {
                 continue;
             }
 
             for (ConfigurationSection section : sections) {
-                final String sectionName = replaceVariables(section.getName(), slot, item);
-                handleConfigurationSection(config, section, sectionName, slot, item);
+                //final String sectionName = replaceVariables(section.getName(), slot, item, args);
+                final String sectionName = replacePlaceholders(section.getName(), placeholders);
+                //handleConfigurationSection(config, section, sectionName, slot, item, args);
+                handleConfigurationSection(config, section, sectionName, placeholders);
             }
         }
 
@@ -90,21 +94,21 @@ public class TemplateManager {
         Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
     }
 
-    public void handleConfigurationSection(final Config config, final ConfigurationSection template, final String path, final int slot, final ItemStack item) {
+    public void handleConfigurationSection(final Config config, final ConfigurationSection template, final String path, final Map<String, String> placeholders) {
         for (String defaultKey : template.getKeys(false)) {
-            final String newKey = replaceVariables(defaultKey, slot, item);
+            final String newKey = replacePlaceholders(defaultKey, placeholders);
 
             if (template.isConfigurationSection(defaultKey)) {
-                handleConfigurationSection(config, template.getConfigurationSection(defaultKey), path + "." + newKey, slot, item);
+                handleConfigurationSection(config, template.getConfigurationSection(defaultKey), path + "." + newKey, placeholders);
                 continue;
             }
 
             if (template.isList(defaultKey)) {
-                config.get().set(path + "." + newKey, handleStringsList(template.getStringList(defaultKey), slot, item));
+                config.get().set(path + "." + newKey, replacePlaceholdersFromList(template.getStringList(defaultKey), placeholders));
                 continue;
             }
 
-            final String value = replaceVariables(template.getString(defaultKey), slot, item);
+            final String value = replacePlaceholders(template.getString(defaultKey), placeholders);
             final Integer integerValue = Ints.tryParse(value);
 
             if (integerValue == null) {
@@ -116,46 +120,139 @@ public class TemplateManager {
         }
     }
 
-    private List<String> handleStringsList(List<String> list, int slot, ItemStack item) {
+    /*
+    public void handleConfigurationSection(final Config config, final ConfigurationSection template, final String path, final int slot, final ItemStack item, final String[] args) {
+        for (String defaultKey : template.getKeys(false)) {
+            final String newKey = replaceVariables(defaultKey, slot, item, args);
+
+            if (template.isConfigurationSection(defaultKey)) {
+                handleConfigurationSection(config, template.getConfigurationSection(defaultKey), path + "." + newKey, slot, item, args);
+                continue;
+            }
+
+            if (template.isList(defaultKey)) {
+                config.get().set(path + "." + newKey, handleStringsList(template.getStringList(defaultKey), slot, item, args));
+                continue;
+            }
+
+            final String value = replaceVariables(template.getString(defaultKey), slot, item, args);
+            final Integer integerValue = Ints.tryParse(value);
+
+            if (integerValue == null) {
+                config.get().set(path + "." + newKey, value);
+                continue;
+            }
+
+            config.get().set(path + "." + newKey, integerValue);
+        }
+    }
+
+     */
+
+    private List<String> replacePlaceholdersFromList(final List<String> list, final Map<String, String> placeholders) {
         return list
                 .stream()
-                .map(line -> replaceVariables(line, slot, item))
+                .map(line -> replacePlaceholders(line, placeholders))
                 .collect(Collectors.toList());
     }
 
-    private String replaceVariables(String line, int slot, ItemStack item) {
-        line = line
-                .replace("{amount}", String.valueOf(item.getAmount()))
-                .replace("{data}", String.valueOf(item.getDurability()))
-                .replace("{enchanted}", String.valueOf(item.getItemMeta().hasEnchants()))
-                .replace("{material}", item.getType().toString())
-                .replace("{slot}", String.valueOf(slot));
+    /*
+    private List<String> handleStringsList(final List<String> list, final int slot, final ItemStack item, final String[] args) {
+        return list
+                .stream()
+                .map(line -> replaceVariables(line, slot, item, args))
+                .collect(Collectors.toList());
+    }
 
+     */
+
+    private Map<String, String> loadPlaceholders(final int slot, final ItemStack item, final String[] args) {
+        final ItemMeta meta = item.getItemMeta();
+        final Map<String, String> map = new HashMap<>();
+
+        map.put("{amount}", Integer.toString(item.getAmount()));
+        map.put("{data}", Short.toString(item.getDurability()));
+        map.put("{enchanted}", Boolean.toString(meta.hasEnchants()));
+        map.put("{material}", item.getType().name());
+        map.put("{slot}", Integer.toString(slot));
 
         for (ItemFlag flag : ItemFlag.values()) {
-            line = line.replace("{flag_" + flag.name().toLowerCase() + "}", String.valueOf(item.getItemMeta().hasItemFlag(flag)));
+            map.put("{flag" + flag.name().toLowerCase() + "}", Boolean.toString(meta.hasItemFlag(flag)));
         }
 
-        if (item.getItemMeta().hasDisplayName()) {
-            final String name = ItemUtil.getDisplayName(item.getItemMeta());
+        if (args.length > 0) {
+            map.put("{args}", String.join(" ", args));
 
-            line = line
-                    .replace("{name}", name)
-                    .replace("{essentials_name}", name.replace(" ", "_"));
+            for (int index = 0; index < args.length; index++) {
+                map.put("{args[" + (index + 1) + "]}", args[index]);
+            }
+        }
+
+        if (meta.hasDisplayName()) {
+            final String name = ItemUtil.getDisplayName(meta);
+
+            map.put("{name}", name);
+            map.put("{essentials_name}", name.replace(" ", "_"));
         } else {
-            line = line.replace("{name}", "");
+            map.put("{name}", "");
+            map.put("{essentials_name}", "");
         }
 
-        if (item.getItemMeta().hasLore()) {
-            final List<String> lore = ItemUtil.getLore(item.getItemMeta());
-
-            line = line.replace("{essentials_lore}", String.join("|", lore).replace(" ", "_"));
+        if (meta.hasLore()) {
+            map.put("{essentials_lore}", String.join("|", ItemUtil.getLore(meta)).replace(" ", "_"));
         } else {
-            line = line.replace("{essentials_lore}", "");
+            map.put("{essentials_lore}", "");
         }
 
-        return line;
+        return map;
     }
+
+    private String replacePlaceholders(final String line, final Map<String, String> placeholders) {
+        return StringUtils.replaceEach(line, placeholders.keySet().toArray(new String[]{}), placeholders.values().toArray(new String[]{}));
+    }
+
+    /*
+    private String replaceVariables(String line, final int slot, final ItemStack item, final String[] args) {
+        final ItemMeta meta = item.getItemMeta();
+
+        String result;
+        result = StringUtils.replace(line, "{amount}", String.valueOf(item.getAmount()));
+        result = StringUtils.replace(result, "{data}", String.valueOf(item.getDurability()));
+        result = StringUtils.replace(result, "{enchanted}", String.valueOf(item.getItemMeta().hasEnchants()));
+        result = StringUtils.replace(result, "{material}", item.getType().toString());
+        result = StringUtils.replace(result, "{slot}", String.valueOf(slot));
+
+        for (ItemFlag flag : ItemFlag.values()) {
+            result = StringUtils.replace(result, "{flag_" + flag.name().toLowerCase() + "}", String.valueOf(meta.hasItemFlag(flag)));
+        }
+
+        if (args.length > 0) {
+            result = StringUtils.replace(result, "{args}", String.join(" ", args));
+
+            for (int index = 0; index < args.length; index++) {
+                result = StringUtils.replace(result, "{args[" + (index + 1) + "]}", args[index]);
+            }
+        }
+
+        if (meta.hasDisplayName()) {
+            final String name = ItemUtil.getDisplayName(meta);
+
+            result = StringUtils.replace(result, "{name}", name);
+            result = StringUtils.replace(result, "{essentials_name}", name.replace(" ", "_"));
+        } else {
+            result = StringUtils.replace(result, "{name}", "");
+        }
+
+        if (meta.hasLore()) {
+            result = StringUtils.replace(result, "{essentials_lore}", String.join("|", ItemUtil.getLore(meta)).replace(" ", "_"));
+        } else {
+            result = StringUtils.replace(result, "{essentials_lore}", "");
+        }
+
+        return result;
+    }
+
+     */
 
     public List<String> getTemplates() {
         return new ArrayList<>(templates.keySet());

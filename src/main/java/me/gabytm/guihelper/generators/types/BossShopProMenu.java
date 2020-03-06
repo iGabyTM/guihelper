@@ -55,11 +55,13 @@ public final class BossShopProMenu implements IGeneratorSlot {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             final ItemStack item = inventory.getItem(slot);
 
-            if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) {
+                continue;
+            }
 
             final String path = "shop.item-" + (slot + 1);
 
-            addItem(config.get().getConfigurationSection(path), item, slot);
+            addItem(config.get().createSection(path), item, slot);
         }
 
         config.save();

@@ -19,6 +19,7 @@
 
 package me.gabytm.guihelper.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 
 public enum Message {
@@ -61,7 +62,9 @@ public enum Message {
     private String messageFormatted;
     private final String message;
 
-    Message(final String message) { this.message = message; }
+    Message(final String message) {
+        this.message = message;
+    }
 
     public String getMessage() {
         return StringUtil.color(message);
@@ -70,17 +73,17 @@ public enum Message {
     public Message format(final String string) {
         if (messageFormatted == null) messageFormatted = getMessage();
 
-        messageFormatted = messageFormatted
-                .replace("{type}", string)
-                .replace("{version}", string);
+        messageFormatted = StringUtils.replaceEach(messageFormatted,
+                new String[]{"{type}", "{version}"},
+                new String[]{string, string}
+        );
         return this;
     }
 
     public Message format(final long duration) {
         if (messageFormatted == null) messageFormatted = getMessage();
 
-        messageFormatted = messageFormatted
-                .replace("{duration}", String.valueOf(duration));
+        messageFormatted = StringUtils.replace(messageFormatted, "{duration}", Long.toString(duration));
         return this;
     }
 

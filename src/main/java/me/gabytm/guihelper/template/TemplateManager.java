@@ -76,16 +76,15 @@ public class TemplateManager {
 
         for (int slot = 0; slot < inventory.getContents().length; slot++) {
             final ItemStack item = inventory.getItem(slot);
-            final Map<String, String> placeholders = loadPlaceholders(slot, item, args);
 
             if (ItemUtil.isNull(item)) {
                 continue;
             }
 
+            final Map<String, String> placeholders = loadPlaceholders(slot, item, args);
+
             for (ConfigurationSection section : sections) {
-                //final String sectionName = replaceVariables(section.getName(), slot, item, args);
                 final String sectionName = replacePlaceholders(section.getName(), placeholders);
-                //handleConfigurationSection(config, section, sectionName, slot, item, args);
                 handleConfigurationSection(config, section, sectionName, placeholders);
             }
         }
@@ -120,51 +119,12 @@ public class TemplateManager {
         }
     }
 
-    /*
-    public void handleConfigurationSection(final Config config, final ConfigurationSection template, final String path, final int slot, final ItemStack item, final String[] args) {
-        for (String defaultKey : template.getKeys(false)) {
-            final String newKey = replaceVariables(defaultKey, slot, item, args);
-
-            if (template.isConfigurationSection(defaultKey)) {
-                handleConfigurationSection(config, template.getConfigurationSection(defaultKey), path + "." + newKey, slot, item, args);
-                continue;
-            }
-
-            if (template.isList(defaultKey)) {
-                config.get().set(path + "." + newKey, handleStringsList(template.getStringList(defaultKey), slot, item, args));
-                continue;
-            }
-
-            final String value = replaceVariables(template.getString(defaultKey), slot, item, args);
-            final Integer integerValue = Ints.tryParse(value);
-
-            if (integerValue == null) {
-                config.get().set(path + "." + newKey, value);
-                continue;
-            }
-
-            config.get().set(path + "." + newKey, integerValue);
-        }
-    }
-
-     */
-
     private List<String> replacePlaceholdersFromList(final List<String> list, final Map<String, String> placeholders) {
         return list
                 .stream()
                 .map(line -> replacePlaceholders(line, placeholders))
                 .collect(Collectors.toList());
     }
-
-    /*
-    private List<String> handleStringsList(final List<String> list, final int slot, final ItemStack item, final String[] args) {
-        return list
-                .stream()
-                .map(line -> replaceVariables(line, slot, item, args))
-                .collect(Collectors.toList());
-    }
-
-     */
 
     private Map<String, String> loadPlaceholders(final int slot, final ItemStack item, final String[] args) {
         final ItemMeta meta = item.getItemMeta();
@@ -210,49 +170,6 @@ public class TemplateManager {
     private String replacePlaceholders(final String line, final Map<String, String> placeholders) {
         return StringUtils.replaceEach(line, placeholders.keySet().toArray(new String[]{}), placeholders.values().toArray(new String[]{}));
     }
-
-    /*
-    private String replaceVariables(String line, final int slot, final ItemStack item, final String[] args) {
-        final ItemMeta meta = item.getItemMeta();
-
-        String result;
-        result = StringUtils.replace(line, "{amount}", String.valueOf(item.getAmount()));
-        result = StringUtils.replace(result, "{data}", String.valueOf(item.getDurability()));
-        result = StringUtils.replace(result, "{enchanted}", String.valueOf(item.getItemMeta().hasEnchants()));
-        result = StringUtils.replace(result, "{material}", item.getType().toString());
-        result = StringUtils.replace(result, "{slot}", String.valueOf(slot));
-
-        for (ItemFlag flag : ItemFlag.values()) {
-            result = StringUtils.replace(result, "{flag_" + flag.name().toLowerCase() + "}", String.valueOf(meta.hasItemFlag(flag)));
-        }
-
-        if (args.length > 0) {
-            result = StringUtils.replace(result, "{args}", String.join(" ", args));
-
-            for (int index = 0; index < args.length; index++) {
-                result = StringUtils.replace(result, "{args[" + (index + 1) + "]}", args[index]);
-            }
-        }
-
-        if (meta.hasDisplayName()) {
-            final String name = ItemUtil.getDisplayName(meta);
-
-            result = StringUtils.replace(result, "{name}", name);
-            result = StringUtils.replace(result, "{essentials_name}", name.replace(" ", "_"));
-        } else {
-            result = StringUtils.replace(result, "{name}", "");
-        }
-
-        if (meta.hasLore()) {
-            result = StringUtils.replace(result, "{essentials_lore}", String.join("|", ItemUtil.getLore(meta)).replace(" ", "_"));
-        } else {
-            result = StringUtils.replace(result, "{essentials_lore}", "");
-        }
-
-        return result;
-    }
-
-     */
 
     public List<String> getTemplates() {
         return new ArrayList<>(templates.keySet());

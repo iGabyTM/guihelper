@@ -23,7 +23,6 @@ import me.gabytm.guihelper.commands.*;
 import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.generators.TypesManager;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
-import me.gabytm.guihelper.listeners.PlayerQuitListener;
 import me.gabytm.guihelper.template.TemplateManager;
 import me.gabytm.guihelper.utils.StringUtil;
 import org.bstats.bukkit.Metrics;
@@ -33,7 +32,6 @@ import java.util.stream.Stream;
 
 public final class GUIHelper extends JavaPlugin {
     private final InventoryManager inventoryManager = new InventoryManager();
-    private final Metrics metrics = new Metrics(this);
     private final TemplateManager templateManager = new TemplateManager();
     private final TypesManager typesManager = new TypesManager(this);
     private final String version = getDescription().getVersion();
@@ -41,14 +39,7 @@ public final class GUIHelper extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //final Metrics metrics = new Metrics(this);
-        /*
-        inventoryManager = new InventoryManager();
-        templateManager = new TemplateManager();
-        typesManager = new TypesManager(this);
-
-         */
-
+        new Metrics(this, 5497);
         saveDefaultConfig();
         templateManager.loadTemplates(getConfig().getConfigurationSection("templates"));
 
@@ -73,8 +64,7 @@ public final class GUIHelper extends JavaPlugin {
 
     private void loadEvents() {
         Stream.of(
-                new InventoryCloseListener(version),
-                new PlayerQuitListener(inventoryManager)
+                new InventoryCloseListener(version)
         ).forEach(event -> getServer().getPluginManager().registerEvents(event, this));
     }
 }

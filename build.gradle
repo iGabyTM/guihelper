@@ -4,23 +4,15 @@ plugins {
 }
 
 group = 'me.gabytm.guihelper'
-version = '1.6'
+version = '1.0.7'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-    maven {
-        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
-    }
-
-    maven {
-        url = 'https://repo.codemc.org/repository/maven-public'
-    }
-
-    maven {
-        url = 'http://repo.maven.apache.org/maven2'
-    }
+    maven({ url 'https://hub.spigotmc.org/nexus/content/groups/public/' })
+    maven({ url 'https://repo.codemc.org/repository/maven-public' })
+    maven({ url 'http://repo.maven.apache.org/maven2' })
 }
 
 dependencies {
@@ -61,6 +53,5 @@ processResources {
 shadowJar {
     archiveFileName = "${project.name} [${project.version}].jar"
     relocate 'org.bstats', 'me.gabytm.guihelper.utils.bstats'
-    destinationDir file("D:/Projects/Server/1.8/plugins")
-    // destinationDir file("D:/Projects/Server/1.12.2/plugins")
+    //destinationDir file("D:/Projects/MinecraftServers/1.8.8/plugins")
 }

@@ -73,13 +73,21 @@ public final class ShopGuiPlus implements IGeneratorPageSlot {
         section.set("item.material", item.getType().toString());
         section.set("item.quantity", item.getAmount());
 
-        if (item.getDurability() > 0) section.set("item.damage", item.getDurability());
+        if (item.getDurability() > 0) {
+            section.set("item.damage", item.getDurability());
+        }
 
-        if (ItemUtil.isMonsterEgg(item)) section.set("item.damage", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+        if (ItemUtil.isMonsterEgg(item)) {
+            section.set("item.damage", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
+        }
 
-        if (meta.hasDisplayName()) section.set("item.name", ItemUtil.getDisplayName(meta));
+        if (meta.hasDisplayName()) {
+            section.set("item.name", ItemUtil.getDisplayName(meta));
+        }
 
-        if (meta.hasLore()) section.set("item.lore", ItemUtil.getLore(meta));
+        if (meta.hasLore()) {
+            section.set("item.lore", ItemUtil.getLore(meta));
+        }
 
         if (meta.getItemFlags().size() > 0) {
             section.set("flags", meta.getItemFlags().stream().map(ItemFlag::toString).collect(Collectors.toList()));

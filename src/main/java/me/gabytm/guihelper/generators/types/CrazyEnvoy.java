@@ -25,14 +25,17 @@ import me.gabytm.guihelper.generators.generators.IGeneratorPage;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class CrazyEnvoy implements IGeneratorPage {
     private GUIHelper plugin;
@@ -99,7 +102,12 @@ public final class CrazyEnvoy implements IGeneratorPage {
         }
 
         if (meta.hasEnchants()) {
-            meta.getEnchants().keySet().forEach(en -> rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en)));
+            setEnchantments(meta.getEnchants(), rewardItemEnchantments);
+        }
+
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            setEnchantments(esm.getStoredEnchants(), rewardItemEnchantments);
         }
 
         section.set("Chance", defaults.getInt("Chance", 10));
@@ -120,5 +128,9 @@ public final class CrazyEnvoy implements IGeneratorPage {
 
         rewardItemsList.add(rewardItem.toString());
         section.set("Items", rewardItemsList);
+    }
+
+    public void setEnchantments(final Map<Enchantment, Integer> enchantments, final StringBuilder builder) {
+        enchantments.forEach((enchantment, level) -> builder.append(", ").append(enchantment.getName()).append(":").append(level));
     }
 }

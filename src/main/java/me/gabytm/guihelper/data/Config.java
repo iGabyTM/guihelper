@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Config {
-    private File configFile;
+    private final File configFile;
     private FileConfiguration config;
 
     public Config(final String path, final GUIHelper plugin) {
@@ -38,13 +38,15 @@ public class Config {
             this.configFile = new File(plugin.getDataFolder().getParent(),path + "/GUIHelper.yml");
         }
 
-        configFile.getParentFile().mkdirs();
+        if (!configFile.getParentFile().exists()) {
+            configFile.getParentFile().mkdirs();
+        }
 
         if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
             } catch (IOException e) {
-                Logging.error(String.format("An error occurred while creating %s", configFile.getPath()), e);
+                Logging.error("An error occurred while creating " + configFile.getPath(), e);
             }
         }
 
@@ -59,7 +61,7 @@ public class Config {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            Logging.error(String.format("An error occurred while saving %s", configFile.getPath()), e);
+            Logging.error("An error occurred while saving " + configFile.getPath(), e);
         }
     }
 

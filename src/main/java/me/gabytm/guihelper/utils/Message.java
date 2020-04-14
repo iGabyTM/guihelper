@@ -71,25 +71,33 @@ public enum Message {
     }
 
     public Message format(final String string) {
-        if (messageFormatted == null) messageFormatted = getMessage();
+        if (messageFormatted == null) {
+            messageFormatted = getMessage();
+        }
 
         messageFormatted = StringUtils.replaceEach(messageFormatted,
                 new String[]{"{type}", "{version}"},
                 new String[]{string, string}
         );
+
         return this;
     }
 
     public Message format(final long duration) {
-        if (messageFormatted == null) messageFormatted = getMessage();
+        if (messageFormatted == null) {
+            messageFormatted = getMessage();
+        }
 
         messageFormatted = StringUtils.replace(messageFormatted, "{duration}", Long.toString(duration));
         return this;
     }
 
     public void send(final CommandSender sender) {
-        if (messageFormatted != null) sender.sendMessage(messageFormatted);
-        else sender.sendMessage(getMessage());
+        if (messageFormatted != null) {
+            sender.sendMessage(messageFormatted);
+        } else {
+            sender.sendMessage(getMessage());
+        }
 
         messageFormatted = null;
     }

@@ -28,10 +28,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public final class DeluxeMenus {
@@ -99,9 +101,9 @@ public final class DeluxeMenus {
         }
 
         if (ItemUtil.isLeatherArmor(item)) {
-            LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
+            final LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
 
-            section.set("color", lam.getColor().getRed() + ", " + lam.getColor().getGreen() + ", " + lam.getColor().getBlue());
+            section.set("rgb", lam.getColor().getRed() + "," + lam.getColor().getGreen() + "," + lam.getColor().getBlue());
         } else if (ItemUtil.isMonsterEgg(item)) {
             section.set("data", ((SpawnEggMeta) meta).getSpawnedType().getTypeId());
         }
@@ -111,23 +113,16 @@ public final class DeluxeMenus {
         section.set("slot", slot);
 
         if (meta.getItemFlags().size() > 0) {
-            for (ItemFlag flag : meta.getItemFlags()) {
-                switch (flag) {
-                    case HIDE_ENCHANTS: {
-                        section.set("hide_enchantments", true);
-                        break;
-                    }
+            if (meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
+                section.set("hide_enchantments", true);
+            }
 
-                    case HIDE_ATTRIBUTES: {
-                        section.set("hide_attributes", true);
-                        break;
-                    }
+            if (meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
+                section.set("hide_attributes", true);
+            }
 
-                    case HIDE_POTION_EFFECTS: {
-                        section.set("hide_effects", true);
-                        break;
-                    }
-                }
+            if (meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS)) {
+                section.set("hide_effects", true);
             }
         }
 
@@ -140,7 +135,19 @@ public final class DeluxeMenus {
         }
 
         if (meta.hasEnchants()) {
-            section.set("enchantments", meta.getEnchants().keySet().stream().map(en -> en.getName() + ";" + meta.getEnchantLevel(en)).collect(Collectors.toList()));
+            section.set("enchantments", meta.getEnchants().entrySet().stream().map(entry -> entry.getKey().getName() + ";" + entry.getValue()).collect(Collectors.toList()));
+        }
+
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+
+            if (!esm.hasStoredEnchants()) {
+                return;
+            }
+
+            final List<String> enchantments = section.getStringList("enchantments");
+            enchantments.addAll(esm.getStoredEnchants().entrySet().stream().map(entry -> entry.getKey().getName() + ";" + entry.getValue()).collect(Collectors.toList()));
+            section.set("enchantments", enchantments);
         }
     }
 }

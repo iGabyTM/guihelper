@@ -48,16 +48,16 @@ public class TemplateCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String label, String[] args) {
+        if (!sender.hasPermission(GUIHelper.PERMISSION)) {
+            return true;
+        }
+
         if (!(sender instanceof Player)) {
             Message.PLAYERS_ONLY.send(sender);
             return true;
         }
 
         final Player player = (Player) sender;
-
-        if (!player.hasPermission(GUIHelper.PERMISSION)) {
-            return true;
-        }
 
         if (args.length == 0) {
             Message.TEMPLATE_USAGE.send(player);

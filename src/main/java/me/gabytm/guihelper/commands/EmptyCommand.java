@@ -28,7 +28,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EmptyCommand implements CommandExecutor {
-    private InventoryManager inventoryManager;
+    private final InventoryManager inventoryManager;
 
     public EmptyCommand(InventoryManager inventoryManager) {
         this.inventoryManager = inventoryManager;
@@ -36,19 +36,19 @@ public class EmptyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission(GUIHelper.PERMISSION)) {
+            return true;
+        }
+
         if (!(sender instanceof Player)) {
             Message.PLAYERS_ONLY.send(sender);
             return true;
         }
 
-        Player player = (Player) sender;
-
-        if (!player.hasPermission(GUIHelper.PERMISSION)) {
-            return true;
-        }
+        final Player player = (Player) sender;
 
         inventoryManager.remove(player.getUniqueId());
-        Message.CLEAR.send(player);
+        Message.EMPTY.send(player);
         return true;
     }
 }

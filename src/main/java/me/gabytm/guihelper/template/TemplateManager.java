@@ -90,7 +90,7 @@ public class TemplateManager {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     public void handleConfigurationSection(final Config config, final ConfigurationSection template, final String path, final Map<String, String> placeholders) {

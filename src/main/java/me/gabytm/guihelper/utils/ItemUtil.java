@@ -19,8 +19,10 @@
 
 package me.gabytm.guihelper.utils;
 
+import me.gabytm.guihelper.GUIHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -28,6 +30,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class ItemUtil {
+
+    @SuppressWarnings("deprecation")
+    public static ItemStack getItemInHand(final Player player) {
+        return GUIHelper.ONE_DOT_EIGHT ? player.getInventory().getItemInHand() : player.getInventory().getItemInMainHand();
+    }
+
     public static boolean isNull(ItemStack item) {
         return item == null || item.getType() == Material.AIR;
     }
@@ -45,8 +53,7 @@ public final class ItemUtil {
     }
 
     public static List<String> getLore(ItemMeta meta) {
-        return meta.getLore()
-                .stream()
+        return meta.getLore().stream()
                 .map(line -> line.replace(String.valueOf(ChatColor.COLOR_CHAR), "&"))
                 .collect(Collectors.toList());
     }

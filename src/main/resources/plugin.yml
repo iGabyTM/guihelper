@@ -16,6 +16,9 @@ commands:
   ghhelp:
     description: List the available commands
     usage: "/ghhelp"
+  ghinfo:
+    description: Display info about your item
+    usage: "/ghinfo"
   ghlist:
     description: List the available types
     usage: "/ghlist"

@@ -63,7 +63,7 @@ public final class DeluxeMenus {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     public void generateLocal(final Inventory inventory, final Player player) {
@@ -85,7 +85,7 @@ public final class DeluxeMenus {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     private void addItem(final ConfigurationSection section, final ItemStack item, final int slot) {

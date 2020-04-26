@@ -68,7 +68,7 @@ public class BossShopPro implements IGeneratorSlot {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @Override
@@ -112,17 +112,6 @@ public class BossShopPro implements IGeneratorSlot {
 
         if (meta.hasLore()) {
             final String lore = String.join("#", ItemUtil.getLore(meta));
-            /*
-           final StringBuilder lore = new StringBuilder();
-
-            for (String line : ItemUtil.getLore(meta)) {
-                if (lore.length() > 1) lore.append("#");
-
-                lore.append(line);
-            }
-
-             */
-
             rewardItem.add("lore:" + lore);
             menuItem.add("lore:" + lore + defaults.getString("lore", ""));
         } else {
@@ -151,17 +140,6 @@ public class BossShopPro implements IGeneratorSlot {
 
         if (meta.getItemFlags().size() > 0) {
             final String flags = meta.getItemFlags().stream().map(ItemFlag::name).collect(Collectors.joining("#"));
-            /*
-            final StringBuilder flags = new StringBuilder();
-
-            for (ItemFlag flag : meta.getItemFlags()) {
-                if (flags.length() > 1) flags.append("#");
-
-                flags.append(flag.toString());
-            }
-
-             */
-
             rewardItem.add("hideflags:" + flags);
             menuItem.add("hideflags:" + flags);
         }

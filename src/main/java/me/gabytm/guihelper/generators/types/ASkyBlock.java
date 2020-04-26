@@ -24,7 +24,6 @@ import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGenerator;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -32,8 +31,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public final class ASkyBlock implements IGenerator {
-    private GUIHelper plugin;
-    private ConfigurationSection defaults;
+    private final GUIHelper plugin;
+    private final ConfigurationSection defaults;
 
     public ASkyBlock(GUIHelper plugin) {
         this.plugin = plugin;
@@ -56,7 +55,9 @@ public final class ASkyBlock implements IGenerator {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             final ItemStack item = inventory.getItem(slot);
 
-            if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) {
+                continue;
+            }
 
             final String path = "items.item" + (slot + 1);
 
@@ -64,7 +65,7 @@ public final class ASkyBlock implements IGenerator {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     /**
@@ -82,15 +83,7 @@ public final class ASkyBlock implements IGenerator {
         section.set("sellprice", defaults.getInt("sellprice"));
 
         if (meta.hasLore()) {
-            final StringBuilder description = new StringBuilder();
-
-            for (String line : meta.getLore()) {
-                if (description.length() > 0) description.append("|");
-
-                description.append(line);
-            }
-
-            section.set("description", description.toString().replace(String.valueOf(ChatColor.COLOR_CHAR), "&"));
+            section.set("description", String.join("|", ItemUtil.getLore(meta)));
         }
     }
 }

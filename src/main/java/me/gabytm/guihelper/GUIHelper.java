@@ -19,32 +19,35 @@
 
 package me.gabytm.guihelper;
 
+import com.google.common.base.Enums;
 import me.gabytm.guihelper.commands.*;
 import me.gabytm.guihelper.data.InventoryManager;
 import me.gabytm.guihelper.generators.TypesManager;
 import me.gabytm.guihelper.listeners.InventoryCloseListener;
-import me.gabytm.guihelper.listeners.PlayerQuitListener;
 import me.gabytm.guihelper.template.TemplateManager;
 import me.gabytm.guihelper.utils.StringUtil;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.stream.Stream;
+
 public final class GUIHelper extends JavaPlugin {
-    private InventoryManager inventoryManager;
-    private TemplateManager templateManager;
-    private TypesManager typesManager;
+    private final InventoryManager inventoryManager = new InventoryManager();
+    private final TemplateManager templateManager = new TemplateManager();
+    private final TypesManager typesManager = new TypesManager(this);
     private final String version = getDescription().getVersion();
+    public static final String PERMISSION = "guihelper.use";
+    public static final boolean ONE_DOT_EIGHT = !Enums.getIfPresent(Material.class, "BEETROOT").isPresent();
 
     @Override
     public void onEnable() {
-        final Metrics metrics = new Metrics(this);
-        inventoryManager = new InventoryManager();
-        templateManager = new TemplateManager();
-        typesManager = new TypesManager(this);
-
+        new Metrics(this, 5497);
         saveDefaultConfig();
         templateManager.loadTemplates(getConfig().getConfigurationSection("templates"));
+
         StringUtil.consoleText(getServer().getConsoleSender(), version);
+
         loadCommands();
         loadEvents();
     }
@@ -56,6 +59,7 @@ public final class GUIHelper extends JavaPlugin {
         getCommand("ghcreate").setTabCompleter(tabCompleter);
         getCommand("ghempty").setExecutor(new EmptyCommand(inventoryManager));
         getCommand("ghhelp").setExecutor(new HelpCommand(version));
+        getCommand("ghinfo").setExecutor(new InfoCommand());
         getCommand("ghlist").setExecutor(new ListCommand(version));
         getCommand("ghreload").setExecutor(new ReloadCommand(this, templateManager));
         getCommand("ghtemplate").setExecutor(new TemplateCommand(this, inventoryManager, templateManager));
@@ -63,7 +67,8 @@ public final class GUIHelper extends JavaPlugin {
     }
 
     private void loadEvents() {
-        getServer().getPluginManager().registerEvents(new InventoryCloseListener(version), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(inventoryManager), this);
+        Stream.of(
+                new InventoryCloseListener(version)
+        ).forEach(event -> getServer().getPluginManager().registerEvents(event, this));
     }
 }

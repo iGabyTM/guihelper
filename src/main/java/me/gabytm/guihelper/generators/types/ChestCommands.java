@@ -29,9 +29,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
+
+import java.util.Map;
 
 public final class ChestCommands implements IGeneratorSlot {
     private GUIHelper plugin;
@@ -58,7 +61,7 @@ public final class ChestCommands implements IGeneratorSlot {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @Override
@@ -86,18 +89,16 @@ public final class ChestCommands implements IGeneratorSlot {
         }
 
         if (meta.hasEnchants()) {
-            StringBuilder enchantments = new StringBuilder();
+            setEnchantments(meta.getEnchants(), section);
+        }
 
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                if (enchantments.length() > 0) enchantments.append(";");
-                enchantments.append(en.getName()).append(",").append(meta.getEnchantLevel(en));
-            }
-
-            section.set("ENCHANTMENT", enchantments.toString());
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            setEnchantments(esm.getStoredEnchants(), section);
         }
 
         if (ItemUtil.isLeatherArmor(item)) {
-            LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
+            final LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
 
             section.set("COLOR", lam.getColor().getRed() + ", " + lam.getColor().getGreen() + ", " + lam.getColor().getBlue());
         } else if (ItemUtil.isMonsterEgg(item)) {
@@ -117,5 +118,19 @@ public final class ChestCommands implements IGeneratorSlot {
 
         section.set("POSITION-X", x);
         section.set("POSITION-Y", y);
+    }
+
+    private void setEnchantments(final Map<Enchantment, Integer> enchantments, final ConfigurationSection section) {
+        final StringBuilder builder = new StringBuilder().append(section.getString("ENCHANTMENT", ""));
+
+        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+            if (builder.length() > 0) {
+                builder.append(";");
+            }
+
+            builder.append(entry.getKey().getName()).append(",").append(entry.getValue());
+        }
+
+        section.set("ENCHANTMENT", builder.toString());
     }
 }

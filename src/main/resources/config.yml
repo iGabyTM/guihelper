@@ -55,6 +55,8 @@ SuperLobbyDeluxe:
 #
 # Placeholders:
 #  • {amount}          - (number) the item amount
+#  • {args}            - (string) the arguments specified after the creation command, alternative use {args[index]} to
+#                                 target a certain argument (replace 'index' with the position, eg 1 for the first argument)
 #  • {data}            - (number) the item data / damage value
 #  • {enchanted}       - (boolean) check if the item is enchanted or not
 #  • {flag_(flag)}     - (boolean) check if the item have the specified flag (http://bit.ly/itemflag)

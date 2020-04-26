@@ -25,13 +25,17 @@ import me.gabytm.guihelper.generators.generators.IGenerator;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CratesPlus implements IGenerator {
@@ -61,7 +65,7 @@ public class CratesPlus implements IGenerator {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @Override
@@ -88,7 +92,12 @@ public class CratesPlus implements IGenerator {
         section.set("Amount", item.getAmount());
 
         if (meta.hasEnchants()) {
-            section.set("Enchantments", meta.getEnchants().keySet().stream().map(en -> en.getName() + "-" + meta.getEnchantLevel(en)).collect(Collectors.toList()));
+            setEnchantments(meta.getEnchants(), section);
+        }
+
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            setEnchantments(esm.getStoredEnchants(), section);
         }
 
         if (meta.hasLore()) {
@@ -98,5 +107,11 @@ public class CratesPlus implements IGenerator {
         if (meta.getItemFlags().size() > 0) {
             section.set("Flags", meta.getItemFlags().stream().map(ItemFlag::toString).collect(Collectors.toList()));
         }
+    }
+
+    public void setEnchantments(final Map<Enchantment, Integer> enchantments, final ConfigurationSection section) {
+        final List<String> list = section.getStringList("Enchantments");
+        enchantments.forEach((enchantment, level) -> list.add(enchantment.getName() + "-" + level));
+        section.set("Enchantments", list);
     }
 }

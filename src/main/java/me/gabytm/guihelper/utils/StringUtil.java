@@ -19,24 +19,18 @@
 
 package me.gabytm.guihelper.utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 
-import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public final class StringUtil {
-    public static String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
+    public static String color(final String line) {
+        return ChatColor.translateAlternateColorCodes('&', line);
     }
 
-    public static void saveError(Exception exception) {
-        Bukkit.getLogger().log(Level.SEVERE, "[GUIHelper] An error occurred while saving the config.", exception);
-    }
-
-    public static void consoleText(ConsoleCommandSender ccs, String version) {
+    public static void consoleText(final ConsoleCommandSender ccs, final String version) {
         Stream.of(
                 "&2 _____   _____   ",
                 "&2|   __| |  |  |  &fGUIHelper &av" + version + " &fby &aGabyTM",
@@ -45,7 +39,7 @@ public final class StringUtil {
         ).forEach(line -> ccs.sendMessage(color(line)));
     }
 
-    public static String formatEnchantmentName(Enchantment enchantment) {
+    public static String formatEnchantmentName(final Enchantment enchantment) {
         switch (enchantment.getName()) {
             case "ARROW_DAMAGE":
                 return "&7Power";

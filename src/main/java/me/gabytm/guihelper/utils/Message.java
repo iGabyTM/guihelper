@@ -19,21 +19,24 @@
 
 package me.gabytm.guihelper.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 
 public enum Message {
-    CLEAR("&aThe GUI has been cleared and is ready to use!"),
     CREATION_DONE("&aDone! &7({duration}ms)"),
     CREATION_ERROR("&cSomething went wrong, please check the console."),
+    EMPTY("&aThe GUI has been cleared and is ready to use!"),
     EMPTY_GUI("&cPlease add some items to the GUI first!"),
     HELP("\n" +
             "&7GUIHelper &fv{version} &7by GabyTM\n" +
             "  &2/ghcreate [type] &a(argument) &8- &fCreate a config\n" +
             "  &2/ghempty &8- &fEmpty the GUI faster\n" +
             "  &2/ghhelp &8- &fDisplay the commands list\n" +
+            "  &2/ghinfo &8- &fDisplay info about your item\n" +
             "  &2/ghlist &8- &fDisplay the supported plugins list\n" +
             "  &2/ghreload &8- &fReload the plugin\n" +
-            "  &2/ghtemplate [list|template] &8- &fList all available templates or create a config following a template"),
+            "  &2/ghtemplate [list|template] &a(arguments) &8- &fList all available templates or create a config following a template"),
+    INFO_NO_ITEM("&cPlease hold an item in hand."),
     NO_TEMPLATES("&cNo templates found."),
     PLAYERS_ONLY("&cOnly players can run this command!"),
     RELOAD("&aThe plugin has been successfully reloaded!"),
@@ -60,34 +63,44 @@ public enum Message {
     WRONG_TYPE("&c{type} is not a valid type.");
 
     private String messageFormatted;
-    private String message;
+    private final String message;
 
-    Message(String message) { this.message = message; }
+    Message(final String message) {
+        this.message = message;
+    }
 
     public String getMessage() {
         return StringUtil.color(message);
     }
 
-    public Message format(String string) {
-        if (messageFormatted == null) messageFormatted = getMessage();
+    public Message format(final String string) {
+        if (messageFormatted == null) {
+            messageFormatted = getMessage();
+        }
 
-        messageFormatted = messageFormatted
-                .replace("{type}", string)
-                .replace("{version}", string);
+        messageFormatted = StringUtils.replaceEach(messageFormatted,
+                new String[]{"{type}", "{version}"},
+                new String[]{string, string}
+        );
+
         return this;
     }
 
-    public Message format(long duration) {
-        if (messageFormatted == null) messageFormatted = getMessage();
+    public Message setDuration(final long duration) {
+        if (messageFormatted == null) {
+            messageFormatted = getMessage();
+        }
 
-        messageFormatted = messageFormatted
-                .replace("{duration}", String.valueOf(duration));
+        messageFormatted = StringUtils.replace(messageFormatted, "{duration}", Long.toString(duration));
         return this;
     }
 
-    public void send(CommandSender sender) {
-        if (messageFormatted != null) sender.sendMessage(messageFormatted);
-        else sender.sendMessage(getMessage());
+    public void send(final CommandSender sender) {
+        if (messageFormatted != null) {
+            sender.sendMessage(messageFormatted);
+        } else {
+            sender.sendMessage(getMessage());
+        }
 
         messageFormatted = null;
     }

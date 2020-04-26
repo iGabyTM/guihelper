@@ -29,12 +29,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class CrazyCrates implements IGeneratorPage {
     private GUIHelper plugin;
@@ -63,7 +65,7 @@ public final class CrazyCrates implements IGeneratorPage {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -117,14 +119,12 @@ public final class CrazyCrates implements IGeneratorPage {
         }
 
         if (meta.hasEnchants()) {
-            final List<String> enchantments = new ArrayList<>();
+            setEnchantments(meta.getEnchants(), section, rewardItemEnchantments);
+        }
 
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                enchantments.add(en.getName() + ":" + meta.getEnchantLevel(en));
-                rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
-            }
-
-            section.set("DisplayEnchantments", enchantments);
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            setEnchantments(esm.getStoredEnchants(), section, rewardItemEnchantments);
         }
 
         section.set("MaxRange", defaults.getInt("MaxRange", 100));
@@ -146,5 +146,16 @@ public final class CrazyCrates implements IGeneratorPage {
 
         rewardItemsList.add(rewardItem.toString());
         section.set("Items", rewardItemsList);
+    }
+
+    public void setEnchantments(final Map<Enchantment, Integer> enchantments, final ConfigurationSection section, final StringBuilder builder) {
+        final List<String> list = section.getStringList("DisplayEnchantments");
+
+        enchantments.forEach((enchantment, level) -> {
+            list.add(enchantment.getName() + ":" + level);
+            builder.append(", ").append(enchantment.getName()).append(":").append(level);
+        });
+
+        section.set("DisplayEnchantments", list);
     }
 }

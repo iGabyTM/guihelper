@@ -29,22 +29,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class BossShopProMenu implements IGeneratorSlot {
-    private GUIHelper plugin;
-    private ConfigurationSection defaults;
+    private final GUIHelper plugin;
+    private final ConfigurationSection defaults;
 
     public BossShopProMenu(final GUIHelper plugin) {
         this.plugin = plugin;
         defaults = plugin.getConfig().getConfigurationSection("BossShopPro.menu");
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void generate(final Inventory inventory, final Player player) {
         final long start = System.currentTimeMillis();
@@ -55,15 +58,17 @@ public final class BossShopProMenu implements IGeneratorSlot {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             final ItemStack item = inventory.getItem(slot);
 
-            if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) {
+                continue;
+            }
 
             final String path = "shop.item-" + (slot + 1);
 
-            addItem(config.get().createSection(path), item, slot);
+            addItem(config.get().createSection(path), item, (slot + 1));
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @Override
@@ -93,31 +98,20 @@ public final class BossShopProMenu implements IGeneratorSlot {
         }
 
         if (meta.hasLore()) {
-            final StringBuilder lore = new StringBuilder();
-
-            for (String line : meta.getLore()) {
-                if (lore.length() > 1) lore.append("#");
-
-                lore.append(line);
-            }
-
-            menuItem.add("lore:" + lore.toString());
+            menuItem.add("lore:" + String.join("#", ItemUtil.getLore(meta)));
         }
 
         if (meta.hasEnchants()) {
             meta.getEnchants().keySet().forEach(en -> menuItem.add("enchantment:" + en.getName() + "#" + meta.getEnchantLevel(en)));
         }
 
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            esm.getStoredEnchants().forEach((enchantment, level) -> menuItem.add("enchantment:" + enchantment.getName() + "#" + level));
+        }
+
         if (meta.getItemFlags().size() > 0) {
-            final StringBuilder flags = new StringBuilder();
-
-            for (ItemFlag flag : meta.getItemFlags()) {
-                if (flags.length() > 1) flags.append("#");
-
-                flags.append(flag.toString());
-            }
-
-            menuItem.add("hideflags:" + flags.toString());
+            menuItem.add("hideflags:" + meta.getItemFlags().stream().map(ItemFlag::name).collect(Collectors.joining("#")));
         }
 
         section.set("Reward", defaults.getStringList("Reward"));

@@ -24,56 +24,53 @@ import me.gabytm.guihelper.data.Config;
 import me.gabytm.guihelper.generators.generators.IGeneratorPage;
 import me.gabytm.guihelper.utils.ItemUtil;
 import me.gabytm.guihelper.utils.Message;
-import me.gabytm.guihelper.utils.StringUtil;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class CrazyEnvoy implements IGeneratorPage {
     private GUIHelper plugin;
     private ConfigurationSection defaults;
 
-    public CrazyEnvoy(GUIHelper plugin) {
+    public CrazyEnvoy(final GUIHelper plugin) {
         this.plugin = plugin;
         defaults = plugin.getConfig().getConfigurationSection("CrazyCrates");
     }
 
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public void generate(Inventory gui, Player player, int page) {
-        try {
-            final long start = System.currentTimeMillis();
-            final Config config = new Config("CrazyEnvoy/tiers", plugin);
+    public void generate(final Inventory gui, final Player player, final int page) {
+        final long start = System.currentTimeMillis();
+        final Config config = new Config("CrazyEnvoy/tiers", plugin);
 
-            config.empty();
+        config.empty();
 
-            for (int slot = 0; slot < gui.getSize(); slot++) {
-                final ItemStack item = gui.getItem(slot);
+        for (int slot = 0; slot < gui.getSize(); slot++) {
+            final ItemStack item = gui.getItem(slot);
 
-                if (ItemUtil.isNull(item)) continue;
+            if (ItemUtil.isNull(item)) continue;
 
-                String path = "Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
+            String path = "Prizes." + (page > 1 ? slot + 1 + (53 * (page - 1)) : slot);
 
-                addItem(config.get().createSection(path), item);
-            }
-
-            config.save();
-            Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
-        } catch (Exception e) {
-            StringUtil.saveError(e);
-            Message.CREATION_ERROR.send(player);
+            addItem(config.get().createSection(path), item);
         }
+
+        config.save();
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public void addItem(ConfigurationSection section, ItemStack item) {
+    public void addItem(final ConfigurationSection section, final ItemStack item) {
         final ItemMeta meta = item.getItemMeta();
         final StringBuilder rewardItem = new StringBuilder();
         final StringBuilder rewardItemMaterial = new StringBuilder();
@@ -105,7 +102,12 @@ public final class CrazyEnvoy implements IGeneratorPage {
         }
 
         if (meta.hasEnchants()) {
-            meta.getEnchants().keySet().forEach(en -> rewardItemEnchantments.append(", ").append(en.getName()).append(":").append(meta.getEnchantLevel(en)));
+            setEnchantments(meta.getEnchants(), rewardItemEnchantments);
+        }
+
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            setEnchantments(esm.getStoredEnchants(), rewardItemEnchantments);
         }
 
         section.set("Chance", defaults.getInt("Chance", 10));
@@ -126,5 +128,9 @@ public final class CrazyEnvoy implements IGeneratorPage {
 
         rewardItemsList.add(rewardItem.toString());
         section.set("Items", rewardItemsList);
+    }
+
+    public void setEnchantments(final Map<Enchantment, Integer> enchantments, final StringBuilder builder) {
+        enchantments.forEach((enchantment, level) -> builder.append(", ").append(enchantment.getName()).append(":").append(level));
     }
 }

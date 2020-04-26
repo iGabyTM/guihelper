@@ -31,10 +31,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class LemonMobCoins implements IGeneratorSlot {
     private GUIHelper plugin;
@@ -63,7 +65,7 @@ public final class LemonMobCoins implements IGeneratorSlot {
         }
 
         config.save();
-        Message.CREATION_DONE.format(System.currentTimeMillis() - start).send(player);
+        Message.CREATION_DONE.setDuration(System.currentTimeMillis() - start).send(player);
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -87,14 +89,12 @@ public final class LemonMobCoins implements IGeneratorSlot {
         }
 
         if (meta.hasEnchants()) {
-            List<String> enchantments = new ArrayList<>();
+            setEnchantments(meta.getEnchants(), section, rewardItemEnchantments);
+        }
 
-            for (Enchantment en : meta.getEnchants().keySet()) {
-                enchantments.add(StringUtil.formatEnchantmentName(en) + " " + NumberUtil.toRoman(meta.getEnchantLevel(en)));
-                rewardItemEnchantments.append(" ").append(en.getName()).append(":").append(meta.getEnchantLevel(en));
-            }
-
-            section.set("lore", enchantments);
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+            setEnchantments(esm.getStoredEnchants(), section, rewardItemEnchantments);
         }
 
         if (meta.hasLore()) {
@@ -103,8 +103,8 @@ public final class LemonMobCoins implements IGeneratorSlot {
             section.set("lore", ItemUtil.getLore(meta));
         }
 
-        section.set("permission", defaults.getBoolean("LemonMobCoins.permission"));
-        section.set("price", defaults.getInt("LemonMobCoins.price", 100));
+        section.set("permission", defaults.getBoolean("permission"));
+        section.set("price", defaults.getInt("price", 100));
         rewardItem.append("give %player% ").append(item.getType().toString()).append(" ").append(item.getAmount());
 
         if (rewardItemDisplayName.length() > 0) {
@@ -121,5 +121,16 @@ public final class LemonMobCoins implements IGeneratorSlot {
 
         rewardItemsList.add(rewardItem.toString());
         section.set("commands", rewardItemsList);
+    }
+
+    public void setEnchantments(final Map<Enchantment, Integer> enchantments, final ConfigurationSection section, final StringBuilder builder) {
+        final List<String> list = section.getStringList("lore");
+
+        enchantments.forEach((enchantment, level) -> {
+            list.add(StringUtil.formatEnchantmentName(enchantment) + " " + NumberUtil.toRoman(level));
+            builder.append(" ").append(enchantment.getName()).append(":").append(level);
+        });
+
+        section.set("lore", list);
     }
 }

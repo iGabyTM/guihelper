@@ -31,33 +31,33 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class TemplateCommand implements CommandExecutor {
-    private GUIHelper plugin;
-    private InventoryManager inventoryManager;
-    private TemplateManager templateManager;
+    private final GUIHelper plugin;
+    private final InventoryManager inventoryManager;
+    private final TemplateManager templateManager;
 
-    public TemplateCommand(GUIHelper plugin, InventoryManager inventoryManager, TemplateManager templateManager) {
+    public TemplateCommand(final GUIHelper plugin, final InventoryManager inventoryManager, final TemplateManager templateManager) {
         this.plugin = plugin;
         this.inventoryManager = inventoryManager;
         this.templateManager = templateManager;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label, String[] args) {
+        if (!sender.hasPermission(GUIHelper.PERMISSION)) {
+            return true;
+        }
+
         if (!(sender instanceof Player)) {
             Message.PLAYERS_ONLY.send(sender);
             return true;
         }
 
         final Player player = (Player) sender;
-
-        if (!player.hasPermission("guihelper.access")) {
-            return true;
-        }
-
 
         if (args.length == 0) {
             Message.TEMPLATE_USAGE.send(player);
@@ -92,7 +92,12 @@ public class TemplateCommand implements CommandExecutor {
         final Config config = new Config("template-" + args[0] + ".yml", plugin);
         config.empty();
 
-        templateManager.generate(args[0], config, inventoryManager.get(player.getUniqueId()), player);
+        if (args.length > 1) {
+            templateManager.generate(args[0], config, inventoryManager.get(player.getUniqueId()), player, Arrays.copyOfRange(args, 1, args.length));
+            return true;
+        }
+
+        templateManager.generate(args[0], config, inventoryManager.get(player.getUniqueId()), player, new String[]{});
         return true;
     }
 }

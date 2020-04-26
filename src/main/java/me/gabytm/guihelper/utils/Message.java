@@ -52,7 +52,7 @@ public enum Message {
             //"  &2GUIShop &8- &fShop items\n" +
             "  &2LemonMobCoins &8- &fShop items\n" +
             "  &2ShopGuiPlus &a(page) &8- &fShop items\n" +
-            "  &2SuperLobbyDeluxe &8- &f" +
+            "  &2SuperLobbyDeluxe &8- &f\n" +
             "  &2BetterGUI &8- &fMenu items\n" +
             " \n" +
             "&7Usage: &2/ghcreate [type] &a(argument)"),

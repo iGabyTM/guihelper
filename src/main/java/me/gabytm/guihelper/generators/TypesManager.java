@@ -23,21 +23,22 @@ import me.gabytm.guihelper.GUIHelper;
 import me.gabytm.guihelper.generators.types.*;
 
 public final class TypesManager {
-    private ASkyBlock aSkyBlock;
-    private BossShopPro bossShopPro;
-    private BossShopProMenu bossShopProMenu;
-    private ChestCommands chestCommands;
-    private CratesPlus cratesPlus;
-    private CrazyCrates crazyCrates;
-    private CrazyEnvoy crazyEnvoy;
-    private DeluxeMenus deluxeMenus;
+    private final ASkyBlock aSkyBlock;
+    private final BetterGUI betterGUI;
+    private final BossShopPro bossShopPro;
+    private final BossShopProMenu bossShopProMenu;
+    private final ChestCommands chestCommands;
+    private final CratesPlus cratesPlus;
+    private final CrazyCrates crazyCrates;
+    private final CrazyEnvoy crazyEnvoy;
+    private final DeluxeMenus deluxeMenus;
     //private GuiShop guiShop;
-    private LemonMobCoins lemonMobCoins;
-    private ShopGuiPlus shopGuiPlus;
-    private SuperLobbyDeluxe superLobbyDeluxe;
-    private BetterGUI betterGUI;
+    private final LemonMobCoins lemonMobCoins;
+    private final ShopGuiPlus shopGuiPlus;
+    private final SuperLobbyDeluxe superLobbyDeluxe;
 
     public ASkyBlock aSkyBlock() { return aSkyBlock; }
+    public BetterGUI betterGUI() { return betterGUI; }
     public BossShopPro bossShopPro() { return bossShopPro; }
     public BossShopProMenu bossShopProMenu() { return bossShopProMenu; }
     public ChestCommands chestCommands() { return chestCommands; }
@@ -48,10 +49,10 @@ public final class TypesManager {
     public LemonMobCoins lemonMobCoins() { return lemonMobCoins; }
     public ShopGuiPlus shopGuiPlus() { return shopGuiPlus; }
     public SuperLobbyDeluxe superLobbyDeluxe() { return superLobbyDeluxe; }
-    public BetterGUI betterGUI() { return betterGUI; }
 
     public TypesManager(GUIHelper plugin) {
         aSkyBlock = new ASkyBlock(plugin);
+        betterGUI = new BetterGUI(plugin);
         bossShopPro = new BossShopPro(plugin);
         bossShopProMenu = new BossShopProMenu(plugin);
         chestCommands = new ChestCommands(plugin);
@@ -62,6 +63,5 @@ public final class TypesManager {
         lemonMobCoins = new LemonMobCoins(plugin);
         shopGuiPlus = new ShopGuiPlus(plugin);
         superLobbyDeluxe = new SuperLobbyDeluxe(plugin);
-        betterGUI = new BetterGUI(plugin);
     }
 }

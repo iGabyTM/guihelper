@@ -33,8 +33,8 @@ import org.bukkit.inventory.Inventory;
 import java.util.UUID;
 
 public class CreateCommand implements CommandExecutor {
-    private TypesManager manager;
-    private InventoryManager inventoryManager;
+    private final TypesManager manager;
+    private final InventoryManager inventoryManager;
 
     public CreateCommand(TypesManager manager, InventoryManager inventoryManager) {
         this.manager = manager;
@@ -71,6 +71,11 @@ public class CreateCommand implements CommandExecutor {
             // Updated
             case "askyblock": {
                 manager.aSkyBlock().generate(inventory, player);
+                break;
+            }
+
+            case "bettergui": {
+                manager.betterGUI().generate(inventory, player);
                 break;
             }
 
@@ -136,11 +141,6 @@ public class CreateCommand implements CommandExecutor {
 
             case "superlobbydeluxe": {
                 manager.superLobbyDeluxe().generate(inventory, player);
-                break;
-            }
-
-            case "bettergui": {
-                manager.betterGUI().generate(inventory, player);
                 break;
             }
 

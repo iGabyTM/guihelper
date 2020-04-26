@@ -44,6 +44,7 @@ public enum Message {
     TYPES_LIST("\n" +
             "&7GUIHelper &fv{version} &7GabyTM\n" +
             "  &2ASkyBlock &8- &fIsland minishop items\n" +
+            "  &2BetterGUI &8- &fMenu items\n" +
             "  &2BossShopPro &8- &fShop items\n" +
             "  &2BossShopProMenu &8- &fMenu items\n" +
             "  &2ChestCommands &8- &fMenu items\n" +

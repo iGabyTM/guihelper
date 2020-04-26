@@ -48,7 +48,7 @@ public final class CommandTabCompleter implements TabCompleter {
                 return Collections.emptyList();
             }
 
-            final List<String> TYPES = Arrays.asList("ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe", "BetterGUI");
+            final List<String> TYPES = Arrays.asList("ASkyBlock", "BetterGUI", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe");
             return order(args[0], TYPES);
         }
 
@@ -66,8 +66,6 @@ public final class CommandTabCompleter implements TabCompleter {
     private List<String> order(String arg, List<String> list) {
         final List<String> completions = new ArrayList<>();
 
-        StringUtil.copyPartialMatches(arg, list, completions);
-        Collections.sort(completions);
-        return completions;
+        return StringUtil.copyPartialMatches(arg, list, completions);
     }
 }

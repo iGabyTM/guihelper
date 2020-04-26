@@ -54,7 +54,7 @@ public final class ChestCommands implements IGeneratorSlot {
 
             final String path = "item-" + slot;
 
-            addItem(config.get().getConfigurationSection(path), item, slot);
+            addItem(config.get().createSection(path), item, slot);
         }
 
         config.save();

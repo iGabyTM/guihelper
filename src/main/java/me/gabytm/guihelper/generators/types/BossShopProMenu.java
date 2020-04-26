@@ -59,7 +59,7 @@ public final class BossShopProMenu implements IGeneratorSlot {
 
             final String path = "shop.item-" + (slot + 1);
 
-            addItem(config.get().getConfigurationSection(path), item, slot);
+            addItem(config.get().createSection(path), item, slot);
         }
 
         config.save();

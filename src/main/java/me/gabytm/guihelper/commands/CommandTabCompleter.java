@@ -48,7 +48,7 @@ public final class CommandTabCompleter implements TabCompleter {
                 return Collections.emptyList();
             }
 
-            final List<String> TYPES = Arrays.asList("ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe");
+            final List<String> TYPES = Arrays.asList("ASkyBlock", "BossShopPro", "BossShopProMenu", "ChestCommands", "CratesPlus", "CrazyCrates", "CrazyEnvoy", "DeluxeMenus", "DeluxeMenusLocal", "GUIShop", "ShopGuiPlus", "SuperLobbyDeluxe", "BetterGUI");
             return order(args[0], TYPES);
         }
 

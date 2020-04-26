@@ -139,6 +139,11 @@ public class CreateCommand implements CommandExecutor {
                 break;
             }
 
+            case "bettergui": {
+                manager.betterGUI().generate(inventory, player);
+                break;
+            }
+
             default: {
                 Message.WRONG_TYPE.format(args[0]).send(player);
                 break;

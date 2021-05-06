@@ -35,7 +35,7 @@ class GeneratorsManager(plugin: GUIHelper) {
      * @param id the id of the generator
      * @return the generator if found, otherwise null
      */
-    fun getGenerator(id: String): ConfigGenerator? = registeredGenerators[id.toLowerCase()]
+    fun getGenerator(id: String): ConfigGenerator? = registeredGenerators[id.lowercase()]
 
     fun getRegisteredGeneratorsIds(): List<String> = registeredGenerators.keys.toList()
 

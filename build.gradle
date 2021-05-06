@@ -1,0 +1,74 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+import static fr.il_totore.manadrop.MinecraftDependencyHelper.*
+import static fr.il_totore.manadrop.MinecraftRepositoryHelper.*
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
+    id 'fr.il_totore.manadrop' version '0.4.1-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'org.cadixdev.licenser' version '0.6.0'
+}
+
+group 'me.gabytm.minecraft'
+version '1.1.0'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+
+    sonatype()
+    spigotSnapshot()
+
+    maven {
+        name 'NBT API'
+        url 'https://repo.codemc.org/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands -
+    implementation 'de.tr7zw:item-nbt-api:2.7.1' // https://spigotmc.org/resources/7939/
+
+    compileOnly spigotApi('1.16.5')
+}
+
+compileJava.options.encoding = "UTF-8"
+
+compileKotlin.kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8
+    javaParameters = true
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+license {
+    header = project.file('headers/header.txt')
+
+    properties {
+        year = new Date().format("yyyy")
+    }
+
+    include '**/*.kt'
+}
+
+shadowJar {
+    archiveName("GUIHelper [${project.version}].jar")
+
+    [
+            'kotlin'                  : 'kt', // 'kt' to stop other plugins from loading it from my jar
+            'me.mattstudios.mf'       : 'commands',
+            'de.tr7zw.changeme.nbtapi': 'nbtapi'
+    ].each { relocate(it.key, 'me.gabytm.minecraft.guihelper.libs.' + it.value) }
+}
+
+task copyJarToServer(type: Copy) {
+    from shadowJar
+    into "./server/plugins"
+}

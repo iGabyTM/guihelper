@@ -95,7 +95,7 @@ class DeluxeMenusGenerator(private val plugin: GUIHelper) : ConfigGenerator() {
         val enchantments = meta.enchants.entries.map { "${it.key.name};${it.value}" }.toMutableList()
 
         if (meta is EnchantmentStorageMeta) {
-            enchantments += meta.storedEnchants.entries.map { "${it.key.name};${it.value}" }
+            enchantments.addAll(meta.storedEnchants.entries.map { "${it.key.name};${it.value}" })
         }
 
         if (enchantments.isNotEmpty()) {

@@ -4,7 +4,7 @@ import static fr.il_totore.manadrop.MinecraftDependencyHelper.*
 import static fr.il_totore.manadrop.MinecraftRepositoryHelper.*
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.0'
     id 'fr.il_totore.manadrop' version '0.4.1-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'org.cadixdev.licenser' version '0.6.0'
@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands -
+    implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands - https://mf.mattstudios.me/mf/mf-1
     implementation 'de.tr7zw:item-nbt-api:2.7.1' // https://spigotmc.org/resources/7939/
 
     compileOnly spigotApi('1.16.5')

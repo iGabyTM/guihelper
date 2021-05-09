@@ -25,7 +25,7 @@ class InventoryManager : InventoryHolder {
         if (target.type == Material.CHEST) { // Player is looking at a chest
             val chestInventory = (target.state as Chest).inventory
 
-            if (!chestInventory.isEmpty) { // Chest inventory is not empty
+            if (chestInventory.isNotEmpty) { // Chest inventory is not empty
                 return chestInventory
             }
         }

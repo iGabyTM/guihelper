@@ -68,7 +68,7 @@ class DeluxeMenusGenerator(
             }
 
             val path = if (external) "items.$slot" else "gui_menus.GUIHelper.items.$slot"
-            createItem(config.createSection(path), item, slot)
+            createItem(config.createSection(path), input, item, slot)
         }
 
         config.save()

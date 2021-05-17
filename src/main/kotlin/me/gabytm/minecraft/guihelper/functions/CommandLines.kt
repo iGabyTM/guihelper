@@ -7,7 +7,8 @@ fun <V> CommandLine.getOrDefault(opt: String, default: V, transformer: (String) 
         return default
     }
 
-    return transformer(getOptionValue(opt)) ?: default
+    val value = getOptionValue(opt) ?: return default
+    return transformer(value) ?: default
 }
 
 fun <V> CommandLine.getOrDefault(opt: Char, default: V, transformer: (String) -> V?): V {
@@ -23,5 +24,6 @@ fun <V> CommandLine.getCollectionOrDefault(
         return default
     }
 
-    return transformer(getOptionValues(opt)) ?: default
+    val values = getOptionValues(opt) ?: return default
+    return transformer(values) ?: default
 }

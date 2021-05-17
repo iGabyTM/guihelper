@@ -44,15 +44,18 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    //implementation 'org.jetbrains.kotlin:kotlin-reflect'
+
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+
     implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands - https://mf.mattstudios.me/mf/mf-1
+    implementation 'me.mattstudios:triumph-config:1.0.5-SNAPSHOT'
+
     implementation 'de.tr7zw:item-nbt-api:2.7.1' // https://spigotmc.org/resources/7939/
-    compileOnly spigotApi('1.16.5')
     implementation 'me.rayzr522:jsonmessage:1.2.1' // https://github.com/Rayzr522/JSONMessage
 
     // Heads
     compileOnly 'me.arcaniax:HeadDatabase-API:1.1.0'
-
-    implementation 'me.mattstudios:triumph-config:1.0.5-SNAPSHOT'
 
     implementation 'commons-cli:commons-cli:1.4' // https://commons.apache.org/proper/commons-cli/index.html
 }
@@ -85,6 +88,7 @@ shadowJar {
 
     [
             'kotlin'                  : 'kt', // 'kt' to stop other plugins from loading it from my jar
+            'me.mattstudios.config'   : 'defaults',
             'me.mattstudios.mf'       : 'commands',
             'de.tr7zw.changeme.nbtapi': 'nbtapi'
     ].each { relocate(it.key, 'me.gabytm.minecraft.guihelper.libs.' + it.value) }

@@ -37,6 +37,7 @@ import org.bukkit.configuration.ConfigurationSection
 fun ConfigurationSection.set(path: String, condition: () -> Boolean, value: () -> Any?) {
     if (condition()) {
         this[path] = value
+        println("this[$path] = $value")
     }
 }
 

@@ -152,12 +152,16 @@ class DeluxeMenusGenerator(
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
         val id = plugin.headsIdHandler[item, provider]
 
-        when (provider) {
-            Provider.BASE_64 -> "basehead-$id"
-            Provider.HEAD_DATABASE -> "hdb-$id"
-            Provider.PLAYER_NAME -> "player-$id"
-            else -> throw IllegalArgumentException("$provider is not supported by DeluxeMenus")
-        }.let { section["material"] = it }
+        try {
+            when (provider) {
+                Provider.BASE_64 -> "basehead-$id"
+                Provider.HEAD_DATABASE -> "hdb-$id"
+                Provider.PLAYER_NAME -> "player-$id"
+                else -> throw IllegalArgumentException("$provider is not supported by DeluxeMenus")
+            }.let { section["material"] = it }
+        } catch (e: IllegalArgumentException) {
+            plugin.logger.warning(e.message)
+        }
     }
 
 }

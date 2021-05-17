@@ -194,12 +194,16 @@ class ShopGuiPlusGenerator(
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
         val id = plugin.headsIdHandler[item, provider]
 
-        when (provider) {
-            Provider.BASE_64 -> "skin"
-            Provider.HEAD_DATABASE -> "headDatabase"
-            Provider.PLAYER_NAME -> "skullOwner"
-            else -> throw IllegalArgumentException("$provider is not supported by ShopGUIPlus")
-        }.let { section[it] = id }
+        try {
+            when (provider) {
+                Provider.BASE_64 -> "skin"
+                Provider.HEAD_DATABASE -> "headDatabase"
+                Provider.PLAYER_NAME -> "skullOwner"
+                else -> throw IllegalArgumentException("$provider is not supported by ShopGUIPlus")
+            }.let { section[it] = id }
+        } catch (e: IllegalArgumentException) {
+            plugin.logger.warning(e.message)
+        }
     }
 
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {

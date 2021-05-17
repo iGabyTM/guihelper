@@ -26,7 +26,7 @@ import me.gabytm.minecraft.guihelper.config.defaults.implementations.ShopGuiPlus
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Type
+import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
@@ -48,7 +48,7 @@ class ShopGuiPlusGenerator(
     private val defaults = ShopGuiPlusDefaultValues()
 
     init {
-        options.addOption(createHeadsOption(Type.BASE_64, Type.HEAD_DATABASE, Type.PLAYER_NAME))
+        options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
 
         options.addOption(
             Option.builder("p")
@@ -60,7 +60,7 @@ class ShopGuiPlusGenerator(
         )
     }
 
-    override fun getMessage() = "  &2ShopGUIPlus &8- &fIsland mini shop items"
+    override fun getMessage() = "  &2ShopGUIPlus &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val startTime = System.currentTimeMillis()
@@ -135,7 +135,7 @@ class ShopGuiPlusGenerator(
         }
 
         if (item.isPlayerHead) {
-            handlePlayerHeads(section, item, Type.getFromInput(input))
+            handlePlayerHeads(section, item, Provider.getFromInput(input))
             return
         }
 
@@ -191,14 +191,14 @@ class ShopGuiPlusGenerator(
         }
     }
 
-    private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, type: Type) {
-        val id = plugin.headsIdHandler[item, type]
+    private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
+        val id = plugin.headsIdHandler[item, provider]
 
-        when (type) {
-            Type.BASE_64 -> "skin"
-            Type.HEAD_DATABASE -> "headDatabase"
-            Type.PLAYER_NAME -> "skullOwner"
-            else -> throw IllegalArgumentException("$type is not supported by ShopGUIPlus")
+        when (provider) {
+            Provider.BASE_64 -> "skin"
+            Provider.HEAD_DATABASE -> "headDatabase"
+            Provider.PLAYER_NAME -> "skullOwner"
+            else -> throw IllegalArgumentException("$provider is not supported by ShopGUIPlus")
         }.let { section[it] = id }
     }
 

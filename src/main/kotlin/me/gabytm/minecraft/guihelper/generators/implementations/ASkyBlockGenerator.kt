@@ -40,7 +40,7 @@ class ASkyBlockGenerator(
 
     private val defaults = ASkyBlockDefaultValues()
 
-    override fun getMessage() = "  &2ASkyBlock &8- &fIsland mini shop items"
+    override fun getMessage() = "  &2ASkyBlock &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val start = System.currentTimeMillis()

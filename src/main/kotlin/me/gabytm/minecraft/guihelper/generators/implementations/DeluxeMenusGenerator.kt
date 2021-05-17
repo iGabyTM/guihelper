@@ -24,11 +24,10 @@ import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Type
+import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.Option
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
@@ -45,7 +44,7 @@ class DeluxeMenusGenerator(
 ) : ConfigGenerator() {
 
     init {
-        options.addOption(createHeadsOption(Type.BASE_64, Type.HEAD_DATABASE, Type.PLAYER_NAME))
+        options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
 
         options.addOption(
             "e",
@@ -55,7 +54,7 @@ class DeluxeMenusGenerator(
         )
     }
 
-    override fun getMessage() = "  &2DeluxeMenus &8- &fExternal / local (config.yml) menus"
+    override fun getMessage() = "  &2DeluxeMenus &av$pluginVersion &8- &fExternal / local (config.yml) menus"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val startTime = System.currentTimeMillis()
@@ -134,7 +133,7 @@ class DeluxeMenusGenerator(
         }
 
         if (item.isPlayerHead) {
-            handlePlayerHeads(section, item, Type.getFromInput(input))
+            handlePlayerHeads(section, item, Provider.getFromInput(input))
         }
     }
 
@@ -150,14 +149,14 @@ class DeluxeMenusGenerator(
         section["rgb"] = (meta.color ?: Color.GREEN).asString()
     }
 
-    private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, type: Type) {
-        val id = plugin.headsIdHandler[item, type]
+    private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
+        val id = plugin.headsIdHandler[item, provider]
 
-        when (type) {
-            Type.BASE_64 -> "basehead-$id"
-            Type.HEAD_DATABASE -> "hdb-$id"
-            Type.PLAYER_NAME -> "player-$id"
-            else -> throw IllegalArgumentException("$type is not supported by DeluxeMenus")
+        when (provider) {
+            Provider.BASE_64 -> "basehead-$id"
+            Provider.HEAD_DATABASE -> "hdb-$id"
+            Provider.PLAYER_NAME -> "player-$id"
+            else -> throw IllegalArgumentException("$provider is not supported by DeluxeMenus")
         }.let { section["material"] = it }
     }
 

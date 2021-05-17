@@ -22,7 +22,7 @@ abstract class HeadIdProvider {
 
     }
 
-    enum class Type(val alias: String) {
+    enum class Provider(val alias: String) {
 
         BASE_64("base64"),
         HEAD_DATABASE("hdb"),
@@ -32,9 +32,9 @@ abstract class HeadIdProvider {
 
         companion object {
 
-            private val types = EnumSet.allOf(Type::class.java)
+            private val types = EnumSet.allOf(Provider::class.java)
 
-            fun getProvider(string: String, default: Type = BASE_64): Type {
+            fun getProvider(string: String, default: Provider = BASE_64): Provider {
                 return types.firstOrNull {
                     it.name.equals(string, true) ||
                             it.name.replace("_", "").equals(string, true) ||
@@ -42,7 +42,7 @@ abstract class HeadIdProvider {
                 } ?: default
             }
 
-            fun getFromInput(input: CommandLine, option: String = "heads", default: Type = BASE_64): Type {
+            fun getFromInput(input: CommandLine, option: String = "heads", default: Provider = BASE_64): Provider {
                 return input.getOrDefault(option, default) { getProvider(it, default) }
             }
 

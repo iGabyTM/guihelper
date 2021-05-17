@@ -9,22 +9,22 @@ import org.bukkit.inventory.ItemStack
 
 class HeadsIdHandler {
 
-    private val providers = mutableMapOf<HeadIdProvider.Type, HeadIdProvider>()
+    private val providers = mutableMapOf<HeadIdProvider.Provider, HeadIdProvider>()
 
     init {
-        providers[HeadIdProvider.Type.BASE_64] = Base64Implementation()
-        providers[HeadIdProvider.Type.PLAYER_NAME] = PlayerNameImplementation()
-        providers[HeadIdProvider.Type.TEXTURE_ID] = TextureImplementation("texture/(\\w+)")
-        providers[HeadIdProvider.Type.TEXTURE_URL] = TextureImplementation("((?:http|https)://textures\\.minecraft\\.net/texture/\\w+)")
+        providers[HeadIdProvider.Provider.BASE_64] = Base64Implementation()
+        providers[HeadIdProvider.Provider.PLAYER_NAME] = PlayerNameImplementation()
+        providers[HeadIdProvider.Provider.TEXTURE_ID] = TextureImplementation("texture/(\\w+)")
+        providers[HeadIdProvider.Provider.TEXTURE_URL] = TextureImplementation("((?:http|https)://textures\\.minecraft\\.net/texture/\\w+)")
 
         if ("HeadDatabase".isEnabled()) {
-            providers[HeadIdProvider.Type.HEAD_DATABASE] = HeadDatabaseImplementation()
+            providers[HeadIdProvider.Provider.HEAD_DATABASE] = HeadDatabaseImplementation()
         }
     }
 
     private fun String.isEnabled(): Boolean = Bukkit.getPluginManager().isPluginEnabled(this)
 
-    operator fun get(item: ItemStack, idProvider: HeadIdProvider.Type): String {
+    operator fun get(item: ItemStack, idProvider: HeadIdProvider.Provider): String {
         return providers[idProvider]?.getId(item) ?: HeadIdProvider.DEFAULT
     }
 

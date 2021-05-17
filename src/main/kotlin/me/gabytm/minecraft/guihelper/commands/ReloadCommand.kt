@@ -17,12 +17,23 @@
  * THE SOFTWARE.
  */
 
-@file:JvmName("Strings")
-package me.gabytm.minecraft.guihelper.functions
+package me.gabytm.minecraft.guihelper.commands
 
-import org.apache.commons.lang.StringUtils
-import org.bukkit.ChatColor
+import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
+import me.gabytm.minecraft.guihelper.utils.Constants
+import me.mattstudios.mf.annotations.Alias
+import me.mattstudios.mf.annotations.Command
+import me.mattstudios.mf.annotations.Permission
+import me.mattstudios.mf.annotations.SubCommand
+import me.mattstudios.mf.base.CommandBase
+import org.bukkit.command.CommandSender
 
-fun String.color(): String = ChatColor.translateAlternateColorCodes('&', this)
+@Command(Constants.COMMAND)
+@Alias(Constants.ALIAS)
+class ReloadCommand(private val manager: GeneratorsManager) : CommandBase() {
 
-fun String.fixColors(): String = StringUtils.replaceChars(this, ChatColor.COLOR_CHAR, '&')
+    @Permission(Constants.PERMISSION)
+    @SubCommand("reload")
+    fun onCommand(sender: CommandSender) = manager.reload()
+
+}

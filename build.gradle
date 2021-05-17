@@ -25,14 +25,36 @@ repositories {
         name 'NBT API'
         url 'https://repo.codemc.org/repository/maven-public/'
     }
+
+    maven {
+        name 'HeadDatabase-API'
+        url 'https://mvn.intellectualsites.com/content/repositories/thirdparty/'
+    }
+
+    maven {
+        name 'JSONMessage'
+        url 'https://rayzr.dev/repo/'
+    }
+
+    maven {
+        name 'Config'
+        url 'https://repo.mattstudios.me/artifactory/public/'
+    }
 }
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands - https://mf.mattstudios.me/mf/mf-1
     implementation 'de.tr7zw:item-nbt-api:2.7.1' // https://spigotmc.org/resources/7939/
-
     compileOnly spigotApi('1.16.5')
+    implementation 'me.rayzr522:jsonmessage:1.2.1' // https://github.com/Rayzr522/JSONMessage
+
+    // Heads
+    compileOnly 'me.arcaniax:HeadDatabase-API:1.1.0'
+
+    implementation 'me.mattstudios:triumph-config:1.0.5-SNAPSHOT'
+
+    implementation 'commons-cli:commons-cli:1.4' // https://commons.apache.org/proper/commons-cli/index.html
 }
 
 compileJava.options.encoding = "UTF-8"
@@ -71,4 +93,5 @@ shadowJar {
 task copyJarToServer(type: Copy) {
     from shadowJar
     into "./server/plugins"
+    //into "D:/Projects/MinecraftServers/1.12.2/plugins"
 }

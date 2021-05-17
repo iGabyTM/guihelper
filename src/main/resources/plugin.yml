@@ -7,6 +7,9 @@ api-version: '1.13'
 author: GabyTM
 website: https://gabytm.me/
 
+softdepend:
+  - HeadDatabase
+
 permissions:
   guihelper.use:
     description: The permission required to access GUI Helper commands

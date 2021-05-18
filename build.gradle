@@ -1,11 +1,9 @@
-import org.apache.tools.ant.filters.ReplaceTokens
+// kts https://paste.helpch.at/udizilomum.kts
 
-import static fr.il_totore.manadrop.MinecraftDependencyHelper.*
-import static fr.il_totore.manadrop.MinecraftRepositoryHelper.*
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.0'
-    id 'fr.il_totore.manadrop' version '0.4.1-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'org.cadixdev.licenser' version '0.6.0'
 }
@@ -18,8 +16,14 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 repositories {
     mavenCentral()
 
-    sonatype()
-    spigotSnapshot()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+
+    maven {
+        name 'Spigot'
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
 
     maven {
         name 'NBT API'
@@ -84,6 +88,7 @@ license {
 }
 
 shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     archiveName("GUIHelper [${project.version}].jar")
 
     [
@@ -97,5 +102,4 @@ shadowJar {
 task copyJarToServer(type: Copy) {
     from shadowJar
     into "./server/plugins"
-    //into "D:/Projects/MinecraftServers/1.12.2/plugins"
 }

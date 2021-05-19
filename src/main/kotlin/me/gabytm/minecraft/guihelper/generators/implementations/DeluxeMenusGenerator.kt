@@ -31,13 +31,11 @@ import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
 import org.bukkit.Bukkit
 import org.bukkit.Color
+import org.bukkit.block.Banner
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BannerMeta
-import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.inventory.meta.LeatherArmorMeta
-import org.bukkit.inventory.meta.PotionMeta
+import org.bukkit.inventory.meta.*
 
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
@@ -124,8 +122,8 @@ class DeluxeMenusGenerator(
             return
         }
 
-        if (item.isBanner || item.type.name == "SHIELD") {
-            section.setList("banner_meta", (meta as BannerMeta).patterns.map { "${it.color};${it.pattern}" })
+        if (item.isShield || item.isBanner) {
+            handleBannersAndShields(section, item)
             return
         }
 
@@ -137,6 +135,11 @@ class DeluxeMenusGenerator(
         if (item.isPlayerHead) {
             handlePlayerHeads(section, item, Provider.getFromInput(input))
         }
+    }
+
+    private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
+        val patterns = item.patternsAndBaseColor(false).first
+        section.setList("banner_meta", patterns.map { "${it.color};${it.pattern}" })
     }
 
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {

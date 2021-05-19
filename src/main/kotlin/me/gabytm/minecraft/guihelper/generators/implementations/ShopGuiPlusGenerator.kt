@@ -36,6 +36,8 @@ import org.apache.commons.lang.WordUtils
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
+import org.bukkit.block.Banner
+import org.bukkit.block.banner.Pattern
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
@@ -114,8 +116,8 @@ class ShopGuiPlusGenerator(
     }
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
-        if (item.isBanner || item.type.name == "SHIELD") {
-            handleBanners(section, meta as BannerMeta)
+        if (item.type.name == "SHIELD" || item.isBanner) {
+            handleBannersAndShields(section, item)
             return
         }
 
@@ -154,13 +156,15 @@ class ShopGuiPlusGenerator(
         }
     }
 
-    private fun handleBanners(section: ConfigurationSection, meta: BannerMeta) {
+    private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
+        val (patterns, color) = item.patternsAndBaseColor(false)
+
         if (ServerVersion.isLegacy) {
             section["damage"] = null
-            section["color"] = meta.baseColor?.name
+            section["color"] = color?.name
         }
 
-        for ((index, pattern) in meta.patterns.withIndex()) {
+        for ((index, pattern) in patterns.withIndex()) {
             val patternSection = section.createSection("patterns.${index + 1}")
 
             patternSection["type"] = pattern.pattern.name

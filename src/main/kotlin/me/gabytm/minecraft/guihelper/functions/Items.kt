@@ -22,12 +22,17 @@ package me.gabytm.minecraft.guihelper.functions
 
 import de.tr7zw.changeme.nbtapi.NBTItem
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import org.bukkit.DyeColor
 import org.bukkit.Material
 import org.bukkit.Tag
+import org.bukkit.block.Banner
+import org.bukkit.block.banner.Pattern
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.BannerMeta
+import org.bukkit.inventory.meta.BlockStateMeta
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.SpawnEggMeta
 import org.bukkit.material.SpawnEgg
@@ -51,7 +56,7 @@ private val fireworkStar = if (ServerVersion.isLegacy) Material.valueOf("FIREWOR
 @Suppress("DEPRECATION")
 val Player.hand: ItemStack
     get() {
-        return if (ServerVersion.isOlderThan(ServerVersion.V1_9)) {
+        return if (ServerVersion.isAncient) {
             inventory.itemInHand
         } else {
             inventory.itemInMainHand
@@ -100,6 +105,13 @@ val ItemStack.isPlayerHead: Boolean
  */
 val ItemStack.isPotion: Boolean
     get() = potions.contains(type)
+
+/**
+ * Whether the item is a shield or not
+ * @since 1.1.0
+ */
+val ItemStack.isShield: Boolean
+    get() = !ServerVersion.isAncient && type == Material.SHIELD
 
 /**
  * Whether the item is a spawn egg or not
@@ -177,19 +189,6 @@ fun ItemStack.displayName(format: ((String) -> String) = SPIGOT_RGB_FORMAT): Str
     return itemMeta?.displayName?.fixColors(format) ?: ""
 }
 
-/**
- * Item's lore (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
- * @param format the format for RGB (only used on 1.14+)
- * @return lore or empty list
- *
- * @see [org.bukkit.inventory.meta.ItemMeta.getLore]
- * @see [fixColors]
- * @since 1.1.0
- */
-fun ItemStack.lore(format: ((String) -> String) = SPIGOT_RGB_FORMAT): List<String> {
-    return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()
-}
-
 fun <T> ItemStack.enchants(format: (Enchantment, Int) -> T): List<T> {
     if (!hasItemMeta()) {
         return emptyList()
@@ -203,4 +202,34 @@ fun <T> ItemStack.enchants(format: (Enchantment, Int) -> T): List<T> {
     }
 
     return list
+}
+
+/**
+ * Item's lore (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
+ * @param format the format for RGB (only used on 1.14+)
+ * @return lore or empty list
+ *
+ * @see [org.bukkit.inventory.meta.ItemMeta.getLore]
+ * @see [fixColors]
+ * @since 1.1.0
+ */
+fun ItemStack.lore(format: ((String) -> String) = SPIGOT_RGB_FORMAT): List<String> {
+    return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()
+}
+
+fun ItemStack.patternsAndBaseColor(check: Boolean): Pair<List<Pattern>, DyeColor?> {
+    if (check && (!isShield && !isBanner)) {
+        throw IllegalArgumentException("Item is not a SHIELD or BANNER but $type")
+    }
+
+    val meta = itemMeta ?: return Pair(emptyList(), null)
+
+    // https://github.com/EssentialsX/Essentials/pull/745#issuecomment-234843795
+    return if (isShield) {
+        val state = (meta as BlockStateMeta).blockState as Banner
+        state.patterns to state.baseColor
+    } else {
+        meta as BannerMeta
+        meta.patterns to meta.baseColor
+    }
 }

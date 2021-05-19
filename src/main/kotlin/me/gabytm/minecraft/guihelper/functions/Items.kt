@@ -122,24 +122,6 @@ val ItemStack.isUnbreakable: Boolean
     }
 
 /**
- * Item's displayName (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
- * @see [org.bukkit.inventory.meta.ItemMeta.getDisplayName]
- * @see [fixColors]
- * @since 1.1.0
- */
-val ItemStack.displayName: String
-    get() = itemMeta?.displayName?.fixColors() ?: ""
-
-/**
- * Item's lore (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
- * @see [org.bukkit.inventory.meta.ItemMeta.getLore]
- * @see [fixColors]
- * @since 1.1.0
- */
-val ItemStack.lore: List<String>
-    get() = itemMeta?.lore?.map { it.fixColors() }?.toList() ?: emptyList()
-
-/**
  * The [EntityType] associated with a spawn egg. Don't use this before checking if the item IS a spawn egg
  * @see [SpawnEgg.getSpawnedType], [SpawnEggMeta.getSpawnedType]
  * @see [isSpawnEgg]
@@ -181,6 +163,32 @@ val ItemStack.customModelData: Int
 
 val ItemStack?.isInvalid: Boolean
     get() = this == null || type == Material.AIR
+
+/**
+ * Item's displayName (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
+ * @param format the format for RGB (only used on 1.14+)
+ * @return displayName or empty string
+ *
+ * @see [org.bukkit.inventory.meta.ItemMeta.getDisplayName]
+ * @see [fixColors]
+ * @since 1.1.0
+ */
+fun ItemStack.displayName(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
+    return itemMeta?.displayName?.fixColors(format) ?: ""
+}
+
+/**
+ * Item's lore (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
+ * @param format the format for RGB (only used on 1.14+)
+ * @return lore or empty list
+ *
+ * @see [org.bukkit.inventory.meta.ItemMeta.getLore]
+ * @see [fixColors]
+ * @since 1.1.0
+ */
+fun ItemStack.lore(format: ((String) -> String) = SPIGOT_RGB_FORMAT): List<String> {
+    return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()
+}
 
 fun <T> ItemStack.enchants(format: (Enchantment, Int) -> T): List<T> {
     if (!hasItemMeta()) {

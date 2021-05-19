@@ -36,17 +36,18 @@ import org.bukkit.inventory.ItemStack
 
 class ASkyBlockGenerator(
     private val plugin: GUIHelper,
+    override val pluginName: String = "ASkyBlock",
     override val pluginVersion: String = "3.0.9.4",
     override val rgbFormat: (String) -> String = NO_RGB_SUPPORT
 ) : ConfigGenerator() {
 
     private val defaults = ASkyBlockDefaultValues()
 
-    override fun getMessage() = "  &2ASkyBlock &av$pluginVersion &8- &fIsland mini shop items"
+    override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val start = System.currentTimeMillis()
-        val config = Config("ASkyBlock", plugin, true)
+        val config = Config(pluginName, plugin, true)
 
         for ((slot, item) in context.inventory.contents.withIndex()) {
             if (item.isInvalid) {

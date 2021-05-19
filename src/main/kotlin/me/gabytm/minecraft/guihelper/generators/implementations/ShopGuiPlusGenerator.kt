@@ -26,8 +26,8 @@ import me.gabytm.minecraft.guihelper.config.defaults.implementations.ShopGuiPlus
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
@@ -36,8 +36,6 @@ import org.apache.commons.lang.WordUtils
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
-import org.bukkit.block.Banner
-import org.bukkit.block.banner.Pattern
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
@@ -45,6 +43,7 @@ import org.bukkit.inventory.meta.*
 
 class ShopGuiPlusGenerator(
     private val plugin: GUIHelper,
+    override val pluginName: String = "ShopGUIPlus",
     override val pluginVersion: String = "1.59.2",
     override val rgbFormat: (String) -> String = { "#$it" }
 ) : ConfigGenerator() {
@@ -64,13 +63,13 @@ class ShopGuiPlusGenerator(
         )
     }
 
-    override fun getMessage() = "  &2ShopGUIPlus &av$pluginVersion &8- &fIsland mini shop items"
+    override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val startTime = System.currentTimeMillis()
 
         val page = input.getOrDefault('p', 0) { it.toIntOrNull() }
-        val config = Config("ShopGUIPlus/shops", plugin, true)
+        val config = Config("$pluginName/shops", plugin, true)
 
         for ((slot, item) in context.inventory.contents.withIndex()) {
             if (item.isInvalid) {
@@ -159,7 +158,7 @@ class ShopGuiPlusGenerator(
     private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
         val (patterns, color) = item.patternsAndBaseColor(false)
 
-        if (ServerVersion.isLegacy) {
+        if (ServerVersion.isLegacy || item.isShield) {
             section["damage"] = null
             section["color"] = color?.name
         }
@@ -203,7 +202,7 @@ class ShopGuiPlusGenerator(
                 Provider.BASE_64 -> "skin"
                 Provider.HEAD_DATABASE -> "headDatabase"
                 Provider.PLAYER_NAME -> "skullOwner"
-                else -> throw HeadIdProviderNotSupportByPluginException(provider, "ShopGUIPlus")
+                else -> throw HeadIdProviderNotSupportByPluginException(provider, pluginName)
             }.let { section[it] = plugin.itemsManager.getHeadId(item, provider) }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)

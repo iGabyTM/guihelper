@@ -35,6 +35,7 @@ abstract class ConfigGenerator {
 
     val options = Options()
 
+    abstract val pluginName: String
     abstract val pluginVersion: String
     open val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 

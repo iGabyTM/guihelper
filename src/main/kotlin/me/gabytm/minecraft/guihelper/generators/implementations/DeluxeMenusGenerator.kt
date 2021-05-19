@@ -24,21 +24,23 @@ import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
 import org.bukkit.Bukkit
 import org.bukkit.Color
-import org.bukkit.block.Banner
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.*
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.inventory.meta.PotionMeta
 
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
+    override val pluginName: String = "DeluxeMenus",
     override val pluginVersion: String = "1.13.3",
     override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
@@ -50,17 +52,17 @@ class DeluxeMenusGenerator(
             "e",
             "external",
             false,
-            "Whether the menu is external (DeluxeMenus/gui_menus/) or internal (config.yml)"
+            "Whether the menu is external ($pluginName/gui_menus/) or internal (config.yml)"
         )
     }
 
-    override fun getMessage() = "  &2DeluxeMenus &av$pluginVersion &8- &fExternal / local (config.yml) menus"
+    override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fExternal / local (config.yml) menus"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val startTime = System.currentTimeMillis()
 
         val external = input.hasOption("external")
-        val config = Config(if (external) "DeluxeMenus/gui_menus" else "DeluxeMenus", plugin, true)
+        val config = Config(if (external) "$pluginName/gui_menus" else pluginName, plugin, true)
 
         for ((slot, item) in context.inventory.contents.withIndex()) {
             if (item.isInvalid) {
@@ -160,7 +162,7 @@ class DeluxeMenusGenerator(
                 Provider.BASE_64 -> "basehead"
                 Provider.HEAD_DATABASE -> "hdb"
                 Provider.PLAYER_NAME -> "player"
-                else -> throw HeadIdProviderNotSupportByPluginException(provider, "DeluxeMenus")
+                else -> throw HeadIdProviderNotSupportByPluginException(provider, pluginName)
             }.let { section["material"] = "$it-${plugin.itemsManager.getHeadId(item, provider)}" }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)

@@ -21,8 +21,7 @@ package me.gabytm.minecraft.guihelper.generators.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.defaults.implementations.ShopGuiPlusDefaultValues
-import me.gabytm.minecraft.guihelper.config.defaults.implementations.ShopGuiPlusDefaultValues.DefaultValue
+import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
@@ -30,10 +29,14 @@ import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSup
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.mattstudios.config.SettingsHolder
+import me.mattstudios.config.annotations.Comment
+import me.mattstudios.config.annotations.Description
+import me.mattstudios.config.annotations.Path
+import me.mattstudios.config.properties.Property
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Option
 import org.apache.commons.lang.WordUtils
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
@@ -48,7 +51,7 @@ class ShopGuiPlusGenerator(
     override val rgbFormat: (String) -> String = { "#$it" }
 ) : ConfigGenerator() {
 
-    private val defaults = ShopGuiPlusDefaultValues()
+    private val defaults = Defaults(pluginName)
 
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
@@ -84,8 +87,8 @@ class ShopGuiPlusGenerator(
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int, page: Int) {
-        val meta = item.itemMeta ?: Bukkit.getItemFactory().getItemMeta(item.type)
         val itemSection = section.createSection("item")
 
         section["type"] = "item"
@@ -96,14 +99,12 @@ class ShopGuiPlusGenerator(
 
         section["slot"] = slot
         section["page"] = page
-        section.set("unstack", defaults[DefaultValue.UNSTACK]) { it }
-        section.set("stacked", defaults[DefaultValue.STACKED]) { !it }
-        section["buyPrice"] = defaults[DefaultValue.BUY_PRICE]
-        section["sellPrice"] = defaults[DefaultValue.SELL_PRICE]
+        section.set("unstack", defaults[Value.UNSTACK]) { it }
+        section.set("stacked", defaults[Value.STACKED]) { !it }
+        section["buyPrice"] = defaults[Value.BUY_PRICE]
+        section["sellPrice"] = defaults[Value.SELL_PRICE]
 
-        if (meta == null) {
-            return
-        }
+        val meta = item.meta ?: return
 
         itemSection.set("model", item.customModelData) { it > 0 }
         itemSection.set("unbreakable", item.isUnbreakable) { it }
@@ -227,6 +228,34 @@ class ShopGuiPlusGenerator(
         } else {
             section["mob"] = item.spawnEggType.name
         }
+    }
+
+    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+
+    @Description(
+        " ",
+        "Default values that will be used in the config creation process",
+        " ",
+        "▪ ShopGUIPlus 1.59.2 by brc (https://spigotmc.org/resources/6515/)",
+        "▪ Wiki: https://docs.brcdev.net/#/shopgui/faq",
+        " "
+    )
+    private object Value : SettingsHolder {
+
+        @Path("buyPrice")
+        val BUY_PRICE = Property.create(10.0)
+
+        @Path("sellPrice")
+        val SELL_PRICE = Property.create(10.0)
+
+        @Comment("https://docs.brcdev.net/#/shopgui/stack-size?id=unstack")
+        @Path("unstack")
+        val UNSTACK = Property.create(false)
+
+        @Comment("https://docs.brcdev.net/#/shopgui/stack-size?id=stacked")
+        @Path("stacked")
+        val STACKED = Property.create(true)
+
     }
 
 }

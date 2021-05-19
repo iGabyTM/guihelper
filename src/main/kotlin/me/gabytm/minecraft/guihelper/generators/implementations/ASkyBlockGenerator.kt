@@ -21,15 +21,15 @@ package me.gabytm.minecraft.guihelper.generators.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.defaults.implementations.ASkyBlockDefaultValues
-import me.gabytm.minecraft.guihelper.config.defaults.implementations.ASkyBlockDefaultValues.DefaultValue
-import me.gabytm.minecraft.guihelper.functions.NO_RGB_SUPPORT
-import me.gabytm.minecraft.guihelper.functions.isInvalid
-import me.gabytm.minecraft.guihelper.functions.lore
-import me.gabytm.minecraft.guihelper.functions.set
+import me.gabytm.minecraft.guihelper.config.DefaultValues
+import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.utils.Message
+import me.mattstudios.config.SettingsHolder
+import me.mattstudios.config.annotations.Description
+import me.mattstudios.config.annotations.Path
+import me.mattstudios.config.properties.Property
 import org.apache.commons.cli.CommandLine
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
@@ -41,7 +41,7 @@ class ASkyBlockGenerator(
     override val rgbFormat: (String) -> String = NO_RGB_SUPPORT
 ) : ConfigGenerator() {
 
-    private val defaults = ASkyBlockDefaultValues()
+    private val defaults = Defaults(pluginName)
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
@@ -69,12 +69,32 @@ class ASkyBlockGenerator(
     override fun createItem(section: ConfigurationSection, item: ItemStack, slot: Int) {
         section["material"] = item.type.name
         section["quantity"] = item.amount
-        section["price"] = defaults[DefaultValue.PRICE]
-        section["sellprice"] = defaults[DefaultValue.SELL_PRICE]
+        section["price"] = defaults[Value.PRICE]
+        section["sellprice"] = defaults[Value.SELL_PRICE]
 
-        val meta = item.itemMeta ?: return
+        val meta = item.meta ?: return
 
         section.set("lore", meta::hasLore) { item.lore().joinToString("|") }
+    }
+
+    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+
+    @Description(
+        " ",
+        "Default values that will be used in the config creation process",
+        " ",
+        "▪ ASkyBlock 3.0.9.4 by Tastybento (https://spigotmc.org/resources/1220/)",
+        "▪ Wiki: https://github.com/tastybento/askyblock/wiki",
+        " "
+    )
+    private object Value : SettingsHolder {
+
+        @Path("price")
+        val PRICE = Property.create(100)
+
+        @Path("sellprice")
+        val SELL_PRICE = Property.create(10)
+
     }
 
 }

@@ -79,16 +79,12 @@ class DeluxeMenusGenerator(
     }
 
     override fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int) {
-        val meta = item.itemMeta ?: Bukkit.getItemFactory().getItemMeta(item.type)
-
         section["material"] = item.type.name
         section.set("data", item.durability) { it > 0 }
         section.set("amount", item.amount) { it > 1 }
         section["slot"] = slot
 
-        if (meta == null) {
-            return
-        }
+        val meta = item.meta ?: return
 
         section.set("display_name", meta::hasDisplayName) { item.displayName(rgbFormat) }
         section.set("lore", meta::hasLore) { item.lore(rgbFormat) }

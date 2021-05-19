@@ -2,7 +2,7 @@ package me.gabytm.minecraft.guihelper.generators.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.defaults.DefaultValues
+import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
@@ -66,20 +66,20 @@ class CratesPlusGenerator(
         section.setList("Enchantments", item.enchants { enchantment, level -> "${enchantment.name}-$level" })
     }
 
-}
+    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
 
-internal class Defaults(name: String) : DefaultValues(name, Value::class.java)
+    @Description(
+        " ",
+        "Default values that will be used in the config creation process",
+        " ",
+        "▪ CratesPlus 4.5.3 by ConnorLinfoot (https://spigotmc.org/resources/5018/)",
+        "▪ Wiki: https://github.com/ConnorLinfoot/CratesPlus/wiki",
+        " "
+    )
+    private object Value : SettingsHolder {
 
-@Description(
-    " ",
-    "Default values that will be used in the config creation process",
-    " ",
-    "▪ CratesPlus 4.5.3 by ConnorLinfoot (https://spigotmc.org/resources/5018/)",
-    "▪ Wiki: https://github.com/ConnorLinfoot/CratesPlus/wiki",
-    " "
-)
-object Value : SettingsHolder {
+        val PERCENTAGE = create(10.0)
 
-    val PERCENTAGE = create(10.0)
+    }
 
 }

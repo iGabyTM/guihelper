@@ -20,9 +20,25 @@
 @file:JvmName("Strings")
 package me.gabytm.minecraft.guihelper.functions
 
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.lang.StringUtils
 import org.bukkit.ChatColor
 
+private val vanillaRgbRegex = Regex("&x((?:&[a-fA-F0-9]){6})")
+
+val NO_RGB_SUPPORT: (String) -> String = { "" }
+val SPIGOT_RGB_FORMAT: (String) -> String = { "&#$it" }
+
 fun String.color(): String = ChatColor.translateAlternateColorCodes('&', this)
 
-fun String.fixColors(): String = StringUtils.replaceChars(this, ChatColor.COLOR_CHAR, '&')
+fun String.fixColors(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
+    val replaced = replace(ChatColor.COLOR_CHAR, '&')
+
+    return if (ServerVersion.supportHex && format != NO_RGB_SUPPORT) {
+        vanillaRgbRegex.findAll(replaced).fold(replaced) { str, matcher ->
+            str.replace(matcher.groupValues[0], format(matcher.groupValues[1].replace("&", "")))
+        }
+    } else {
+        replaced
+    }
+}

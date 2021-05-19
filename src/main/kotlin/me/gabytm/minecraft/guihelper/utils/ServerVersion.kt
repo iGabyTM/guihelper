@@ -82,7 +82,16 @@ enum class ServerVersion(val id: Int = 0, val nmsName: String? = null, val bukki
     V1_16_5(1165, "v1_16_R3", "1.16.5-R0.1-SNAPSHOT");
 
     /**
+     * Check if the version is _ancient_ by comparing its id with the ID of [V1_9]
+     *
+     * Ancient = version older than 1.9
+     */
+    val isAncient: Boolean
+        get() = this.id < V1_9.id
+
+    /**
      * Check if the version is legacy by comparing its id with the id of [V1_13]
+     *
      * Legacy = version older than 1.13
      */
     val isLegacy: Boolean
@@ -125,16 +134,22 @@ enum class ServerVersion(val id: Int = 0, val nmsName: String? = null, val bukki
         }
 
         /**
+         * Shortcut for [CURRENT_VERSION.isAncient][ServerVersion.isAncient]
+         */
+        val isAncient: Boolean
+            get() = CURRENT_VERSION.isAncient
+
+        /**
          * Shortcut for [CURRENT_VERSION.isLegacy][ServerVersion.isLegacy]
          */
         val isLegacy: Boolean
-            get() = CURRENT_VERSION.id < V1_13.id
+            get() = CURRENT_VERSION.isLegacy
 
         /**
          * Shortcut for [CURRENT_VERSION.supportHex][ServerVersion.supportHex]
          */
         val supportHex: Boolean
-            get() = CURRENT_VERSION.id > V1_15_2.id
+            get() = CURRENT_VERSION.supportHex
 
         /**
          * Shortcut for [CURRENT_VERSION.isNewerThan][ServerVersion.isNewerThan]

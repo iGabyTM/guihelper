@@ -23,6 +23,7 @@ import me.gabytm.minecraft.guihelper.commands.*
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
+import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.items.heads.HeadsIdHandler
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
@@ -32,13 +33,13 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class GUIHelper : JavaPlugin() {
 
-    lateinit var headsIdHandler: HeadsIdHandler
+    lateinit var itemsManager: ItemsManager
         private set
 
     override fun onEnable() {
         sendLogo()
 
-        this.headsIdHandler = HeadsIdHandler()
+        this.itemsManager = ItemsManager()
         val generatorsManager = GeneratorsManager(this)
         val inventoryManager = InventoryManager()
 

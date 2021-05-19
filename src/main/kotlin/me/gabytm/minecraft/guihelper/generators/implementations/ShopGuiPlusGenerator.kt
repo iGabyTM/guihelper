@@ -26,7 +26,8 @@ import me.gabytm.minecraft.guihelper.config.defaults.implementations.ShopGuiPlus
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Provider
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
+import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
@@ -198,8 +199,8 @@ class ShopGuiPlusGenerator(
                 Provider.BASE_64 -> "skin"
                 Provider.HEAD_DATABASE -> "headDatabase"
                 Provider.PLAYER_NAME -> "skullOwner"
-                else -> throw IllegalArgumentException("$provider is not supported by ShopGUIPlus")
-            }.let { section[it] = plugin.headsIdHandler[item, provider] }
+                else -> throw HeadIdProviderNotSupportByPluginException(provider, "ShopGUIPlus")
+            }.let { section[it] = plugin.itemsManager.getHeadId(item, provider) }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

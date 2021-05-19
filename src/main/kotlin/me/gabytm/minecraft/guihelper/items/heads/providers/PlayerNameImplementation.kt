@@ -1,6 +1,5 @@
 package me.gabytm.minecraft.guihelper.items.heads.providers
 
-import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta

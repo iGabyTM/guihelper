@@ -24,7 +24,8 @@ import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Provider
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
+import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
@@ -156,8 +157,8 @@ class DeluxeMenusGenerator(
                 Provider.BASE_64 -> "basehead"
                 Provider.HEAD_DATABASE -> "hdb"
                 Provider.PLAYER_NAME -> "player"
-                else -> throw IllegalArgumentException("$provider is not supported by DeluxeMenus")
-            }.let { section["material"] = "$it-${plugin.headsIdHandler[item, provider]}" }
+                else -> throw HeadIdProviderNotSupportByPluginException(provider, "DeluxeMenus")
+            }.let { section["material"] = "$it-${plugin.itemsManager.getHeadId(item, provider)}" }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

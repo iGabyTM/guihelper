@@ -1,9 +1,6 @@
 package me.gabytm.minecraft.guihelper.items.heads
 
-import me.gabytm.minecraft.guihelper.items.heads.providers.Base64Implementation
-import me.gabytm.minecraft.guihelper.items.heads.providers.HeadDatabaseImplementation
-import me.gabytm.minecraft.guihelper.items.heads.providers.PlayerNameImplementation
-import me.gabytm.minecraft.guihelper.items.heads.providers.TextureImplementation
+import me.gabytm.minecraft.guihelper.items.heads.providers.*
 import org.bukkit.Bukkit
 import org.bukkit.inventory.ItemStack
 

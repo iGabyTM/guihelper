@@ -23,6 +23,7 @@ import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.implementations.ASkyBlockGenerator
+import me.gabytm.minecraft.guihelper.generators.implementations.CratesPlusGenerator
 import me.gabytm.minecraft.guihelper.generators.implementations.DeluxeMenusGenerator
 import me.gabytm.minecraft.guihelper.generators.implementations.ShopGuiPlusGenerator
 import me.gabytm.minecraft.guihelper.utils.Constants.ALIAS
@@ -40,18 +41,19 @@ class GeneratorsManager(plugin: GUIHelper) {
     init {
         @Suppress("SpellCheckingInspection")
         sequenceOf(
-            "askyblock" to ASkyBlockGenerator(plugin),
-            "deluxemenus" to DeluxeMenusGenerator(plugin),
-            "shopguiplus" to ShopGuiPlusGenerator(plugin)
-        ).forEach { register(it.first, it.second) }
+            ASkyBlockGenerator(plugin),
+            CratesPlusGenerator(plugin),
+            DeluxeMenusGenerator(plugin),
+            ShopGuiPlusGenerator(plugin)
+        ).forEach { register(it) }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun register(id: String, generator: ConfigGenerator, replaceIfPresent: Boolean = false) {
+    fun register(generator: ConfigGenerator, replaceIfPresent: Boolean = false) {
         if (replaceIfPresent) {
-            registeredGenerators[id] = generator
+            registeredGenerators[generator.pluginName] = generator
         } else {
-            registeredGenerators.putIfAbsent(id, generator)
+            registeredGenerators.putIfAbsent(generator.pluginName, generator)
         }
 
         registeredGeneratorsIds = registeredGenerators.keys.toList()

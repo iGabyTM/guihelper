@@ -22,6 +22,7 @@ package me.gabytm.minecraft.guihelper.functions
 
 import de.tr7zw.changeme.nbtapi.NBTItem
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import org.bukkit.Bukkit
 import org.bukkit.DyeColor
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -31,10 +32,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BannerMeta
-import org.bukkit.inventory.meta.BlockStateMeta
-import org.bukkit.inventory.meta.EnchantmentStorageMeta
-import org.bukkit.inventory.meta.SpawnEggMeta
+import org.bukkit.inventory.meta.*
 import org.bukkit.material.SpawnEgg
 import java.util.*
 
@@ -133,6 +131,9 @@ val ItemStack.isUnbreakable: Boolean
         }
     }
 
+val ItemStack.meta: ItemMeta?
+    get() = itemMeta ?: Bukkit.getItemFactory().getItemMeta(type)
+
 /**
  * The [EntityType] associated with a spawn egg. Don't use this before checking if the item IS a spawn egg
  * @see [SpawnEgg.getSpawnedType], [SpawnEggMeta.getSpawnedType]
@@ -217,6 +218,7 @@ fun ItemStack.lore(format: ((String) -> String) = SPIGOT_RGB_FORMAT): List<Strin
     return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()
 }
 
+@Suppress("DEPRECATION")
 fun ItemStack.patternsAndBaseColor(check: Boolean): Pair<List<Pattern>, DyeColor?> {
     if (check && (!isShield && !isBanner)) {
         throw IllegalArgumentException("Item is not a SHIELD or BANNER but $type")

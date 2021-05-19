@@ -19,7 +19,6 @@
 
 package me.gabytm.minecraft.guihelper.generators.base
 
-import me.gabytm.minecraft.guihelper.functions.NO_RGB_SUPPORT
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options

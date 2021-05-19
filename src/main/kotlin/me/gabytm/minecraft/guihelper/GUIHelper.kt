@@ -19,12 +19,14 @@
 
 package me.gabytm.minecraft.guihelper
 
-import me.gabytm.minecraft.guihelper.commands.*
+import me.gabytm.minecraft.guihelper.commands.CreateCommand
+import me.gabytm.minecraft.guihelper.commands.EmptyCommand
+import me.gabytm.minecraft.guihelper.commands.OptionsCommand
+import me.gabytm.minecraft.guihelper.commands.ReloadCommand
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
 import me.gabytm.minecraft.guihelper.items.ItemsManager
-import me.gabytm.minecraft.guihelper.items.heads.HeadsIdHandler
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import me.mattstudios.mf.base.CommandManager

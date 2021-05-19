@@ -29,7 +29,6 @@ import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provid
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemFlag

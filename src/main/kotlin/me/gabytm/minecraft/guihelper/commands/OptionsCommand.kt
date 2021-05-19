@@ -9,10 +9,8 @@ import me.mattstudios.mf.annotations.Completion
 import me.mattstudios.mf.annotations.SubCommand
 import me.mattstudios.mf.base.CommandBase
 import me.rayzr522.jsonmessage.JSONMessage
-import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Option
 import org.bukkit.ChatColor
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 @Command(Constants.COMMAND)

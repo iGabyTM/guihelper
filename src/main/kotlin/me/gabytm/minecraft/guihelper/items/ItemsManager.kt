@@ -1,7 +1,7 @@
 package me.gabytm.minecraft.guihelper.items
 
-import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider
 import me.gabytm.minecraft.guihelper.items.heads.HeadsIdHandler
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider
 import me.gabytm.minecraft.guihelper.items.serialization.ItemSerializationHandler
 import me.gabytm.minecraft.guihelper.items.serialization.serializers.ItemSerializer
 import org.bukkit.inventory.ItemStack

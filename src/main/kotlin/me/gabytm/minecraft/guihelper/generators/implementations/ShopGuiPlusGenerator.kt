@@ -42,7 +42,8 @@ import org.bukkit.inventory.meta.*
 
 class ShopGuiPlusGenerator(
     private val plugin: GUIHelper,
-    override val pluginVersion: String = "1.59.2"
+    override val pluginVersion: String = "1.59.2",
+    override val rgbFormat: (String) -> String = { "#$it" }
 ) : ConfigGenerator() {
 
     private val defaults = ShopGuiPlusDefaultValues()
@@ -104,8 +105,8 @@ class ShopGuiPlusGenerator(
 
         itemSection.set("model", item.customModelData) { it > 0 }
         itemSection.set("unbreakable", item.isUnbreakable) { it }
-        itemSection.set("name", meta::hasDisplayName, item::displayName)
-        itemSection.set("lore", meta::hasLore, item::lore)
+        itemSection.set("name", meta::hasDisplayName) { item.displayName(rgbFormat) }
+        itemSection.set("lore", meta::hasLore) { item.lore(rgbFormat) }
         itemSection.setList("flags", meta.itemFlags.map { it.name })
         itemSection.setList("enchantments", item.enchants { enchant, level -> "$enchant:$level" })
         setMetaSpecificValues(itemSection, input, item, meta)
@@ -192,15 +193,13 @@ class ShopGuiPlusGenerator(
     }
 
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
-        val id = plugin.headsIdHandler[item, provider]
-
         try {
             when (provider) {
                 Provider.BASE_64 -> "skin"
                 Provider.HEAD_DATABASE -> "headDatabase"
                 Provider.PLAYER_NAME -> "skullOwner"
                 else -> throw IllegalArgumentException("$provider is not supported by ShopGUIPlus")
-            }.let { section[it] = id }
+            }.let { section[it] = plugin.headsIdHandler[item, provider] }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

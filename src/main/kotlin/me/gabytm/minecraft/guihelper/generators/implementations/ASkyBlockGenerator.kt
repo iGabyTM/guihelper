@@ -23,6 +23,7 @@ import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.config.defaults.implementations.ASkyBlockDefaultValues
 import me.gabytm.minecraft.guihelper.config.defaults.implementations.ASkyBlockDefaultValues.DefaultValue
+import me.gabytm.minecraft.guihelper.functions.NO_RGB_SUPPORT
 import me.gabytm.minecraft.guihelper.functions.isInvalid
 import me.gabytm.minecraft.guihelper.functions.lore
 import me.gabytm.minecraft.guihelper.functions.set
@@ -35,7 +36,8 @@ import org.bukkit.inventory.ItemStack
 
 class ASkyBlockGenerator(
     private val plugin: GUIHelper,
-    override val pluginVersion: String = "3.0.9.4"
+    override val pluginVersion: String = "3.0.9.4",
+    override val rgbFormat: (String) -> String = NO_RGB_SUPPORT
 ) : ConfigGenerator() {
 
     private val defaults = ASkyBlockDefaultValues()
@@ -71,7 +73,7 @@ class ASkyBlockGenerator(
 
         val meta = item.itemMeta ?: return
 
-        section.set("lore", meta::hasLore) { item.lore.joinToString("|") }
+        section.set("lore", meta::hasLore) { item.lore().joinToString("|") }
     }
 
 }

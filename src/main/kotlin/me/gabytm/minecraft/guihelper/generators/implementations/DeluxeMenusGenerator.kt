@@ -40,7 +40,8 @@ import org.bukkit.inventory.meta.PotionMeta
 
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
-    override val pluginVersion: String = "1.13.3"
+    override val pluginVersion: String = "1.13.3",
+    override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
 
     init {
@@ -88,8 +89,8 @@ class DeluxeMenusGenerator(
             return
         }
 
-        section.set("display_name", meta::hasDisplayName, item::displayName)
-        section.set("lore", meta::hasLore, item::lore)
+        section.set("display_name", meta::hasDisplayName) { item.displayName(rgbFormat) }
+        section.set("lore", meta::hasLore) { item.lore(rgbFormat) }
         section.set("nbt_int", item.customModelData, { it > 0}) { "CustomModelData:$it" }
         section.set("unbreakable", item.isUnbreakable) { it }
         setItemFlags(section, meta.itemFlags)
@@ -150,15 +151,13 @@ class DeluxeMenusGenerator(
     }
 
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
-        val id = plugin.headsIdHandler[item, provider]
-
         try {
             when (provider) {
-                Provider.BASE_64 -> "basehead-$id"
-                Provider.HEAD_DATABASE -> "hdb-$id"
-                Provider.PLAYER_NAME -> "player-$id"
+                Provider.BASE_64 -> "basehead"
+                Provider.HEAD_DATABASE -> "hdb"
+                Provider.PLAYER_NAME -> "player"
                 else -> throw IllegalArgumentException("$provider is not supported by DeluxeMenus")
-            }.let { section["material"] = it }
+            }.let { section["material"] = "$it-${plugin.headsIdHandler[item, provider]}" }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

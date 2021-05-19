@@ -1,6 +1,6 @@
 package me.gabytm.minecraft.guihelper.functions
 
-import me.gabytm.minecraft.guihelper.items.heads.HeadIdProvider.Provider
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import org.apache.commons.cli.Option
 
 fun createHeadsOption(vararg providers: Provider): Option {

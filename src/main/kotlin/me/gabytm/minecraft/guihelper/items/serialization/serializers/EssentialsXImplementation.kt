@@ -63,9 +63,9 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
         }
 
         if (item.isLeatherArmor) {
-            (meta as LeatherArmorMeta).color
-                .takeIf { !it.isDefaultLeatherColor }
-                ?.let { builder.append(" color:").append(it.asRGB()) }
+            (meta as LeatherArmorMeta).color.ifNotDefault {
+                builder.append(" color:").append(it.asRGB())
+            }
             return
         }
 
@@ -77,7 +77,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
         }
 
         if (item.isPotion) {
-            if (ServerVersion.isOlderThan(ServerVersion.V1_9)) {
+            if (ServerVersion.isAncient) {
                 builder.appendPotion(Potion.fromItemStack(item))
             } else {
                 builder.appendPotion(item, meta as PotionMeta)

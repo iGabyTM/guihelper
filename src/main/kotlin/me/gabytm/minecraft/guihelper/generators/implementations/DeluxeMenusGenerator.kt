@@ -111,8 +111,8 @@ class DeluxeMenusGenerator(
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
         if (item.isLeatherArmor) {
-            with((meta as LeatherArmorMeta).color) {
-                section.set("rgb", asString()) { !isDefaultLeatherColor }
+            (meta as LeatherArmorMeta).color.ifNotDefault {
+                section["rgb"] = it.asString()
             }
             return
         }

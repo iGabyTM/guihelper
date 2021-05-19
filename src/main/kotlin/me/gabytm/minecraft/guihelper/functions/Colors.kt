@@ -35,3 +35,9 @@ val Color.isDefaultLeatherColor: Boolean
 
 val Color.name: String?
     get() = DyeColor.getByColor(this)?.name
+
+fun Color.ifNotDefault(function: (Color) -> Unit) {
+    if (!isDefaultLeatherColor) {
+        function(this)
+    }
+}

@@ -18,10 +18,10 @@
  */
 
 @file:JvmName("Strings")
+
 package me.gabytm.minecraft.guihelper.functions
 
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
-import org.apache.commons.lang.StringUtils
 import org.bukkit.ChatColor
 
 private val vanillaRgbRegex = Regex("&x((?:&[a-fA-F0-9]){6})")

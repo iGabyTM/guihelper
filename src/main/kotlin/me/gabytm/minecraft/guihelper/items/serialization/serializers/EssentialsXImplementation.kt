@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package me.gabytm.minecraft.guihelper.items.serialization.serializers
 
 import me.gabytm.minecraft.guihelper.functions.*
@@ -31,20 +33,21 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             }
 
             if (meta.hasLore()) {
-                append(" lore:").append(item.lore().joinToString("|").removeSpace())
+                append(item.lore().joinToString("|", " lore:").removeSpace())
             }
 
             item.enchants { enchantment, level -> "${enchantment.name.lowercase()}:$level" }
-                .ifNotEmpty { append(' ').append(it.joinToString(" ")) }
+                .ifNotEmpty { append(it.joinToString(" ", " ")) }
 
             meta.itemFlags.ifNotEmpty {
-                append(" itemflags:").append(it.joinToString(",") { flag -> flag.name })
+                append(it.joinToString(",", " itemflags:") { flag -> flag.name })
             }
 
             appendMetaSpecificValues(this, item, meta)
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun appendMetaSpecificValues(builder: StringBuilder, item: ItemStack, meta: ItemMeta) {
         if (item.type == Material.FIREWORK_ROCKET) {
             builder.appendFirework(meta as FireworkMeta)
@@ -82,6 +85,11 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             return
         }
 
+        if (item.isShield || item.isBanner) {
+            builder.appendShieldOrBanner(item)
+            return
+        }
+
         if (item.type == Material.WRITTEN_BOOK) {
             builder.appendWrittenBook(meta as BookMeta)
         }
@@ -99,16 +107,17 @@ private fun StringBuilder.appendFirework(firework: FireworkMeta) {
 
 private fun StringBuilder.appendFireworkEffect(effect: FireworkEffect) {
     effect.colors.ifNotEmpty {
-        append(" color:").append(it.joinToString(",") { color -> "#${Integer.toHexString(color.asRGB())}" })
+        append(it.joinToString(",", " color:") { color -> "#${Integer.toHexString(color.asRGB())}" })
     }
 
     append(" shape:").append(effect.type.name)
 
     effect.fadeColors.ifNotEmpty {
-        append(" fade:").append(it.joinToString(",") { color -> "#${Integer.toHexString(color.asRGB())}" })
+        append(it.joinToString(",", " fade:") { color -> "#${Integer.toHexString(color.asRGB())}" })
     }
 }
 
+@Suppress("DEPRECATION")
 private fun StringBuilder.appendPotion(potion: Potion) {
     potion.effects.forEach {
         appendPotion(potion.isSplash, it.type.name, it.amplifier, it.duration)
@@ -128,6 +137,17 @@ private fun StringBuilder.appendPotion(splash: Boolean, effect: String, amplifie
         .append(" effect:").append(effect.lowercase())
         .append(" power:").append(amplifier)
         .append(" duration:").append(duration / 20)
+}
+
+private fun StringBuilder.appendShieldOrBanner(item: ItemStack) {
+    val (patterns, color) = item.patternsAndBaseColor(false)
+
+    color?.let { append(" basecolor:").append(it.color.asRGB()) }
+    patterns.ifNotEmpty {
+        append(it.joinToString(" "," ") { pattern ->
+            "${pattern.pattern.identifier},${pattern.color.color.asRGB()}"
+        })
+    }
 }
 
 private fun StringBuilder.appendWrittenBook(book: BookMeta) {

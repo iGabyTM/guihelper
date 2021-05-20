@@ -10,3 +10,12 @@ fun createHeadsOption(vararg providers: Provider): Option {
         .desc("The method used to process player heads")
         .build()
 }
+
+fun createPageOption(description: String): Option {
+    return Option.builder("p")
+        .longOpt("page")
+        .argName("page")
+        .type(Int::class.java)
+        .desc(description)
+        .build()
+}

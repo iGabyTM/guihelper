@@ -36,8 +36,6 @@ import me.mattstudios.config.annotations.Path
 import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.lang.WordUtils
-import org.bukkit.Color
-import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
@@ -107,43 +105,28 @@ class ShopGuiPlusGenerator(
     }
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
-        if (item.type.name == "SHIELD" || item.isBanner) {
-            handleBannersAndShields(section, item)
-            return
-        }
-
-        if (item.type == Material.FIREWORK_ROCKET) {
-            handleFireworks(section, meta as FireworkMeta)
-            return
-        }
-
-        if (item.isFireworkStar) {
-            handleFireworkStars(section, meta as FireworkEffectMeta)
-            return
-        }
-
-        if (item.isLeatherArmor) {
-            (meta as LeatherArmorMeta).color.ifNotDefault {
-                section["color"] = it.nameOrString()
+        when {
+            item.isShield || item.isBanner -> {
+                handleBannersAndShields(section, item)
             }
-            return
-        }
-
-        if (item.isPlayerHead) {
-            handlePlayerHeads(section, item, Provider.getFromInput(input))
-            return
-        }
-
-        // See https://docs.brcdev.net/#/item-meta?id=_19-116
-        if (item.isPotion && ServerVersion.isNewerThan(ServerVersion.V1_8_8)) {
-            handlePotions(section.createSection("potion"), meta as PotionMeta)
-            return
-        }
-
-        // See https://docs.brcdev.net/#/item-meta?id=spawn-eggs
-        if (item.isSpawnEgg) {
-            handleSpawnEggs(section, item)
-            return
+            item.isFirework -> {
+                handleFireworks(section, meta as FireworkMeta)
+            }
+            item.isFireworkStar -> {
+                handleFireworkStars(section, meta as FireworkEffectMeta)
+            }
+            item.isLeatherArmor -> {
+                (meta as LeatherArmorMeta).color.ifNotDefault { section["color"] = it.nameOrString() }
+            }
+            item.isPlayerHead -> {
+                handlePlayerHeads(section, item, Provider.getFromInput(input))
+            }
+            !ServerVersion.isAncient && item.isPotion -> {
+                handlePotions(section.createSection("potion"), meta as PotionMeta)
+            }
+            item.isSpawnEgg -> {
+                handleSpawnEggs(section, item)
+            }
         }
     }
 
@@ -201,6 +184,7 @@ class ShopGuiPlusGenerator(
         }
     }
 
+    // See https://docs.brcdev.net/#/item-meta?id=_19-116
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {
         with (meta.basePotionData) {
             section["type"] = type.name
@@ -213,6 +197,7 @@ class ShopGuiPlusGenerator(
         }
     }
 
+    // See https://docs.brcdev.net/#/item-meta?id=spawn-eggs
     private fun handleSpawnEggs(section: ConfigurationSection, item: ItemStack) {
         if (ServerVersion.isOlderThan(ServerVersion.V1_11)) {
             section["mob"] = item.spawnEggType.asString()

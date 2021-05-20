@@ -107,36 +107,29 @@ class DeluxeMenusGenerator(
     }
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
-        if (item.isLeatherArmor) {
-            (meta as LeatherArmorMeta).color.ifNotDefault {
-                section["rgb"] = it.asString()
+        when {
+            item.isLeatherArmor -> {
+                (meta as LeatherArmorMeta).color.ifNotDefault { section["rgb"] = it.asString() }
             }
-            return
-        }
-
-        if (item.isSpawnEgg && ServerVersion.isLegacy) {
-            section["data"] = item.spawnEggType.typeId
-            return
-        }
-
-        if (item.isShield || item.isBanner) {
-            handleBannersAndShields(section, item)
-            return
-        }
-
-        if (item.isPotion) {
-            handlePotions(section, meta as PotionMeta)
-            return
-        }
-
-        if (item.isPlayerHead) {
-            handlePlayerHeads(section, item, Provider.getFromInput(input))
+            ServerVersion.isLegacy && item.isSpawnEgg -> {
+                section["data"] = item.spawnEggType.typeId
+            }
+            item.isShield || item.isBanner -> {
+                handleBannersAndShields(section, item)
+            }
+            item.isPotion -> {
+                handlePotions(section, meta as PotionMeta)
+            }
+            item.isPlayerHead -> {
+                handlePlayerHeads(section, item, Provider.getFromInput(input))
+            }
         }
     }
 
     private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
-        val patterns = item.patternsAndBaseColor(false).first
-        section.setList("banner_meta", patterns.map { "${it.color};${it.pattern}" })
+        section.setList("banner_meta") {
+            item.patternsAndBaseColor(false).first.map { "${it.color};${it.pattern}" }
+        }
     }
 
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {

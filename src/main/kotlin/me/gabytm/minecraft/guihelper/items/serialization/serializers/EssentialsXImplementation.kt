@@ -19,7 +19,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
         checkItem(item)
         return buildString {
             append(item.type)
-            item.durability.takeIf { it > 0 }?.let { append(':').append(it) }
+            item.durability.ifNotZero { append(':').append(it) }
             append(' ').append(item.amount)
 
             if (!item.hasItemMeta()) {

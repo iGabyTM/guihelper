@@ -165,8 +165,3 @@ class DeluxeMenusGenerator(
     }
 
 }
-
-/**
- * Turn a [Color] into a string and follow the format used by DeluxeMenus
- */
-private fun Color.asString() = "$red,$green,$blue"

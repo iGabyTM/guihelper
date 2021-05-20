@@ -18,6 +18,7 @@
  */
 
 @file:JvmName("Colors")
+
 package me.gabytm.minecraft.guihelper.functions
 
 import org.bukkit.Bukkit
@@ -25,6 +26,7 @@ import org.bukkit.Color
 import org.bukkit.DyeColor
 
 private val defaultLeatherColor = Bukkit.getItemFactory().defaultLeatherColor
+private val defaultFormat: (Color) -> String = { "${it.red},${it.green},${it.blue}" }
 
 /**
  * Check if the color is the [defaultLeatherColor]
@@ -33,9 +35,35 @@ private val defaultLeatherColor = Bukkit.getItemFactory().defaultLeatherColor
 val Color.isDefaultLeatherColor: Boolean
     get() = this == defaultLeatherColor
 
+/**
+ * The name if it is a default color, otherwise null
+ * @see [DyeColor.color]
+ */
 val Color.name: String?
     get() = DyeColor.getByColor(this)?.name
 
+/**
+ * Turn the color into a string that follow a certain format
+ * @param format format to use (default: `red,green,blue`)
+ * @return color as string
+ */
+fun Color.asString(format: ((Color) -> String) = defaultFormat): String {
+    return format(this)
+}
+
+/**
+ * Turn the name of a color, otherwise a string that follow the default format
+ * @param format format to use (default: `red,green,blue`)
+ * @return color as string
+ */
+fun Color.nameOrString(format: ((Color) -> String) = defaultFormat): String {
+    return name ?: format(this)
+}
+
+/**
+ * Run code if the color is not the [default leather color][org.bukkit.inventory.ItemFactory.getDefaultLeatherColor]
+ * @param function function to run
+ */
 fun Color.ifNotDefault(function: (Color) -> Unit) {
     if (!isDefaultLeatherColor) {
         function(this)

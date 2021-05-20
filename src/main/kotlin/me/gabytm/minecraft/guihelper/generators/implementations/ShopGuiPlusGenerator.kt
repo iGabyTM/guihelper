@@ -33,9 +33,8 @@ import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description
 import me.mattstudios.config.annotations.Path
-import me.mattstudios.config.properties.Property
+import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.Option
 import org.apache.commons.lang.WordUtils
 import org.bukkit.Color
 import org.bukkit.Material
@@ -55,15 +54,7 @@ class ShopGuiPlusGenerator(
 
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
-
-        options.addOption(
-            Option.builder("p")
-                .longOpt("page")
-                .argName("page")
-                .type(Int::class.java)
-                .desc("The page where items will be set")
-                .build()
-        )
+        options.addOption(createPageOption("The page where items will be set"))
     }
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
@@ -133,7 +124,7 @@ class ShopGuiPlusGenerator(
 
         if (item.isLeatherArmor) {
             (meta as LeatherArmorMeta).color.ifNotDefault {
-                section["color"] = it.asString()
+                section["color"] = it.asStringOrName()
             }
             return
         }
@@ -243,27 +234,22 @@ class ShopGuiPlusGenerator(
     private object Value : SettingsHolder {
 
         @Path("buyPrice")
-        val BUY_PRICE = Property.create(10.0)
+        val BUY_PRICE = create(10.0)
 
         @Path("sellPrice")
-        val SELL_PRICE = Property.create(10.0)
+        val SELL_PRICE = create(10.0)
 
         @Comment("https://docs.brcdev.net/#/shopgui/stack-size?id=unstack")
         @Path("unstack")
-        val UNSTACK = Property.create(false)
+        val UNSTACK = create(false)
 
         @Comment("https://docs.brcdev.net/#/shopgui/stack-size?id=stacked")
         @Path("stacked")
-        val STACKED = Property.create(true)
+        val STACKED = create(true)
 
     }
 
 }
-
-/**
- * Turn a [Color] into a string and follow the format used by ShopGUIPlus
- */
-private fun Color.asString(): String = name ?: "$red,$green$blue"
 
 /**
  * See the 'Minecraft 1.7-1.10' tab on [docs.brcdev.net/#/entity-types](https://docs.brcdev.net/#/entity-types)

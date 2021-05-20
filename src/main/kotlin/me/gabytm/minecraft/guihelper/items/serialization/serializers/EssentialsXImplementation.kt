@@ -6,6 +6,7 @@ import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -97,6 +98,8 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
 
 }
 
+private val colorStringFormat: (Color) -> String = { "#${Integer.toHexString(it.asRGB())}" }
+
 private fun StringBuilder.appendFirework(firework: FireworkMeta) {
     if (firework.hasEffects()) {
         firework.effects.forEach { appendFireworkEffect(it) }
@@ -107,13 +110,13 @@ private fun StringBuilder.appendFirework(firework: FireworkMeta) {
 
 private fun StringBuilder.appendFireworkEffect(effect: FireworkEffect) {
     effect.colors.ifNotEmpty {
-        append(it.joinToString(",", " color:") { color -> "#${Integer.toHexString(color.asRGB())}" })
+        append(it.joinToString(",", " color:") { color -> color.asString(colorStringFormat) })
     }
 
     append(" shape:").append(effect.type.name)
 
     effect.fadeColors.ifNotEmpty {
-        append(it.joinToString(",", " fade:") { color -> "#${Integer.toHexString(color.asRGB())}" })
+        append(it.joinToString(",", " fade:") { color -> color.asString(colorStringFormat) })
     }
 }
 

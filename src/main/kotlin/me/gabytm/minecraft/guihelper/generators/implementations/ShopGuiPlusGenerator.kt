@@ -124,7 +124,7 @@ class ShopGuiPlusGenerator(
 
         if (item.isLeatherArmor) {
             (meta as LeatherArmorMeta).color.ifNotDefault {
-                section["color"] = it.asStringOrName()
+                section["color"] = it.nameOrString()
             }
             return
         }

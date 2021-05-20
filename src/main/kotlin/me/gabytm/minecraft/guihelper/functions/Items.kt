@@ -69,6 +69,13 @@ val ItemStack.isBanner: Boolean
     get() = if (ServerVersion.isLegacy) type.name == "BANNER" else Tag.ITEMS_BANNERS.isTagged(type)
 
 /**
+ * Whether the item is a firework or not
+ * @since 1.1.0
+ */
+val ItemStack.isFirework: Boolean
+    get() = type == Material.FIREWORK_ROCKET
+
+/**
  * Whether the item is a firework star or not
  * @since 1.1.0
  */

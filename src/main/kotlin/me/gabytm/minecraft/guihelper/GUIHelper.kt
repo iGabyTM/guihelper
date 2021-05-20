@@ -64,12 +64,14 @@ class GUIHelper : JavaPlugin() {
     }
 
     private fun sendLogo() {
-        sequenceOf(
-            "&2 _____   _____   ",
-            "&2|   __| |  |  |  &fGUIHelper &av${description.version} &fby &a${description.authors.joinToString()} &7(${ServerVersion.CURRENT_VERSION.bukkitName})",
-            "&2|  |  | |     |  &7${description.description}",
-            "&2|_____| |__|__|  "
-        ).forEach { server.consoleSender.sendMessage(it.color()) }
+        with (description) {
+            sequenceOf(
+                "&2 _____   _____   ",
+                "&2|   __| |  |  |  &fGUIHelper &av$version &fby &a${authors.joinToString()} &7(${ServerVersion.CURRENT_VERSION.bukkitName})",
+                "&2|  |  | |     |  &7$description",
+                "&2|_____| |__|__|  "
+            ).forEach { server.consoleSender.sendMessage(it.color()) }
+        }
     }
 
 }

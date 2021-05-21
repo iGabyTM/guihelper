@@ -34,6 +34,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.*
 import org.bukkit.material.SpawnEgg
+import org.bukkit.potion.Potion
 import java.util.*
 
 private val leatherArmor =
@@ -124,6 +125,14 @@ val ItemStack.isShield: Boolean
  */
 val ItemStack.isSpawnEgg: Boolean
     get() = if (ServerVersion.isLegacy) type.name == "MONSTER_EGG" else type.name.endsWith("_SPAWN_EGG")
+
+/**
+ * Whether the item is a splash potion or not
+ * @since 1.1.0
+ */
+@Suppress("DEPRECATION")
+val ItemStack.isSplashPotion: Boolean
+    get() = if (ServerVersion.isAncient) Potion.fromItemStack(this).isSplash else type == Material.SPLASH_POTION
 
 /**
  * Whether the item is unbreakable or not

@@ -68,6 +68,8 @@ class Config(filePath: String, private val plugin: Plugin, empty: Boolean = fals
      */
     fun createSection(path: String): ConfigurationSection = yaml.createSection(path)
 
+    operator fun set(path: String, value: Any?) = yaml.set(path, value)
+
     /**
      * Save the [yaml] and redirect any possible [IOException] to [Plugin.getLogger]
      * @see [me.gabytm.minecraft.guihelper.functions.error]

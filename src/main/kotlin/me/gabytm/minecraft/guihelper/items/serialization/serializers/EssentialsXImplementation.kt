@@ -12,6 +12,7 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.*
 import org.bukkit.potion.Potion
+import org.bukkit.potion.PotionData
 
 class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSerializer() {
 
@@ -34,7 +35,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             }
 
             if (meta.hasLore()) {
-                append(item.lore().joinToString("|", " lore:").removeSpace())
+                append(" lore:").append(item.lore().joinToString("|").removeSpace())
             }
 
             item.enchants { enchantment, level -> "${enchantment.name.lowercase()}:$level" }
@@ -81,7 +82,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             if (ServerVersion.isAncient) {
                 builder.appendPotion(Potion.fromItemStack(item))
             } else {
-                builder.appendPotion(item, meta as PotionMeta)
+                builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)
             }
             return
         }
@@ -127,10 +128,8 @@ private fun StringBuilder.appendPotion(potion: Potion) {
     }
 }
 
-private fun StringBuilder.appendPotion(item: ItemStack, potion: PotionMeta) {
-    val splash = item.type == Material.SPLASH_POTION
-
-    with (potion.basePotionData) {
+private fun StringBuilder.appendPotion(potion: PotionData, splash: Boolean) {
+    with (potion) {
         appendPotion(splash, type.name, if (isExtended) 1 else 0, 20)
     }
 }

@@ -35,7 +35,7 @@ class Config(filePath: String, private val plugin: Plugin, empty: Boolean = fals
         File(plugin.dataFolder.parentFile, "$filePath/GUIHelper.yml")
     }
 
-    val path = file.path
+    val path: String = file.path
     var yaml: YamlConfiguration
         private set
 

@@ -21,6 +21,7 @@ package me.gabytm.minecraft.guihelper.generators.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
+import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
@@ -28,6 +29,11 @@ import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSup
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.mattstudios.config.SettingsHolder
+import me.mattstudios.config.annotations.Comment
+import me.mattstudios.config.annotations.Description
+import me.mattstudios.config.annotations.Path
+import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
 import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
@@ -43,6 +49,8 @@ class DeluxeMenusGenerator(
     override val pluginVersion: String = "1.13.3",
     override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
+
+    private val defaults = Defaults(pluginName)
 
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
@@ -121,7 +129,7 @@ class DeluxeMenusGenerator(
                 handlePotions(section, meta as PotionMeta)
             }
             item.isPlayerHead -> {
-                handlePlayerHeads(section, item, Provider.getFromInput(input))
+                handlePlayerHeads(section, item, Provider.getFromInput(input, default = defaults[Value.SETTINGS__HEADS]))
             }
         }
     }
@@ -155,6 +163,24 @@ class DeluxeMenusGenerator(
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }
+    }
+
+    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+
+    @Description(
+        " ",
+        "Default values that will be used in the config creation process",
+        " ",
+        "▪ DeluxeMenus 1.13.3 by clip (https://spigotmc.org/resources/11734/)",
+        "▪ Wiki: https://wiki.helpch.at/clips-plugins/deluxemenus",
+        " "
+    )
+    private object Value : SettingsHolder {
+
+        @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
+        @Path("settings.heads")
+        val SETTINGS__HEADS = create(Provider.BASE_64)
+
     }
 
 }

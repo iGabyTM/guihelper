@@ -27,6 +27,7 @@ abstract class ItemSerializer {
 
     enum class Serializer(val alias: String) {
 
+        CRATE_RELOADED("cratereloaded"),
         ESSENTIALSX("essentials"),
         VANILLA("");
 
@@ -37,8 +38,8 @@ abstract class ItemSerializer {
             fun getSerializer(string: String, default: Serializer = VANILLA): Serializer {
                 return types.firstOrNull {
                     it.name.equals(string, true) ||
-                            it.name.replace("_", "").equals(string, true) ||
-                            it.alias.equals(string, true)
+                            it.alias.equals(string, true) ||
+                            it.name.replace("_", "").equals(string, true)
                 } ?: default
             }
 

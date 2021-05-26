@@ -22,10 +22,7 @@ package me.gabytm.minecraft.guihelper.generators
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
-import me.gabytm.minecraft.guihelper.generators.implementations.ASkyBlockGenerator
-import me.gabytm.minecraft.guihelper.generators.implementations.CratesPlusGenerator
-import me.gabytm.minecraft.guihelper.generators.implementations.DeluxeMenusGenerator
-import me.gabytm.minecraft.guihelper.generators.implementations.ShopGuiPlusGenerator
+import me.gabytm.minecraft.guihelper.generators.implementations.*
 import me.gabytm.minecraft.guihelper.utils.Constants.ALIAS
 
 /**
@@ -42,6 +39,7 @@ class GeneratorsManager(plugin: GUIHelper) {
         @Suppress("SpellCheckingInspection")
         sequenceOf(
             ASkyBlockGenerator(plugin),
+            CrateReloadedGenerator(plugin),
             CratesPlusGenerator(plugin),
             DeluxeMenusGenerator(plugin),
             ShopGuiPlusGenerator(plugin)
@@ -51,9 +49,9 @@ class GeneratorsManager(plugin: GUIHelper) {
     @Suppress("MemberVisibilityCanBePrivate")
     fun register(generator: ConfigGenerator, replaceIfPresent: Boolean = false) {
         if (replaceIfPresent) {
-            registeredGenerators[generator.pluginName] = generator
+            registeredGenerators[generator.pluginName.lowercase()] = generator
         } else {
-            registeredGenerators.putIfAbsent(generator.pluginName, generator)
+            registeredGenerators.putIfAbsent(generator.pluginName.lowercase(), generator)
         }
 
         registeredGeneratorsIds = registeredGenerators.keys.toList()

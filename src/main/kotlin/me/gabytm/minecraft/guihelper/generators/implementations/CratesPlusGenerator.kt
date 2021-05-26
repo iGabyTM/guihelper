@@ -9,6 +9,7 @@ import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Description
+import me.mattstudios.config.annotations.Path
 import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
 import org.bukkit.configuration.ConfigurationSection
@@ -78,6 +79,7 @@ class CratesPlusGenerator(
     )
     private object Value : SettingsHolder {
 
+        @Path("percentage")
         val PERCENTAGE = create(10.0)
 
     }

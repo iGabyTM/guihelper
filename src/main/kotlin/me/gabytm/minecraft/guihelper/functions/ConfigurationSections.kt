@@ -109,29 +109,3 @@ fun ConfigurationSection.setList(path: String, list: List<Any>) {
         this[path] = list
     }
 }
-
-fun ConfigurationSection.setList(path: String, setIfEmpty: Boolean, list: () -> List<Any>) {
-    with(list()) {
-        if (!setIfEmpty && isEmpty()) {
-            return@with
-        }
-
-        set(path, this)
-    }
-}
-
-/**
- * Set a list in config only if [is not empty][List.isNotEmpty]
- *
- * The equivalent of **setList(path: String, false, list: () -> List<Any>)**
- *
- * @param path where the value will be set
- * @param list list
- */
-fun ConfigurationSection.setList(path: String, list: () -> List<Any>) {
-    with(list()) {
-        if (isNotEmpty()) {
-            set(path, list)
-        }
-    }
-}

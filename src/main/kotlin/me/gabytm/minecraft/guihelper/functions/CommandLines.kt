@@ -1,5 +1,6 @@
 package me.gabytm.minecraft.guihelper.functions
 
+import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import org.apache.commons.cli.CommandLine
 
 fun <V> CommandLine.getOrDefault(opt: String, default: V, transformer: (String) -> V?): V {
@@ -26,4 +27,8 @@ fun <V> CommandLine.getCollectionOrDefault(
 
     val values = getOptionValues(opt) ?: return default
     return transformer(values) ?: default
+}
+
+fun CommandLine.getHeadIdProvider(option: String = "heads", default: Provider = Provider.BASE_64): Provider {
+    return getOrDefault(option, default) { Provider.getProvider(it, default) }
 }

@@ -19,10 +19,17 @@
 
 package me.gabytm.minecraft.guihelper.generators.base
 
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 
-class GeneratorContext(
-    val player: Player,
-    val inventory: Inventory
-)
+class GeneratorContext(val player: Player, val inventory: Inventory) {
+
+    fun forEach(function: (item: ItemStack, slot: Int) -> Unit) {
+        inventory.contents.withIndex()
+            .filter { it.value != null && it.value.type != Material.AIR }
+            .forEach { function(it.value, it.index) }
+    }
+
+}

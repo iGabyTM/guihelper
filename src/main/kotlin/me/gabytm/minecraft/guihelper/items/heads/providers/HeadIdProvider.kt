@@ -1,11 +1,10 @@
 package me.gabytm.minecraft.guihelper.items.heads.providers
 
-import me.gabytm.minecraft.guihelper.functions.getOrDefault
 import me.gabytm.minecraft.guihelper.functions.isPlayerHead
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.ItemIsNotPlayerHeadException
-import org.apache.commons.cli.CommandLine
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.jvm.Throws
 
 abstract class HeadIdProvider {
 
@@ -13,6 +12,7 @@ abstract class HeadIdProvider {
      * Check if the item [isPlayerHead]
      * @throws ItemIsNotPlayerHeadException if the item is not a player head
      */
+    @Throws(ItemIsNotPlayerHeadException::class)
     internal fun checkItem(item: ItemStack) {
         if (!item.isPlayerHead) {
             throw ItemIsNotPlayerHeadException(item)
@@ -37,18 +37,14 @@ abstract class HeadIdProvider {
 
         companion object {
 
-            private val types = EnumSet.allOf(Provider::class.java)
+            private val providers = EnumSet.allOf(Provider::class.java)
 
             fun getProvider(string: String, default: Provider = BASE_64): Provider {
-                return types.firstOrNull {
+                return providers.firstOrNull {
                     it.name.equals(string, true) ||
-                            it.name.replace("_", "").equals(string, true) ||
-                            it.alias.equals(string, true)
+                    it.alias.equals(string, true) ||
+                    it.name.replace("_", "").equals(string, true)
                 } ?: default
-            }
-
-            fun getFromInput(input: CommandLine, option: String = "heads", default: Provider = BASE_64): Provider {
-                return input.getOrDefault(option, default) { getProvider(it, default) }
             }
 
         }

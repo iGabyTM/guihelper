@@ -4,6 +4,7 @@ import me.gabytm.minecraft.guihelper.items.serialization.exceptions.ItemCanNotBe
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.jvm.Throws
 
 abstract class ItemSerializer {
 
@@ -11,6 +12,7 @@ abstract class ItemSerializer {
      * Check if the item can be serialized
      * @throws ItemCanNotBeSerializedException
      */
+    @Throws(ItemCanNotBeSerializedException::class)
     internal fun checkItem(item: ItemStack) {
         if (item.type == Material.AIR) {
             throw ItemCanNotBeSerializedException(item)
@@ -33,13 +35,13 @@ abstract class ItemSerializer {
 
         companion object {
 
-            private val types = EnumSet.allOf(Serializer::class.java)
+            private val serializers = EnumSet.allOf(Serializer::class.java)
 
             fun getSerializer(string: String, default: Serializer = VANILLA): Serializer {
-                return types.firstOrNull {
+                return serializers.firstOrNull {
                     it.name.equals(string, true) ||
-                            it.alias.equals(string, true) ||
-                            it.name.replace("_", "").equals(string, true)
+                    it.alias.equals(string, true) ||
+                    it.name.replace("_", "").equals(string, true)
                 } ?: default
             }
 

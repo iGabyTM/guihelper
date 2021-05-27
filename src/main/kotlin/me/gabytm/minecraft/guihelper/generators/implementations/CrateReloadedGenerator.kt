@@ -6,7 +6,6 @@ import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.addOption
 import me.gabytm.minecraft.guihelper.functions.arg
 import me.gabytm.minecraft.guihelper.functions.getOrDefault
-import me.gabytm.minecraft.guihelper.functions.isInvalid
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.items.serialization.serializers.ItemSerializer
@@ -18,7 +17,9 @@ import me.mattstudios.config.annotations.Path
 import me.mattstudios.config.configurationdata.CommentsConfiguration
 import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import kotlin.system.measureTimeMillis
 
 class CrateReloadedGenerator(
     private val plugin: GUIHelper,
@@ -40,16 +41,16 @@ class CrateReloadedGenerator(
     override fun getMessage(): String = "  &2$pluginName &av$pluginVersion &8- &fCrate prizes"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val startTime = System.currentTimeMillis()
-
         val config = Config("$pluginName/crates", plugin, true)
-        val rewards = context.inventory.contents.filter { !it.isInvalid }.map { createItem(input, it) }
 
-        rewards.forEach(::println)
+        val duration = measureTimeMillis {
+            config["GUIHelper.reward.rewards"] = context.inventory.contents
+                .filter { it != null && it.type != Material.AIR }
+                .map { createItem(input, it) }
+        }
 
-        config["GUIHelper.reward.rewards"] = rewards
         config.save()
-        Message.GENERATION_DONE.send(context, config.path, (System.currentTimeMillis() - startTime))
+        Message.GENERATION_DONE.send(context, config.path, duration)
         return true
     }
 

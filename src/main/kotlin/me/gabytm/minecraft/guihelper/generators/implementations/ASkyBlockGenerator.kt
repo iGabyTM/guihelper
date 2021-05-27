@@ -33,6 +33,7 @@ import me.mattstudios.config.properties.Property
 import org.apache.commons.cli.CommandLine
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
+import kotlin.system.measureTimeMillis
 
 class ASkyBlockGenerator(
     private val plugin: GUIHelper,
@@ -46,19 +47,14 @@ class ASkyBlockGenerator(
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val start = System.currentTimeMillis()
         val config = Config(pluginName, plugin, true)
 
-        for ((slot, item) in context.inventory.contents.withIndex()) {
-            if (item.isInvalid) {
-                continue
-            }
-
-            createItem(config.createSection("items.item${slot + 1}"), item, slot)
+        val duration = measureTimeMillis {
+            context.forEach { item, slot -> createItem(config.createSection("items.item${slot + 1}"), item, slot) }
         }
 
         config.save()
-        Message.GENERATION_DONE.send(context, config.path, (System.currentTimeMillis() - start))
+        Message.GENERATION_DONE.send(context, config.path, duration)
         return true
     }
 

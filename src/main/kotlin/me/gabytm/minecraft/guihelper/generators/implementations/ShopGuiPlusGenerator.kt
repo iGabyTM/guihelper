@@ -40,6 +40,7 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.*
+import kotlin.system.measureTimeMillis
 
 class ShopGuiPlusGenerator(
     private val plugin: GUIHelper,
@@ -58,21 +59,17 @@ class ShopGuiPlusGenerator(
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val startTime = System.currentTimeMillis()
-
         val page = input.getOrDefault('p', 0) { it.toIntOrNull() }
         val config = Config("$pluginName/shops", plugin, true)
 
-        for ((slot, item) in context.inventory.contents.withIndex()) {
-            if (item.isInvalid) {
-                continue
+        val duration = measureTimeMillis {
+            context.forEach { item, slot ->
+                createItem(config.createSection("shops.GUIHelper.items.P$page-$slot"), input, item, slot, page)
             }
-
-            createItem(config.createSection("shops.GUIHelper.items.P$page-$slot"), input, item, slot, page)
         }
 
         config.save()
-        Message.GENERATION_DONE.send(context, config.path, (System.currentTimeMillis() - startTime))
+        Message.GENERATION_DONE.send(context, config.path, duration)
         return true
     }
 

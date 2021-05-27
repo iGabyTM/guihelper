@@ -42,6 +42,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.PotionMeta
+import kotlin.system.measureTimeMillis
 
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
@@ -64,22 +65,18 @@ class DeluxeMenusGenerator(
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fExternal / local (config.yml) menus"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val startTime = System.currentTimeMillis()
-
         val external = input.hasOption("external")
         val config = Config(if (external) "$pluginName/gui_menus" else pluginName, plugin, true)
 
-        for ((slot, item) in context.inventory.contents.withIndex()) {
-            if (item.isInvalid) {
-                continue
+        val duration = measureTimeMillis {
+            context.forEach { item, slot ->
+                val path = if (external) "items.$slot" else "gui_menus.GUIHelper.items.$slot"
+                createItem(config.createSection(path), input, item, slot)
             }
-
-            val path = if (external) "items.$slot" else "gui_menus.GUIHelper.items.$slot"
-            createItem(config.createSection(path), input, item, slot)
         }
 
         config.save()
-        Message.GENERATION_DONE.send(context, config.path, (System.currentTimeMillis() - startTime))
+        Message.GENERATION_DONE.send(context, config.path, duration)
         return true
     }
 
@@ -133,9 +130,10 @@ class DeluxeMenusGenerator(
     }
 
     private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
-        section.setList("banner_meta") {
-            item.patternsAndBaseColor(false).first.map { "${it.color};${it.pattern}" }
-        }
+        section.setList(
+            "banner_meta",
+                item.patternsAndBaseColor(false).first.map { "${it.color.name};${it.pattern.name}" }
+        )
     }
 
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {

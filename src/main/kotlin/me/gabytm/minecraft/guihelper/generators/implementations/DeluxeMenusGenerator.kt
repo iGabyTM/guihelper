@@ -55,12 +55,10 @@ class DeluxeMenusGenerator(
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
 
-        options.addOption(
-            "e",
-            "external",
-            false,
-            "Whether the menu is external ($pluginName/gui_menus/) or internal (config.yml)"
-        )
+        options.addOption('e') {
+            longOpt("external")
+            desc("Whether the menu is external ($pluginName/gui_menus/) or internal (config.yml)")
+        }
     }
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fExternal / local (config.yml) menus"
@@ -129,7 +127,7 @@ class DeluxeMenusGenerator(
                 handlePotions(section, meta as PotionMeta)
             }
             item.isPlayerHead -> {
-                handlePlayerHeads(section, item, Provider.getFromInput(input, default = defaults[Value.SETTINGS__HEADS]))
+                handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
             }
         }
     }

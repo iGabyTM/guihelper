@@ -119,7 +119,7 @@ class ShopGuiPlusGenerator(
                 (meta as LeatherArmorMeta).color.ifNotDefault { section["color"] = it.nameOrString() }
             }
             item.isPlayerHead -> {
-                handlePlayerHeads(section, item, Provider.getFromInput(input))
+                handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
             }
             !ServerVersion.isAncient && item.isPotion -> {
                 handlePotions(section.createSection("potion"), meta as PotionMeta)
@@ -217,6 +217,10 @@ class ShopGuiPlusGenerator(
         " "
     )
     private object Value : SettingsHolder {
+
+        @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
+        @Path("settings.heads")
+        val SETTINGS__HEADS = create(Provider.BASE_64)
 
         @Path("buyPrice")
         val BUY_PRICE = create(10.0)

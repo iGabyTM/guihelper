@@ -36,6 +36,7 @@ import org.bukkit.inventory.meta.*
 import org.bukkit.material.SpawnEgg
 import org.bukkit.potion.Potion
 import java.util.*
+import kotlin.jvm.Throws
 
 private val leatherArmor =
     EnumSet.of(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS)
@@ -190,9 +191,6 @@ val ItemStack.customModelData: Int
         return if (meta.hasCustomModelData()) meta.customModelData else 0
     }
 
-val ItemStack?.isInvalid: Boolean
-    get() = this == null || type == Material.AIR
-
 /**
  * Item's displayName (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
  * @param format the format for RGB (only used on 1.14+)
@@ -202,11 +200,11 @@ val ItemStack?.isInvalid: Boolean
  * @see [fixColors]
  * @since 1.1.0
  */
-fun ItemStack.displayName(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
+fun ItemStack.displayName(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT): String {
     return itemMeta?.displayName?.fixColors(format) ?: ""
 }
 
-fun <T> ItemStack.enchants(format: (Enchantment, Int) -> T): List<T> {
+fun <T> ItemStack.enchants(format: (enchantment: Enchantment, level: Int) -> T): List<T> {
     if (!hasItemMeta()) {
         return emptyList()
     }
@@ -230,11 +228,12 @@ fun <T> ItemStack.enchants(format: (Enchantment, Int) -> T): List<T> {
  * @see [fixColors]
  * @since 1.1.0
  */
-fun ItemStack.lore(format: ((String) -> String) = SPIGOT_RGB_FORMAT): List<String> {
+fun ItemStack.lore(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT): List<String> {
     return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()
 }
 
 @Suppress("DEPRECATION")
+@Throws(java.lang.IllegalArgumentException::class)
 fun ItemStack.patternsAndBaseColor(check: Boolean): Pair<List<Pattern>, DyeColor?> {
     if (check && (!isShield && !isBanner)) {
         throw IllegalArgumentException("Item is not a SHIELD or BANNER but $type")

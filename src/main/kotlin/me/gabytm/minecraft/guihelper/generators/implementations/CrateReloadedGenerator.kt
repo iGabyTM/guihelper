@@ -8,7 +8,7 @@ import me.gabytm.minecraft.guihelper.functions.arg
 import me.gabytm.minecraft.guihelper.functions.getOrDefault
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.serialization.serializers.ItemSerializer
+import me.gabytm.minecraft.guihelper.items.serialization.serializers.Serializer
 import me.gabytm.minecraft.guihelper.utils.Message
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
@@ -17,7 +17,6 @@ import me.mattstudios.config.annotations.Path
 import me.mattstudios.config.configurationdata.CommentsConfiguration
 import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
-import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import kotlin.system.measureTimeMillis
 
@@ -41,12 +40,13 @@ class CrateReloadedGenerator(
     override fun getMessage(): String = "  &2$pluginName &av$pluginVersion &8- &fCrate prizes"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val config = Config("$pluginName/crates", plugin, true)
+        val config = Config(pluginName, plugin, true)
 
         val duration = measureTimeMillis {
-            config["GUIHelper.reward.rewards"] = context.inventory.contents
-                .filter { it != null && it.type != Material.AIR }
-                .map { createItem(input, it) }
+            val rewards = mutableListOf<String>()
+
+            context.forEach(5, pluginName) { item, _ -> rewards.add(createItem(input, item)) }
+            config["GUIHelper.reward.rewards"] = rewards
         }
 
         config.save()
@@ -70,7 +70,7 @@ class CrateReloadedGenerator(
         properties.add(defaults[Value.TAGS__COMMANDS]) { "cmd:($it)" }
         properties.add(defaults[Value.TAGS__PERMISSIONS]) { "permission:($it)" }
 
-        with(plugin.itemsManager.serialize(item, ItemSerializer.Serializer.CRATE_RELOADED)) {
+        with(plugin.itemsManager.serialize(item, Serializer.CRATE_RELOADED)) {
             properties.add("display:($this)")
 
             if (defaults[Value.SETTINGS__GIVE_DISPLAY_ITEM]) {

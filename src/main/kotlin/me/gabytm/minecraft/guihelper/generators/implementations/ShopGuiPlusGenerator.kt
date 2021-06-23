@@ -50,6 +50,16 @@ class ShopGuiPlusGenerator(
 ) : ConfigGenerator() {
 
     private val defaults = Defaults(pluginName)
+    // TODO: add nbt support
+    /*
+    private val ignoredNbtTags = setOf(
+        "Damage", // durability
+        "Enchantments",
+        "display", // lore, display name and color
+        "SkullOwner", // texture
+        //"Patterns", // banner and shield patterns
+        "CustomPotionEffects"
+    )*/
 
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
@@ -59,12 +69,12 @@ class ShopGuiPlusGenerator(
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val page = input.getOrDefault('p', 0) { it.toIntOrNull() }
-        val config = Config("$pluginName/shops", plugin, true)
+        val page = input.getOrDefault('p', 1) { it.toIntOrNull() }
+        val config = Config(pluginName, plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->
-                createItem(config.createSection("shops.GUIHelper.items.P$page-$slot"), input, item, slot, page)
+                createItem(config.createSection("GUIHelper.items.P$page-$slot"), input, item, slot, page)
             }
         }
 
@@ -97,8 +107,14 @@ class ShopGuiPlusGenerator(
         itemSection.set("name", meta::hasDisplayName) { item.displayName(rgbFormat) }
         itemSection.set("lore", meta::hasLore) { item.lore(rgbFormat) }
         itemSection.setList("flags", meta.itemFlags.map { it.name })
-        itemSection.setList("enchantments", item.enchants { enchant, level -> "$enchant:$level" })
+        itemSection.setList("enchantments", item.enchants { enchant, level -> "${enchant.name}:$level" })
         setMetaSpecificValues(itemSection, input, item, meta)
+
+        // TODO: add nbt support
+        /*
+        if (defaults[Value.NBT]) {
+            handleNbt(itemSection, item)
+        }*/
     }
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
@@ -203,6 +219,90 @@ class ShopGuiPlusGenerator(
         }
     }
 
+    /*
+    // See https://docs.brcdev.net/#/item-meta?id=nbt-tags
+    private fun handleNbt(section: ConfigurationSection, item: ItemStack) {
+        val nbt = NBTItem(item)
+
+        if (!nbt.hasNBTData()) {
+            return
+        }
+
+        val nbtSection = section.createSection("nbt")
+
+        for (key in nbt.keys) {
+            if (ignoredNbtTags.contains(key)) {
+                println("[-] $key is ignored")
+                continue
+            }
+
+            val compoundSection = nbtSection.createSection(key)
+            val type = nbt.getType(key) ?: continue
+
+            println("[?] Processing $key...")
+
+            when (type) {
+                NBTType.NBTTagCompound -> setNbtCompound(compoundSection, nbt.getCompound(key))
+                else -> {
+                    val (actualType, value) = nbt[type, key]
+                    println("[+] $key type is ${actualType.asString()}")
+                    setNbtTag(compoundSection, actualType, key, value)
+                }
+            }
+        }
+    }
+
+    @Beta
+    private fun setNbtTag(section: ConfigurationSection, nbtType: NBTType, key: String, value: Any?) {
+        if (value == null) {
+            return
+        }
+
+        // TODO: Come back to this when support for compound list is added
+        if (value is NBTCompoundList) {
+            return
+        }
+
+        section["type"] = nbtType.asString()
+        section["key"] = key
+        section["value"] = value
+    }
+
+    // TODO: Come back to this when support for compound list is added
+    private fun handleNBTCompoundList(section: ConfigurationSection, list: NBTCompoundList) {
+        for ((index, entry) in list.withIndex()) {
+            val childrenSection = section.createSection("$index.children")
+
+            for (key in entry.keys) {
+                val type = entry.getType(key)
+                val keySection = childrenSection.createSection(key)
+
+                when (type) {
+                    NBTType.NBTTagCompound -> setNbtCompound(keySection, entry.getCompound(key))
+                    else -> {
+                        val (realType, value) = entry[type, key]
+                        setNbtTag(keySection, realType, key, value)
+                    }
+                }
+            }
+        }
+    }
+
+    @Beta
+    private fun setNbtCompound(section: ConfigurationSection, compound: NBTCompound) {
+        for (key in compound.keys) {
+            val keySection = section.createSection(key)
+
+            when (val type = compound.getType(key) ?: continue) {
+                NBTType.NBTTagCompound -> setNbtCompound(keySection, compound.getCompound(key))
+                else -> {
+                    val (realType, value) = compound[type, key]
+                    setNbtTag(keySection, realType, key, value)
+                }
+            }
+        }
+    }
+     */
     private class Defaults(name: String) : DefaultValues(name, Value::class.java)
 
     @Description(
@@ -233,6 +333,12 @@ class ShopGuiPlusGenerator(
         @Path("stacked")
         val STACKED = create(true)
 
+        // TODO: add nbt support
+        /*
+        @Comment("https://docs.brcdev.net/#/item-meta?id=nbt-tags")
+        @Path("nbt")
+        val NBT = create(false)
+         */
     }
 
 }
@@ -243,3 +349,57 @@ class ShopGuiPlusGenerator(
 private fun EntityType.asString(): String {
     return WordUtils.capitalizeFully(name.replace('_', ' ')).replace(" ", "")
 }
+
+// TODO: add nbt support
+/*
+private operator fun NBTCompound.get(type: NBTType, key: String): Pair<NBTType, Any?> {
+    if (type == NBTType.NBTTagList) {
+        val listType = getListType(key)
+
+        return listType to when (listType) {
+            NBTType.NBTTagCompound -> null // getCompoundList(key)
+
+            NBTType.NBTTagByteArray -> getByteArray(key)
+            NBTType.NBTTagDouble -> getDoubleList(key)
+            NBTType.NBTTagFloat -> getFloatList(key)
+            NBTType.NBTTagInt -> getIntegerList(key)
+            NBTType.NBTTagIntArray -> getIntArray(key)
+            NBTType.NBTTagLong -> getLongList(key)
+
+            else -> getStringList(key)
+        }
+    }
+
+    return type to when (type) {
+        NBTType.NBTTagCompound -> getCompound(key)
+
+        NBTType.NBTTagByte -> getByte(key)
+        NBTType.NBTTagByteArray -> getByteArray(key)
+        NBTType.NBTTagDouble -> getDouble(key)
+        NBTType.NBTTagFloat -> getFloat(key)
+        NBTType.NBTTagInt -> getInteger(key)
+        NBTType.NBTTagIntArray -> getIntArray(key)
+        NBTType.NBTTagLong -> getLong(key)
+        NBTType.NBTTagShort -> getShort(key)
+        NBTType.NBTTagString -> getString(key)
+
+        NBTType.NBTTagEnd -> getString(key)
+        else -> getCompound(key)
+    }
+}
+
+private fun NBTType.asString(): String {
+    return when (this) {
+        NBTType.NBTTagByte -> "BYTE"
+        NBTType.NBTTagByteArray -> "BYTE_ARRAY"
+        NBTType.NBTTagCompound -> "COMPOUND"
+        NBTType.NBTTagFloat -> "FLOAT"
+        NBTType.NBTTagDouble -> "DOUBLE"
+        NBTType.NBTTagInt -> "INT"
+        NBTType.NBTTagIntArray -> "INT_ARRAY"
+        NBTType.NBTTagLong -> "LONG"
+        NBTType.NBTTagString -> "STRING"
+        else -> name
+    }
+}
+*/

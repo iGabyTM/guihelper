@@ -43,6 +43,14 @@ val Color.name: String?
     get() = DyeColor.getByColor(this)?.name
 
 /**
+ * Turn the color into a HEX string (RRGGBB)
+ * @return HEX representation of a [Color], **without** #
+ */
+fun Color.asHex(): String {
+    return Integer.toHexString(asRGB())
+}
+
+/**
  * Turn the color into a string that follow a certain format
  * @param format format to use (default: `red,green,blue`)
  * @return color as string

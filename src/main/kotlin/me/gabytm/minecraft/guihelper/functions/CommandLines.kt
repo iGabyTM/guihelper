@@ -16,6 +16,15 @@ fun <V> CommandLine.getOrDefault(opt: Char, default: V, transformer: (String) ->
     return getOrDefault(opt.toString(), default, transformer)
 }
 
+fun <V> CommandLine.getArg(opt: Char, transformer: (String) -> V?): V? {
+    if (!hasOption(opt)) {
+        return null
+    }
+
+    val value = getOptionValue(opt) ?: return null
+    return transformer(value)
+}
+
 fun <V> CommandLine.getCollectionOrDefault(
     opt: String,
     default: Collection<V>,

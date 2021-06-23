@@ -27,7 +27,7 @@ import java.io.File
 import java.io.IOException
 
 @Suppress("MemberVisibilityCanBePrivate")
-class Config(filePath: String, private val plugin: Plugin, empty: Boolean = false) {
+class Config(filePath: String, plugin: Plugin, empty: Boolean = false) {
 
     private var file: File = if (filePath.endsWith(".yml")) {
         File(plugin.dataFolder, filePath)
@@ -46,7 +46,7 @@ class Config(filePath: String, private val plugin: Plugin, empty: Boolean = fals
             try {
                 file.createNewFile()
             } catch (e: IOException) {
-                plugin.logger.error("Could not create $path", e)
+                error("Could not create $path", e)
             }
         }
 
@@ -78,7 +78,7 @@ class Config(filePath: String, private val plugin: Plugin, empty: Boolean = fals
         try {
             yaml.save(file)
         } catch (e: IOException) {
-            plugin.logger.error("Could not save $path", e)
+            error("Could not save $path", e)
         }
     }
 

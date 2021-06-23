@@ -20,8 +20,11 @@
 package me.gabytm.minecraft.guihelper.generators.base
 
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
+import me.gabytm.minecraft.guihelper.utils.Message
+import me.rayzr522.jsonmessage.JSONMessage
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
+import org.bukkit.ChatColor
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -33,6 +36,8 @@ import org.bukkit.inventory.ItemStack
 abstract class ConfigGenerator {
 
     val options = Options()
+    lateinit var optionsMessage: JSONMessage
+        private set
 
     abstract val pluginName: String
     abstract val pluginVersion: String
@@ -74,5 +79,43 @@ abstract class ConfigGenerator {
     open fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int) {}
 
     open fun onReload() {}
+
+    internal fun createOptionsMessage() {
+        if (options.options.isEmpty()) {
+            this.optionsMessage = JSONMessage.create(Message.NO_OPTIONS[pluginName])
+            return
+        }
+
+        val message = JSONMessage.create(Message.OPTIONS__HEADER[pluginName, pluginVersion])
+            .then(" (?)").color(ChatColor.GRAY).tooltip(Message.OPTIONS__HEADER_HOVER.get())
+
+        val (required, optional) = options.options.sortedBy { it.opt }.partition { it.isRequired }
+
+        for (option in (required + optional)) {
+            message.newline()
+
+            if (option.hasLongOpt()) {
+                message.then("-${option.opt}, --${option.longOpt}")
+            } else {
+                message.then("-${option.opt}")
+            }
+
+            message.color(if (option.isRequired) ChatColor.RED else ChatColor.GREEN)
+
+            if (option.hasArg()) {
+                if (option.hasOptionalArg()) {
+                    message.then(" (${option.argName})")
+                } else {
+                    message.then(" [${option.argName}]")
+                }
+
+                message.color(if (option.isRequired) ChatColor.RED else ChatColor.GREEN)
+            }
+
+            message.then(" (description)").color(ChatColor.GRAY).tooltip(option.description)
+        }
+
+        this.optionsMessage = message
+    }
 
 }

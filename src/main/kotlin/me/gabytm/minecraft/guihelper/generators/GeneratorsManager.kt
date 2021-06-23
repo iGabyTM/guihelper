@@ -33,20 +33,36 @@ import me.gabytm.minecraft.guihelper.utils.Constants.ALIAS
 class GeneratorsManager(plugin: GUIHelper) {
 
     private val registeredGenerators = mutableMapOf<String, ConfigGenerator>()
-    private var registeredGeneratorsIds = listOf<String>()
+    private val registeredGeneratorsIds = mutableSetOf<String>()
+
+    lateinit var listMessage: String
+        private set
 
     init {
-        @Suppress("SpellCheckingInspection")
         sequenceOf(
             ASkyBlockGenerator(plugin),
             CrateReloadedGenerator(plugin),
             CratesPlusGenerator(plugin),
             DeluxeMenusGenerator(plugin),
+            LemonMobCoinsGenerators(plugin),
             ShopGuiPlusGenerator(plugin)
-        ).forEach { register(it) }
+        ).forEach {
+            registeredGenerators[it.pluginName.lowercase()] = it
+            it.createOptionsMessage()
+        }
+
+        updateGeneratorsList()
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
+    private fun updateGeneratorsList() {
+        registeredGeneratorsIds.addAll(registeredGenerators.keys)
+        this.listMessage = buildString {
+            append("&2&lGH &8| &aGenerators available:\n \n")
+            append(registeredGenerators.entries.sortedBy { it.key }.joinToString("\n") { it.value.getMessage() })
+            append("\n \n&fUsage: &2/$ALIAS create [type] &a(options)")
+        }.color()
+    }
+
     fun register(generator: ConfigGenerator, replaceIfPresent: Boolean = false) {
         if (replaceIfPresent) {
             registeredGenerators[generator.pluginName.lowercase()] = generator
@@ -54,7 +70,8 @@ class GeneratorsManager(plugin: GUIHelper) {
             registeredGenerators.putIfAbsent(generator.pluginName.lowercase(), generator)
         }
 
-        registeredGeneratorsIds = registeredGenerators.keys.toList()
+        generator.createOptionsMessage()
+        updateGeneratorsList()
     }
 
     fun reload() = registeredGenerators.values.forEach { it.onReload() }
@@ -67,14 +84,6 @@ class GeneratorsManager(plugin: GUIHelper) {
      */
     fun getGenerator(id: String): ConfigGenerator? = registeredGenerators[id.lowercase()]
 
-    fun registeredGeneratorsIds(): List<String> = registeredGeneratorsIds
-
-    fun getMessage(): String {
-        return """
-            ${registeredGenerators.values.joinToString("\n") { it.getMessage() }}
-             
-            &7Usage: &2/$ALIAS create [type] &a(arguments)
-        """.trimIndent().color()
-    }
+    fun registeredGeneratorsIds(): List<String> = registeredGeneratorsIds.toList()
 
 }

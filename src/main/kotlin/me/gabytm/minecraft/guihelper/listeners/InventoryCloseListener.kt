@@ -36,7 +36,7 @@ class InventoryCloseListener(private val manager: GeneratorsManager) : Listener 
         }
 
         if (inventory.isNotEmpty) {
-            player.sendMessage(manager.getMessage())
+            player.sendMessage(manager.listMessage)
         }
     }
 

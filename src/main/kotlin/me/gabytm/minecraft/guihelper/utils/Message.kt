@@ -26,14 +26,32 @@ import org.bukkit.command.CommandSender
 enum class Message(var value: String) {
 
     /**
+     * %s - item's display name
+     */
+    EDIT__NAME__COPY("&2&lGH &8| &aClick to copy: %s"),
+
+    EMPTY("&2&lGH &8| &aThe GUI has been cleared and is ready to use!"),
+    EMPTY_GUI("&4&lGH &8| &cPlease add some items to the GUI first!"),
+
+    /**
      * %s - the path of the file, [Config.path][me.gabytm.minecraft.guihelper.config.Config.path]
      *
      * %d - how long the process took (in ms)
      */
     GENERATION_DONE("&2&lGH &8| &aDone, the config can be found &2@ &f%s&a! &7(%dms)"),
 
-    EMPTY("&2&lGH &8| &aThe GUI has been cleared and is ready to use!"),
-    EMPTY_GUI("&4&lGH &8| &cPlease add some items to the GUI first!"),
+    /**
+     * %s - plugin's name
+     */
+    NO_OPTIONS("&4&lGH &8| &c%s has no options."),
+
+    /**
+     * %s - plugin's name
+     *
+     * %s - plugin's version
+     */
+    OPTIONS__HEADER("&2&lGH &8| &fOptions for &a%s v&a%s&f:"),
+    OPTIONS__HEADER_HOVER("&fOptions: &crequired &aoptional\n&fArguments: [required] (optional)"),
 
     /**
      * %s - user input for generator name
@@ -43,6 +61,10 @@ enum class Message(var value: String) {
 
     init {
         value = value.color()
+    }
+
+    operator fun get(vararg args: Any?): String {
+        return value.format(*args);
     }
 
     fun send(receiver: CommandSender, vararg args: Any?) {

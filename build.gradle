@@ -47,9 +47,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
 
     implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands - https://mf.mattstudios.me/mf/mf-1
     implementation 'me.mattstudios:triumph-config:1.0.5-SNAPSHOT'

@@ -18,13 +18,30 @@
  */
 
 @file:JvmName("Loggers")
+
 package me.gabytm.minecraft.guihelper.functions
 
+import me.gabytm.minecraft.guihelper.GUIHelper
+import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level
-import java.util.logging.Logger
+
+private val plugin = JavaPlugin.getPlugin(GUIHelper::class.java)
 
 /**
- * Log a [Throwable] with plugin's [Logger] with a custom message
+ * Log a [Throwable] through plugin's [java.util.logging.Logger] with a custom message
+ * @see Level.SEVERE
  * @sample me.gabytm.minecraft.guihelper.config.Config.save
  */
-fun Logger.error(message: String, thrown: Throwable) = log(Level.SEVERE, message, thrown)
+fun error(message: String, thrown: Throwable) = plugin.logger.log(Level.SEVERE, message, thrown)
+
+/**
+ * Log an info message
+ * @see Level.INFO
+ */
+fun info(message: String) = plugin.logger.info(message)
+
+/**
+ * Log a warning message
+ * @see Level.WARNING
+ */
+fun warning(message: String) = plugin.logger.warning(message)

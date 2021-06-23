@@ -19,6 +19,8 @@
 
 package me.gabytm.minecraft.guihelper.generators.base
 
+import me.gabytm.minecraft.guihelper.functions.error
+import me.gabytm.minecraft.guihelper.functions.warning
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
@@ -26,10 +28,37 @@ import org.bukkit.inventory.ItemStack
 
 class GeneratorContext(val player: Player, val inventory: Inventory) {
 
+    /**
+     * Run the given function for all items in the gui that aren't null / [AIR][Material.AIR]
+     * @param function function to run (item, slot)
+     */
     fun forEach(function: (item: ItemStack, slot: Int) -> Unit) {
         inventory.contents.withIndex()
             .filter { it.value != null && it.value.type != Material.AIR }
             .forEach { function(it.value, it.index) }
+    }
+
+    /**
+     * Same as above but only for items that are on the specified [rows]
+     * @param rows the amount of rows from where items will be processed
+     * @param pluginName the plugin name from where this method is called, used for logging
+     * @param function function to run (item, slot)
+     */
+    fun forEach(rows: Int, pluginName: String, function: (item: ItemStack, slot: Int) -> Unit) {
+        try {
+            require(rows in 1..6) { "($pluginName) Invalid amount of rows $rows, must be between 1 and 6" }
+            val max = rows * 9
+
+            if (rows < 6) {
+                warning("$pluginName supports only $rows rows, items from slot $max+ will be ignored.")
+            }
+
+            inventory.contents.withIndex()
+                .filter { it.index < max && it.value != null && it.value.type != Material.AIR }
+                .forEach { function(it.value, it.index) }
+        } catch (e: IllegalArgumentException) {
+            error("", e)
+        }
     }
 
 }

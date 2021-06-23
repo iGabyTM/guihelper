@@ -99,7 +99,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
 
 }
 
-private val colorStringFormat: (Color) -> String = { "#${Integer.toHexString(it.asRGB())}" }
+private val colorStringFormat: (Color) -> String = { "#${it.asHex()}" }
 
 private fun StringBuilder.appendFirework(firework: FireworkMeta) {
     if (firework.hasEffects()) {

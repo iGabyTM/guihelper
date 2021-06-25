@@ -70,49 +70,40 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
 
     @Suppress("DEPRECATION")
     private fun appendMetaSpecificValues(builder: StringBuilder, item: ItemStack, meta: ItemMeta) {
-        if (item.type == Material.FIREWORK_ROCKET) {
-            builder.appendFirework(meta as FireworkMeta)
-            return
-        }
-
-        if (item.isFireworkStar) {
-            if ((meta as FireworkEffectMeta).hasEffect()) {
-                builder.appendFireworkEffect(meta.effect!!)
+        when {
+            item.isFirework -> {
+                builder.appendFirework(meta as FireworkMeta)
             }
 
-            return
-        }
-
-        if (item.isLeatherArmor) {
-            (meta as LeatherArmorMeta).color.ifNotDefault {
-                builder.append(" color:").append(it.asRGB())
+            item.isFireworkStar -> {
+                builder.appendFirework(meta as FireworkMeta)
             }
-            return
-        }
 
-        if (item.isPlayerHead) {
-            itemsManager.getHeadId(item, HeadIdProvider.Provider.PLAYER_NAME)
-                .takeIf { it != HeadIdProvider.DEFAULT }
-                ?.let { builder.append(" player:").append(it) }
-            return
-        }
-
-        if (item.isPotion) {
-            if (ServerVersion.isAncient) {
-                builder.appendPotion(Potion.fromItemStack(item))
-            } else {
-                builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)
+            item.isLeatherArmor -> {
+                (meta as LeatherArmorMeta).color.ifNotDefault { builder.append(" color:").append(it.asRGB()) }
             }
-            return
-        }
 
-        if (item.isShield || item.isBanner) {
-            builder.appendShieldOrBanner(item)
-            return
-        }
+            item.isPlayerHead -> {
+                itemsManager.getHeadId(item, HeadIdProvider.Provider.PLAYER_NAME)
+                    .takeIf { it != HeadIdProvider.DEFAULT }
+                    ?.let { builder.append(" player:").append(it) }
+            }
 
-        if (item.type == Material.WRITTEN_BOOK) {
-            builder.appendWrittenBook(meta as BookMeta)
+            item.isPotion -> {
+                if (ServerVersion.isAncient) {
+                    builder.appendPotion(Potion.fromItemStack(item))
+                } else {
+                    builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)
+                }
+            }
+
+            item.isShield || item.isBanner -> {
+                builder.appendShieldOrBanner(item)
+            }
+
+            item.type == Material.WRITTEN_BOOK -> {
+                builder.appendWrittenBook(meta as BookMeta)
+            }
         }
     }
 

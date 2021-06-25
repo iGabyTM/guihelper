@@ -64,7 +64,7 @@ enum class Message(var value: String) {
     }
 
     operator fun get(vararg args: Any?): String {
-        return value.format(*args);
+        return value.format(*args)
     }
 
     fun send(receiver: CommandSender, vararg args: Any?) {

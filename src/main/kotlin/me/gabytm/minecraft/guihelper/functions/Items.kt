@@ -48,6 +48,7 @@ private val potions = if (ServerVersion.isOlderThan(ServerVersion.V1_9)) {
     EnumSet.of(Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION)
 }
 
+private val fireworkRocket = if (ServerVersion.isLegacy) Material.valueOf("FIREWORK") else Material.FIREWORK_ROCKET
 private val fireworkStar = if (ServerVersion.isLegacy) Material.valueOf("FIREWORK_CHARGE") else Material.FIREWORK_STAR
 
 /**
@@ -76,7 +77,7 @@ val ItemStack.isBanner: Boolean
  * @since 1.1.0
  */
 val ItemStack.isFirework: Boolean
-    get() = type == Material.FIREWORK_ROCKET
+    get() = type == fireworkRocket
 
 /**
  * Whether the item is a firework star or not

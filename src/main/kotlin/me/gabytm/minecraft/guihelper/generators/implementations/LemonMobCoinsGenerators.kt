@@ -37,7 +37,7 @@ class LemonMobCoinsGenerators(
     override val pluginVersion: String = "1.4"
 ) : ConfigGenerator() {
 
-    override fun getMessage(): String = "  &2$pluginVersion &av$pluginVersion &8- &fShop items"
+    override fun getMessage(): String = "  &2$pluginName &av$pluginVersion &8- &fShop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val config = Config(pluginName, plugin, true)

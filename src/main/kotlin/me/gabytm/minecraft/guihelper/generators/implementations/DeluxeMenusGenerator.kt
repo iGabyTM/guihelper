@@ -28,7 +28,7 @@ import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.gabytm.minecraft.guihelper.utils.VersionHelper
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description
@@ -114,7 +114,7 @@ class DeluxeMenusGenerator(
             item.isLeatherArmor -> {
                 (meta as LeatherArmorMeta).color.ifNotDefault { section["rgb"] = it.asString() }
             }
-            ServerVersion.isLegacy && item.isSpawnEgg -> {
+            VersionHelper.IS_LEGACY && item.isSpawnEgg -> {
                 section["data"] = item.spawnEggType.typeId
             }
             item.isShield || item.isBanner -> {

@@ -24,10 +24,9 @@ import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
 import me.gabytm.minecraft.guihelper.items.ItemsManager
-import me.gabytm.minecraft.guihelper.items.edit.editors.ItemEditor
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import me.mattstudios.mf.base.CommandManager
+import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -66,7 +65,7 @@ class GUIHelper : JavaPlugin() {
         with (description) {
             sequenceOf(
                 "&2 _____   _____   ",
-                "&2|   __| |  |  |  &fGUIHelper &av$version &fby &a${authors.joinToString()} &7(${ServerVersion.CURRENT_VERSION.bukkitName})",
+                "&2|   __| |  |  |  &fGUIHelper &av$version &fby &a${authors.joinToString()} &7(${Bukkit.getVersion()})",
                 "&2|  |  | |     |  &7$description",
                 "&2|_____| |__|__|  "
             ).forEach { server.consoleSender.sendMessage(it.color()) }

@@ -20,7 +20,7 @@
 package me.gabytm.minecraft.guihelper.items.serialization.serializers
 
 import me.gabytm.minecraft.guihelper.functions.*
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.gabytm.minecraft.guihelper.utils.VersionHelper
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
@@ -70,7 +70,7 @@ class CrateReloadedImplementation : ItemSerializer() {
                 builder.append(" skull:").append(item.skullTexture)
             }
             item.isPotion -> {
-                if (ServerVersion.isAncient) {
+                if (VersionHelper.IS_ANCIENT) {
                     builder.appendPotion(Potion.fromItemStack(item))
                 } else {
                     builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)

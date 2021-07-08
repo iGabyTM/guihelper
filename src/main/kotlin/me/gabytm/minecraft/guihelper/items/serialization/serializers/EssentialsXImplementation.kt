@@ -24,7 +24,7 @@ package me.gabytm.minecraft.guihelper.items.serialization.serializers
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.gabytm.minecraft.guihelper.utils.VersionHelper
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Material
@@ -90,7 +90,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             }
 
             item.isPotion -> {
-                if (ServerVersion.isAncient) {
+                if (VersionHelper.IS_ANCIENT) {
                     builder.appendPotion(Potion.fromItemStack(item))
                 } else {
                     builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)

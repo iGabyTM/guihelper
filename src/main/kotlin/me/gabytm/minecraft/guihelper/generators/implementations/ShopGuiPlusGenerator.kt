@@ -28,7 +28,7 @@ import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.gabytm.minecraft.guihelper.utils.VersionHelper
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description
@@ -134,7 +134,7 @@ class ShopGuiPlusGenerator(
             item.isPlayerHead -> {
                 handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
             }
-            !ServerVersion.isAncient && item.isPotion -> {
+            !VersionHelper.IS_ANCIENT && item.isPotion -> {
                 handlePotions(section.createSection("potion"), meta as PotionMeta)
             }
             item.isSpawnEgg -> {
@@ -146,7 +146,7 @@ class ShopGuiPlusGenerator(
     private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
         val (patterns, color) = item.patternsAndBaseColor(false)
 
-        if (ServerVersion.isLegacy || item.isShield) {
+        if (VersionHelper.IS_LEGACY || item.isShield) {
             section["damage"] = null
             section["color"] = color?.name
         }
@@ -212,10 +212,10 @@ class ShopGuiPlusGenerator(
 
     // See https://docs.brcdev.net/#/item-meta?id=spawn-eggs
     private fun handleSpawnEggs(section: ConfigurationSection, item: ItemStack) {
-        if (ServerVersion.isOlderThan(ServerVersion.V1_11)) {
-            section["mob"] = item.spawnEggType.asString()
-        } else {
+        if (VersionHelper.HAS_SPAWN_EGG_META) {
             section["mob"] = item.spawnEggType.name
+        } else {
+            section["mob"] = item.spawnEggType.asString()
         }
     }
 

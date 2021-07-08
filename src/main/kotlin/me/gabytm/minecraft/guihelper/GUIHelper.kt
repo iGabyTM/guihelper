@@ -25,47 +25,52 @@ import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
 import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
-import me.mattstudios.mf.base.CommandManager
+import me.gabytm.minecraft.guihelper.utils.VersionHelper
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.regex.Pattern
 
 class GUIHelper : JavaPlugin() {
 
     lateinit var itemsManager: ItemsManager
         private set
 
+    lateinit var generatorsManager: GeneratorsManager
+        private set
+
+    lateinit var inventoryManager: InventoryManager
+        private set
+
     override fun onEnable() {
+        if (VersionHelper.IS_EXTREMELY_OLD) {
+            logger.severe("Versions older than 1.8 aren't supported.")
+            logger.warning("If you are running a newer version and see this, report it to https://github.com/iGabyTM/GUIHelper/issues")
+
+            server.pluginManager.disablePlugin(this)
+            return
+        }
+
         sendLogo()
 
         this.itemsManager = ItemsManager()
-        val generatorsManager = GeneratorsManager(this)
-        val inventoryManager = InventoryManager()
+        this.generatorsManager = GeneratorsManager(this)
+        this.inventoryManager = InventoryManager()
 
-        registerCommands(generatorsManager, inventoryManager)
+        CommandManager(this)
+
         server.servicesManager.register(GeneratorsManager::class.java, generatorsManager, this, ServicePriority.Highest)
         server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager), this)
     }
 
-    private fun registerCommands(generatorsManager: GeneratorsManager, inventoryManager: InventoryManager) {
-        with(CommandManager(this, true)) {
-            completionHandler.register("#generators") { generatorsManager.registeredGeneratorsIds() }
-
-            register(
-                CreateCommand(generatorsManager, inventoryManager),
-                EditCommand(itemsManager),
-                EmptyCommand(inventoryManager),
-                ReloadCommand(generatorsManager),
-                OptionsCommand(generatorsManager)
-            )
-        }
-    }
-
     private fun sendLogo() {
+        val matcher = Pattern.compile("\\d+\\.\\d+(?:\\.\\d+)?").matcher(Bukkit.getBukkitVersion())
+        val serverVersion = if (matcher.find()) matcher.group() else "unknown"
+
         with (description) {
             sequenceOf(
                 "&2 _____   _____   ",
-                "&2|   __| |  |  |  &fGUIHelper &av$version &fby &a${authors.joinToString()} &7(${Bukkit.getVersion()})",
+                "&2|   __| |  |  |  &fGUIHelper &av$version &fby &a${authors.joinToString()} &7($serverVersion)",
                 "&2|  |  | |     |  &7$description",
                 "&2|_____| |__|__|  "
             ).forEach { server.consoleSender.sendMessage(it.color()) }

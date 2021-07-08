@@ -37,6 +37,11 @@ object VersionHelper {
     private val CURRENT: Int = getCurrentVersion()
 
     /**
+     * **NO**
+     */
+    val IS_EXTREMELY_OLD: Boolean = CURRENT.toString().startsWith("17") // 1.7
+
+    /**
      * Whether or not the [CURRENT] version is *ancient* (< **1.9**)
      */
     val IS_ANCIENT: Boolean = CURRENT < 190

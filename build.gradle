@@ -79,6 +79,7 @@ license {
     }
 
     include '**/*.kt'
+    exclude '**/VersionHelper.kt'
 }
 
 shadowJar {

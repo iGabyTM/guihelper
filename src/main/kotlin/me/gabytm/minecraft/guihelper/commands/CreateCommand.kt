@@ -29,6 +29,7 @@ import me.mattstudios.mf.annotations.*
 import me.mattstudios.mf.base.CommandBase
 import org.apache.commons.cli.*
 import org.bukkit.entity.Player
+import org.bukkit.util.StringUtil
 
 @Command(Constants.COMMAND)
 @Alias(Constants.ALIAS)
@@ -78,7 +79,7 @@ class CreateCommand(private val manager: GeneratorsManager, private val inventor
     @CompleteFor("create")
     fun tabCompletion(args: List<String>, sender: Player): List<String> {
         if (args.size == 1) { // /gh create <tab>
-            return manager.registeredGeneratorsIds()
+            return StringUtil.copyPartialMatches(args[0], manager.registeredGeneratorsIds(), mutableListOf())
         }
 
         return emptyList()

@@ -42,3 +42,9 @@ fun String.fixColors(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
         replaced
     }
 }
+
+fun String.ifNotEmpty(function: (String) -> Any) {
+    if (this.isNotEmpty()) {
+        function(this)
+    }
+}

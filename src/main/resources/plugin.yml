@@ -1,7 +1,7 @@
 name: GUIHelper
 main: me.gabytm.minecraft.guihelper.GUIHelper
 description: The ultimate solution for creating professional GUIs
-version: '@version@'
+version: ${version}
 
 api-version: '1.13'
 author: GabyTM

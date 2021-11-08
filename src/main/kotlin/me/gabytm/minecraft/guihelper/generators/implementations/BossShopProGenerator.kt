@@ -85,7 +85,7 @@ class BossShopProGenerator(
         section.set("Message", defaults[Value.MESSAGE]) { it.isNotEmpty() }
         section.set("ExtraPermission", defaults[Value.EXTRA_PERMISSION]) { it.isNotEmpty() }
         section["InventoryLocation"] = slot
-        section.set("Condition", defaults[Value.CONDITION]) { it.isNotEmpty() }
+        section.setList("Condition", defaults[Value.CONDITION])
     }
 
     @Suppress("SpellCheckingInspection")

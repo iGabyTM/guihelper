@@ -19,6 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.commands
 
+import me.gabytm.minecraft.guihelper.exceptions.GUIHelperException
 import me.gabytm.minecraft.guihelper.functions.isNotEmpty
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
@@ -69,6 +70,9 @@ class CreateCommand(private val manager: GeneratorsManager, private val inventor
                     is MissingOptionException -> sender.sendMessage("Missing option(s): ${e.missingOptions.joinToString(", ")}")
                     is UnrecognizedOptionException -> sender.sendMessage("Unknown option ${e.option}")
                 }
+            } catch (e: GUIHelperException) {
+                sender.sendMessage("Encountered exception: '${e.message}'\nSee console for more info!")
+                e.printStackTrace()
             }
             return
         }

@@ -22,6 +22,7 @@ package me.gabytm.minecraft.guihelper.commands
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.mattstudios.mf.base.CommandManager
 import me.mattstudios.mf.base.CompletionHandler
+import org.bukkit.util.StringUtil
 
 class CommandManager(private val plugin: GUIHelper) {
 
@@ -42,7 +43,9 @@ class CommandManager(private val plugin: GUIHelper) {
     }
 
     private fun CompletionHandler.registerCompletions() {
-        register("#generators") { plugin.generatorsManager.registeredGeneratorsIds() }
+        register("#generators") {
+            StringUtil.copyPartialMatches(it.toString(), plugin.generatorsManager.registeredGeneratorsIds(), mutableListOf())
+        }
     }
 
 }

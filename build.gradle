@@ -54,11 +54,11 @@ dependencies {
     implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands - https://mf.mattstudios.me/mf/mf-1
     implementation 'me.mattstudios:triumph-config:1.0.5-SNAPSHOT'
 
-    implementation 'de.tr7zw:item-nbt-api:2.7.1' // https://spigotmc.org/resources/7939/
+    implementation 'de.tr7zw:item-nbt-api:2.8.0' // https://spigotmc.org/resources/7939/
     implementation 'me.rayzr522:jsonmessage:1.2.1' // https://github.com/Rayzr522/JSONMessage
 
     // Heads
-    compileOnly('com.arcaniax:HeadDatabase-API:1.3.0') { transitive = false }
+    compileOnly('com.arcaniax:HeadDatabase-API:1.3.1') { transitive = false }
 
     implementation 'commons-cli:commons-cli:1.4' // https://commons.apache.org/proper/commons-cli/index.html
 }

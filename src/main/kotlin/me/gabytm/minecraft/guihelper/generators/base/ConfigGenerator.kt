@@ -31,7 +31,7 @@ import org.bukkit.inventory.ItemStack
 
 /**
  * Base class for all config generators
- * @since 1.1.0
+ * @since 2.0.0
  */
 abstract class ConfigGenerator {
 

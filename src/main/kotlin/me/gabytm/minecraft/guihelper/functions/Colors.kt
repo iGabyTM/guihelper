@@ -30,7 +30,7 @@ private val defaultFormat: (Color) -> String = { "${it.red},${it.green},${it.blu
 
 /**
  * Check if the color is the [defaultLeatherColor]
- * @since 1.1.0
+ * @since 2.0.0
  */
 val Color.isDefaultLeatherColor: Boolean
     get() = this == defaultLeatherColor

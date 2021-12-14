@@ -53,7 +53,7 @@ private val fireworkStar = if (VersionHelper.IS_LEGACY) Material.valueOf("FIREWO
 
 /**
  * Gets a copy of the item the player is currently holding using the right method for each version
- * @since 1.1.0
+ * @since 2.0.0
  */
 @Suppress("DEPRECATION")
 val Player.hand: ItemStack
@@ -67,21 +67,21 @@ val Player.hand: ItemStack
 
 /**
  * Whether the item is a banner or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isBanner: Boolean
     get() = if (VersionHelper.IS_LEGACY) type.name == "BANNER" else Tag.ITEMS_BANNERS.isTagged(type)
 
 /**
  * Whether the item is a firework or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isFirework: Boolean
     get() = type == fireworkRocket
 
 /**
  * Whether the item is a firework star or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isFireworkStar: Boolean
     get() = type == fireworkStar
@@ -89,14 +89,14 @@ val ItemStack.isFireworkStar: Boolean
 /**
  * Whether the item is a piece of leather armor or not
  * @see Material.LEATHER_HELMET, [Material.LEATHER_CHESTPLATE], [Material.LEATHER_LEGGINGS], [Material.LEATHER_BOOTS]
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isLeatherArmor: Boolean
     get() = leatherArmor.contains(type)
 
 /**
  * Whether the item is a player head or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 @Suppress("DEPRECATION")
 val ItemStack.isPlayerHead: Boolean
@@ -110,28 +110,28 @@ val ItemStack.isPlayerHead: Boolean
 
 /**
  * Whether the item is a potion or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isPotion: Boolean
     get() = potions.contains(type)
 
 /**
  * Whether the item is a shield or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isShield: Boolean
     get() = !VersionHelper.IS_ANCIENT && type == Material.SHIELD
 
 /**
  * Whether the item is a spawn egg or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isSpawnEgg: Boolean
     get() = if (VersionHelper.IS_LEGACY) type.name == "MONSTER_EGG" else type.name.endsWith("_SPAWN_EGG")
 
 /**
  * Whether the item is a splash potion or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 @Suppress("DEPRECATION")
 val ItemStack.isSplashPotion: Boolean
@@ -139,7 +139,7 @@ val ItemStack.isSplashPotion: Boolean
 
 /**
  * Whether the item is unbreakable or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.isUnbreakable: Boolean
     get() {
@@ -157,7 +157,7 @@ val ItemStack.meta: ItemMeta?
  * The [EntityType] associated with a spawn egg. Don't use this before checking if the item IS a spawn egg
  * @see [SpawnEgg.getSpawnedType], [SpawnEggMeta.getSpawnedType]
  * @see [isSpawnEgg]
- * @since 1.1.0
+ * @since 2.0.0
  */
 @Suppress("DEPRECATION")
 val ItemStack.spawnEggType: EntityType
@@ -175,7 +175,7 @@ val ItemStack.spawnEggType: EntityType
 
 /**
  * The texture of a skull. Don't use this before checking if the item [isPlayerHead]
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.skullTexture: String
     get() {
@@ -185,7 +185,7 @@ val ItemStack.skullTexture: String
 
 /**
  * Item's custom model data, if it has any and the feature is supposed by the server version
- * @since 1.1.0
+ * @since 2.0.0
  */
 val ItemStack.customModelData: Int
     get() {
@@ -204,7 +204,7 @@ val ItemStack.customModelData: Int
  *
  * @see [org.bukkit.inventory.meta.ItemMeta.getDisplayName]
  * @see [fixColors]
- * @since 1.1.0
+ * @since 2.0.0
  */
 fun ItemStack.displayName(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT): String {
     return itemMeta?.displayName?.fixColors(format) ?: ""
@@ -232,7 +232,7 @@ fun <T> ItemStack.enchants(format: (enchantment: Enchantment, level: Int) -> T):
  *
  * @see [org.bukkit.inventory.meta.ItemMeta.getLore]
  * @see [fixColors]
- * @since 1.1.0
+ * @since 2.0.0
  */
 fun ItemStack.lore(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT): List<String> {
     return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()

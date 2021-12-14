@@ -28,7 +28,7 @@ import me.gabytm.minecraft.guihelper.utils.Constants.ALIAS
 /**
  * Main point of interacting with generators
  *
- * @since 1.1.0
+ * @since 2.0.0
  */
 class GeneratorsManager(plugin: GUIHelper) {
 

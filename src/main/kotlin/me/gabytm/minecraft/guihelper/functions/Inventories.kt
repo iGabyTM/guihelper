@@ -24,7 +24,7 @@ import org.bukkit.inventory.Inventory
 
 /**
  * Whether the inventory is empty or not
- * @since 1.1.0
+ * @since 2.0.0
  */
 val Inventory.isNotEmpty: Boolean
     get() = contents.asSequence().any { it != null && it.type != Material.AIR }

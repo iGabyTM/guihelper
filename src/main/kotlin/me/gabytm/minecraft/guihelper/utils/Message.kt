@@ -20,7 +20,9 @@
 package me.gabytm.minecraft.guihelper.utils
 
 import me.gabytm.minecraft.guihelper.functions.color
+import me.gabytm.minecraft.guihelper.functions.component
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
+import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 
 enum class Message(var value: String) {
@@ -66,6 +68,8 @@ enum class Message(var value: String) {
     operator fun get(vararg args: Any?): String {
         return value.format(*args)
     }
+
+    fun component(vararg args: Any?): Component = value.format(*args).component()
 
     fun send(receiver: CommandSender, vararg args: Any?) {
         if (args.isEmpty()) {

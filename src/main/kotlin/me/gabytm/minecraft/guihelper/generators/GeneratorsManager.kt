@@ -46,6 +46,7 @@ class GeneratorsManager(plugin: GUIHelper) {
             CratesPlusGenerator(plugin),
             DeluxeMenusGenerator(plugin),
             LemonMobCoinsGenerators(plugin),
+            MythicMobsGenerator(plugin),
             ShopGuiPlusGenerator(plugin)
         ).forEach {
             registeredGenerators[it.pluginName.lowercase()] = it

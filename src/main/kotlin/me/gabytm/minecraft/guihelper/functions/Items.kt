@@ -163,7 +163,11 @@ val ItemStack.meta: ItemMeta?
 val ItemStack.spawnEggType: EntityType
     get() {
         return if (VersionHelper.HAS_SPAWN_EGG_META) {
-            (itemMeta as SpawnEggMeta).spawnedType
+            if (!hasItemMeta()) {
+                return EntityType.UNKNOWN
+            }
+
+            (itemMeta as SpawnEggMeta).spawnedType ?: EntityType.UNKNOWN
         } else {
             (data as SpawnEgg).spawnedType
         }

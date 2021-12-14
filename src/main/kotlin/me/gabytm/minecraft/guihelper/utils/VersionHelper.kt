@@ -42,46 +42,51 @@ object VersionHelper {
     val IS_EXTREMELY_OLD: Boolean = CURRENT.toString().startsWith("17") // 1.7
 
     /**
-     * Whether or not the [CURRENT] version is *ancient* (< **1.9**)
+     * Whether the [CURRENT] version is *ancient* (< **1.9**)
      */
-    val IS_ANCIENT: Boolean = CURRENT < 190
+    val IS_ANCIENT: Boolean = CURRENT < 1_9_0
 
     /**
-     * Whether or not the [CURRENT] version is *legacy* (< **1.13**)
+     * Whether the [CURRENT] version has [org.bukkit.attribute.Attribute] (>= **1.13.2**)
      */
-    val IS_LEGACY: Boolean = CURRENT < 1130
+    val HAS_ATTRIBUTE: Boolean = CURRENT >= 1_13_2
 
     /**
-     * Whether or not in the [CURRENT] version, [org.bukkit.inventory.meta.ItemMeta] has `unbreakable` methods (>= **1.11**)
+     * Whether the [CURRENT] version is *legacy* (< **1.13**)
+     */
+    val IS_LEGACY: Boolean = CURRENT < 1_13_0
+
+    /**
+     * Whether in the [CURRENT] version, [org.bukkit.inventory.meta.ItemMeta] has `unbreakable` methods (>= **1.11**)
      * @see org.bukkit.inventory.meta.ItemMeta.isUnbreakable
      * @see org.bukkit.inventory.meta.ItemMeta.setUnbreakable
      */
-    val ITEM_META_HAS_UNBREAKABLE: Boolean = CURRENT >= 1110
+    val ITEM_META_HAS_UNBREAKABLE: Boolean = CURRENT >= 1_11_0
 
     /**
-     * Whether or not the [CURRENT] version has [org.bukkit.inventory.meta.SpawnEggMeta] (>= **1.11**)
+     * Whether the [CURRENT] version has [org.bukkit.inventory.meta.SpawnEggMeta] (>= **1.11**)
      */
-    val HAS_SPAWN_EGG_META: Boolean = CURRENT >= 1110
+    val HAS_SPAWN_EGG_META: Boolean = CURRENT >= 1_11_0
 
     /**
-     * Whether or not in the [CURRENT] version, [org.bukkit.inventory.meta.SkullMeta] has `owning player` (>= **1.12**)
+     * Whether in the [CURRENT] version, [org.bukkit.inventory.meta.SkullMeta] has `owning player` (>= **1.12**)
      * @see org.bukkit.inventory.meta.SkullMeta.getOwningPlayer
      * @see org.bukkit.inventory.meta.SkullMeta.setOwningPlayer
      */
-    val SKULL_META_HAS_OWNING_PLAYER: Boolean = CURRENT >= 1120
+    val SKULL_META_HAS_OWNING_PLAYER: Boolean = CURRENT >= 1_12_0
 
     /**
-     * Whether or not the [CURRENT] version has
+     * Whether the [CURRENT] version has
      * [CustomModelData](https://minecraft.fandom.com/wiki/Player.dat_format#General_Tags) (>= **1.14**)
      * @see org.bukkit.inventory.meta.ItemMeta.hasCustomModelData
      * @see org.bukkit.inventory.meta.ItemMeta.getCustomModelData
      */
-    val HAS_CUSTOM_MODEL_DATA: Boolean = CURRENT >= 1140
+    val HAS_CUSTOM_MODEL_DATA: Boolean = CURRENT >= 1_14_0
 
     /**
-     * Whether or not the [CURRENT] version has HEX support (>= **1.15.2**)
+     * Whether the [CURRENT] version has HEX support (>= **1.15.2**)
      */
-    val HAS_HEX: Boolean = CURRENT >= 1152
+    val HAS_HEX: Boolean = CURRENT >= 1_15_2
 
     /**
      * Gets the current server version

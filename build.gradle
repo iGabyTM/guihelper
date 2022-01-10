@@ -4,8 +4,10 @@ plugins {
     id 'org.cadixdev.licenser' version '0.6.0'
 }
 
+def ver = new Version(major: 2, minor: 0, patch: 0)
+
 group 'me.gabytm.minecraft'
-version '2.0.0'
+version "$ver"
 
 // sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -96,4 +98,21 @@ shadowJar {
 task copyJarToServer(type: Copy) {
     from shadowJar
     into "./server/plugins"
+}
+
+class Version {
+    String major, minor, patch
+    String build = ''
+
+    Version() {
+        if (System.getenv('BUILD_NUMBER')) {
+            build = "-${System.getenv('BUILD_NUMBER')}"
+        } else if (System.getProperty('BUILD_NUMBER')) {
+            build = "-${System.getProperty('BUILD_NUMBER')}"
+        }
+    }
+
+    String toString() {
+        "$major.$minor.$patch$build"
+    }
 }

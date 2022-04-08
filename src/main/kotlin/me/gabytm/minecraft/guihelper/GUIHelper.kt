@@ -25,6 +25,7 @@ import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
 import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
+import me.gabytm.minecraft.guihelper.utils.BStats
 import me.gabytm.minecraft.guihelper.utils.VersionHelper
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
@@ -58,6 +59,7 @@ class GUIHelper : JavaPlugin() {
         this.inventoryManager = InventoryManager()
 
         CommandManager(this)
+        BStats(this)
 
         server.servicesManager.register(GeneratorsManager::class.java, generatorsManager, this, ServicePriority.Highest)
         server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager), this)

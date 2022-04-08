@@ -40,7 +40,7 @@ repositories {
 
     maven {
         name 'Config'
-        url 'https://repo.mattstudios.me/artifactory/public/'
+        url 'https://repo.triumphteam.dev/snapshots'
     }
 }
 

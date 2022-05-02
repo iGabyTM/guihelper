@@ -198,6 +198,13 @@ val ItemStack.customModelData: Int
     }
 
 /**
+ * Check if an item is not null and its `type` it not [Material.AIR]
+ * @return whether the item is not null
+ * @since 2.0.5
+ */
+fun ItemStack?.isNotNull(): Boolean = this != null && type != Material.AIR
+
+/**
  * Item's displayName (if it has any) with [org.bukkit.ChatColor.COLOR_CHAR] replaced by &
  * @param format the format for RGB (only used on 1.14+)
  * @return displayName or empty string
@@ -210,7 +217,18 @@ fun ItemStack.displayName(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT)
     return itemMeta?.displayName?.fixColors(format) ?: ""
 }
 
+/**
+ * Get item's enchantments formatted as you need
+ * Example:
+ * ```
+ * // A list formatted as "ENCHANTMENT;level"
+ * item.enchants { (e, level) -> "${e.name};$level" }
+ * ```
+ * @param format the format that will be applied to each <Enchantment, Level> pair
+ * @return list of formatted enchantments
+ */
 fun <T> ItemStack.enchants(format: (enchantment: Enchantment, level: Int) -> T): List<T> {
+    // If the item has enchantments, it also has meta
     if (!hasItemMeta()) {
         return emptyList()
     }
@@ -218,6 +236,7 @@ fun <T> ItemStack.enchants(format: (enchantment: Enchantment, level: Int) -> T):
     val meta = itemMeta ?: return emptyList()
     val list = enchantments.map { format(it.key, it.value) }.toMutableList()
 
+    // Include the extra enchantments if the item is an enchanted book
     if (meta is EnchantmentStorageMeta) {
         list.addAll(meta.storedEnchants.map { format(it.key, it.value) })
     }
@@ -243,6 +262,10 @@ fun ItemStack.lore(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT): List<
 fun ItemStack.patternsAndBaseColor(check: Boolean): Pair<List<Pattern>, DyeColor?> {
     if (check && (!isShield && !isBanner)) {
         throw IllegalArgumentException("Item is not a SHIELD or BANNER but $type")
+    }
+
+    if (!hasItemMeta()) {
+        return Pair(emptyList(), null)
     }
 
     val meta = itemMeta ?: return Pair(emptyList(), null)

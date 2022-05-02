@@ -19,7 +19,6 @@
 
 package me.gabytm.minecraft.guihelper.functions
 
-import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 
 /**
@@ -27,4 +26,4 @@ import org.bukkit.inventory.Inventory
  * @since 2.0.0
  */
 val Inventory.isNotEmpty: Boolean
-    get() = contents.asSequence().any { it != null && it.type != Material.AIR }
+    get() = contents.any { it.isNotNull() }

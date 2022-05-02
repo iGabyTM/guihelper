@@ -20,6 +20,7 @@
 package me.gabytm.minecraft.guihelper.generators.base
 
 import me.gabytm.minecraft.guihelper.functions.error
+import me.gabytm.minecraft.guihelper.functions.isNotNull
 import me.gabytm.minecraft.guihelper.functions.warning
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -34,7 +35,7 @@ class GeneratorContext(val player: Player, val inventory: Inventory) {
      */
     fun forEach(function: (item: ItemStack, slot: Int) -> Unit) {
         inventory.contents.withIndex()
-            .filter { it.value != null && it.value.type != Material.AIR }
+            .filter { it.value.isNotNull() }
             .forEach { function(it.value, it.index) }
     }
 
@@ -54,7 +55,7 @@ class GeneratorContext(val player: Player, val inventory: Inventory) {
             }
 
             inventory.contents.withIndex()
-                .filter { it.index < max && it.value != null && it.value.type != Material.AIR }
+                .filter { it.index < max && it.value.isNotNull() }
                 .forEach { function(it.value, it.index) }
         } catch (e: IllegalArgumentException) {
             error("", e)

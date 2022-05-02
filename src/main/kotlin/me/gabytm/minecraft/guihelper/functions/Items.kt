@@ -22,7 +22,7 @@
 package me.gabytm.minecraft.guihelper.functions
 
 import de.tr7zw.changeme.nbtapi.NBTItem
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.bukkit.Bukkit
 import org.bukkit.DyeColor
 import org.bukkit.Material
@@ -42,14 +42,14 @@ import kotlin.jvm.Throws
 private val leatherArmor =
     EnumSet.of(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS)
 
-private val potions = if (VersionHelper.IS_ANCIENT) {
+private val potions = if (ServerVersion.IS_ANCIENT) {
     EnumSet.of(Material.POTION)
 } else {
     EnumSet.of(Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION)
 }
 
-private val fireworkRocket = if (VersionHelper.IS_LEGACY) Material.valueOf("FIREWORK") else Material.FIREWORK_ROCKET
-private val fireworkStar = if (VersionHelper.IS_LEGACY) Material.valueOf("FIREWORK_CHARGE") else Material.FIREWORK_STAR
+private val fireworkRocket = if (ServerVersion.IS_LEGACY) Material.valueOf("FIREWORK") else Material.FIREWORK_ROCKET
+private val fireworkStar = if (ServerVersion.IS_LEGACY) Material.valueOf("FIREWORK_CHARGE") else Material.FIREWORK_STAR
 
 /**
  * Gets a copy of the item the player is currently holding using the right method for each version
@@ -58,7 +58,7 @@ private val fireworkStar = if (VersionHelper.IS_LEGACY) Material.valueOf("FIREWO
 @Suppress("DEPRECATION")
 val Player.hand: ItemStack
     get() {
-        return if (VersionHelper.IS_ANCIENT) {
+        return if (ServerVersion.IS_ANCIENT) {
             inventory.itemInHand
         } else {
             inventory.itemInMainHand
@@ -70,7 +70,7 @@ val Player.hand: ItemStack
  * @since 2.0.0
  */
 val ItemStack.isBanner: Boolean
-    get() = if (VersionHelper.IS_LEGACY) type.name == "BANNER" else Tag.ITEMS_BANNERS.isTagged(type)
+    get() = if (ServerVersion.IS_LEGACY) type.name == "BANNER" else Tag.ITEMS_BANNERS.isTagged(type)
 
 /**
  * Whether the item is a firework or not
@@ -101,7 +101,7 @@ val ItemStack.isLeatherArmor: Boolean
 @Suppress("DEPRECATION")
 val ItemStack.isPlayerHead: Boolean
     get() {
-        return if (VersionHelper.IS_LEGACY) {
+        return if (ServerVersion.IS_LEGACY) {
             type.name == "SKULL_ITEM" && durability == 3.toShort()
         } else {
             type == Material.PLAYER_HEAD
@@ -120,14 +120,14 @@ val ItemStack.isPotion: Boolean
  * @since 2.0.0
  */
 val ItemStack.isShield: Boolean
-    get() = !VersionHelper.IS_ANCIENT && type == Material.SHIELD
+    get() = !ServerVersion.IS_ANCIENT && type == Material.SHIELD
 
 /**
  * Whether the item is a spawn egg or not
  * @since 2.0.0
  */
 val ItemStack.isSpawnEgg: Boolean
-    get() = if (VersionHelper.IS_LEGACY) type.name == "MONSTER_EGG" else type.name.endsWith("_SPAWN_EGG")
+    get() = if (ServerVersion.IS_LEGACY) type.name == "MONSTER_EGG" else type.name.endsWith("_SPAWN_EGG")
 
 /**
  * Whether the item is a splash potion or not
@@ -135,7 +135,7 @@ val ItemStack.isSpawnEgg: Boolean
  */
 @Suppress("DEPRECATION")
 val ItemStack.isSplashPotion: Boolean
-    get() = if (VersionHelper.IS_ANCIENT) Potion.fromItemStack(this).isSplash else type == Material.SPLASH_POTION
+    get() = if (ServerVersion.IS_ANCIENT) Potion.fromItemStack(this).isSplash else type == Material.SPLASH_POTION
 
 /**
  * Whether the item is unbreakable or not
@@ -143,7 +143,7 @@ val ItemStack.isSplashPotion: Boolean
  */
 val ItemStack.isUnbreakable: Boolean
     get() {
-        return if (VersionHelper.ITEM_META_HAS_UNBREAKABLE) {
+        return if (ServerVersion.ITEM_META_HAS_UNBREAKABLE) {
             itemMeta?.isUnbreakable ?: false
         } else {
             NBTItem(this).getBoolean("Unbreakable")
@@ -162,7 +162,7 @@ val ItemStack.meta: ItemMeta?
 @Suppress("DEPRECATION")
 val ItemStack.spawnEggType: EntityType
     get() {
-        return if (VersionHelper.HAS_SPAWN_EGG_META) {
+        return if (ServerVersion.HAS_SPAWN_EGG_META) {
             if (!hasItemMeta()) {
                 return EntityType.UNKNOWN
             }
@@ -189,7 +189,7 @@ val ItemStack.skullTexture: String
  */
 val ItemStack.customModelData: Int
     get() {
-        if (VersionHelper.HAS_CUSTOM_MODEL_DATA) {
+        if (ServerVersion.HAS_CUSTOM_MODEL_DATA) {
             val meta = itemMeta ?: return 0
             return if (meta.hasCustomModelData()) meta.customModelData else 0
         }

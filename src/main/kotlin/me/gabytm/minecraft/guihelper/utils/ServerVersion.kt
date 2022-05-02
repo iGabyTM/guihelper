@@ -32,7 +32,7 @@ import java.util.regex.Pattern
  * Class for detecting server version for legacy support
  * @author Matt ([@ipsk](https://github.com/ipsk))
  */
-object VersionHelper {
+object ServerVersion {
 
     private val CURRENT: Int = getCurrentVersion()
 

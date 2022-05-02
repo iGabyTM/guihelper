@@ -27,7 +27,7 @@ import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
 import org.bukkit.attribute.Attribute
 import org.bukkit.configuration.ConfigurationSection
@@ -81,7 +81,7 @@ class MythicMobsGenerator(
         section.setList("Hide", meta.itemFlags.map { it.name.replace("HIDE_", "") })
         section.set("Options.Unbreakable", item.isUnbreakable) { it }
 
-        if (VersionHelper.HAS_ATTRIBUTE && meta.hasAttributeModifiers()) {
+        if (ServerVersion.HAS_ATTRIBUTE && meta.hasAttributeModifiers()) {
             setAttributes(section.createSection("Attributes"), meta)
         }
 
@@ -118,7 +118,7 @@ class MythicMobsGenerator(
                 handlePlayerHeads(section.createSection("Options"), item, input.getHeadIdProvider())
             }
 
-            !VersionHelper.IS_ANCIENT && item.isPotion -> {
+            !ServerVersion.IS_ANCIENT && item.isPotion -> {
                 handlePotions(section, meta as PotionMeta)
             }
         }

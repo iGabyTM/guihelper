@@ -19,7 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.items.heads.providers
 
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 
@@ -33,7 +33,7 @@ class PlayerNameImplementation : HeadIdProvider() {
             return DEFAULT
         }
 
-        return if (VersionHelper.SKULL_META_HAS_OWNING_PLAYER) {
+        return if (ServerVersion.SKULL_META_HAS_OWNING_PLAYER) {
             meta.owningPlayer?.name ?: DEFAULT
         } else {
             meta.owner ?: DEFAULT

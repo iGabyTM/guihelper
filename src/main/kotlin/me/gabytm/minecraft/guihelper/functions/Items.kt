@@ -200,7 +200,7 @@ val ItemStack.customModelData: Int
 /**
  * Check if an item is not null and its `type` it not [Material.AIR]
  * @return whether the item is not null
- * @since 2.0.5
+ * @since 2.0.0
  */
 fun ItemStack?.isNotNull(): Boolean = this != null && type != Material.AIR
 
@@ -226,6 +226,7 @@ fun ItemStack.displayName(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT)
  * ```
  * @param format the format that will be applied to each <Enchantment, Level> pair
  * @return list of formatted enchantments
+ * @since 2.0.0
  */
 fun <T> ItemStack.enchants(format: (enchantment: Enchantment, level: Int) -> T): List<T> {
     // If the item has enchantments, it also has meta

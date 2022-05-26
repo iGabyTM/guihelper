@@ -48,7 +48,7 @@ import kotlin.system.measureTimeMillis
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "DeluxeMenus",
-    override val pluginVersion: String = "1.13.3",
+    override val pluginVersion: String = "1.13.5",
     override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
 

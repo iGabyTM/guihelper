@@ -98,6 +98,11 @@ class DeluxeMenusGenerator(
     }
 
     private fun setItemFlags(section: ConfigurationSection, flags: Set<ItemFlag>) {
+        if (defaults[Value.SET_ITEM_FLAGS_AS_LIST]) {
+            section.setList("item_flags", false, flags.map { it.name })
+            return
+        }
+
         flags.forEach { flag ->
             when (flag) {
                 ItemFlag.HIDE_ATTRIBUTES -> "hide_attributes"
@@ -176,6 +181,10 @@ class DeluxeMenusGenerator(
         @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
         @Path("settings.heads")
         val SETTINGS__HEADS = create(Provider.BASE_64)
+
+        @Comment("Starting with version 1.13.4, ItemFlags can be written as a list, 'item_flags'")
+        @Path("settings.saveItemFlagsAsList")
+        val SET_ITEM_FLAGS_AS_LIST = create(false)
 
     }
 

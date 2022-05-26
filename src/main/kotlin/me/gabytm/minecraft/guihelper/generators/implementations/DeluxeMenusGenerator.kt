@@ -39,6 +39,7 @@ import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.FireworkEffectMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.PotionMeta
@@ -131,6 +132,9 @@ class DeluxeMenusGenerator(
             item.isPlayerHead -> {
                 handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
             }
+            item.isFireworkStar -> {
+                handFireworkStars(section, meta as FireworkEffectMeta)
+            }
         }
     }
 
@@ -164,6 +168,14 @@ class DeluxeMenusGenerator(
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }
+    }
+
+    private fun handFireworkStars(section: ConfigurationSection, meta: FireworkEffectMeta) {
+        if (!meta.hasEffect()) {
+            return
+        }
+
+        section["rgb"] = meta.effect!!.colors[0].asString()
     }
 
     private class Defaults(name: String) : DefaultValues(name, Value::class.java)

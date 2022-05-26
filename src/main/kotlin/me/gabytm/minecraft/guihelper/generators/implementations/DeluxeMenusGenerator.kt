@@ -99,7 +99,7 @@ class DeluxeMenusGenerator(
 
     private fun setItemFlags(section: ConfigurationSection, flags: Set<ItemFlag>) {
         if (defaults[Value.SET_ITEM_FLAGS_AS_LIST]) {
-            section.setList("item_flags", false, flags.map { it.name })
+            section.setList("item_flags", flags.map { it.name })
             return
         }
 

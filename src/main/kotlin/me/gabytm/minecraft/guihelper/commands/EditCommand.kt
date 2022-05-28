@@ -23,10 +23,7 @@ import me.gabytm.minecraft.guihelper.functions.hand
 import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.items.edit.editors.ItemEditor
 import me.gabytm.minecraft.guihelper.utils.Constants
-import me.mattstudios.mf.annotations.Alias
-import me.mattstudios.mf.annotations.Command
-import me.mattstudios.mf.annotations.CompleteFor
-import me.mattstudios.mf.annotations.SubCommand
+import me.mattstudios.mf.annotations.*
 import me.mattstudios.mf.base.CommandBase
 import org.apache.commons.cli.DefaultParser
 import org.apache.commons.cli.ParseException
@@ -38,6 +35,7 @@ class EditCommand(private val itemsManager: ItemsManager) : CommandBase() {
 
     private val commandParser = DefaultParser()
 
+    @Permission(Constants.PERMISSION)
     @SubCommand("edit")
     fun onCommand(sender: Player, args: Array<String>) {
         if (args.size == 1) {

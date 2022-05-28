@@ -34,14 +34,9 @@ import java.util.regex.Pattern
 
 class GUIHelper : JavaPlugin() {
 
-    lateinit var itemsManager: ItemsManager
-        private set
-
-    lateinit var generatorsManager: GeneratorsManager
-        private set
-
-    lateinit var inventoryManager: InventoryManager
-        private set
+    lateinit var itemsManager: ItemsManager private set
+    lateinit var generatorsManager: GeneratorsManager private set
+    lateinit var inventoryManager: InventoryManager private set
 
     override fun onEnable() {
         if (ServerVersion.IS_EXTREMELY_OLD) {

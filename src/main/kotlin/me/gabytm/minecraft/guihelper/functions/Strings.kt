@@ -21,7 +21,7 @@
 
 package me.gabytm.minecraft.guihelper.functions
 
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.ChatColor
@@ -36,7 +36,7 @@ fun String.color(): String = ChatColor.translateAlternateColorCodes('&', this)
 fun String.fixColors(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
     val replaced = replace(ChatColor.COLOR_CHAR, '&')
 
-    return if (VersionHelper.HAS_HEX && format != NO_RGB_SUPPORT) {
+    return if (ServerVersion.HAS_HEX && format != NO_RGB_SUPPORT) {
         vanillaRgbRegex.findAll(replaced).fold(replaced) { str, matcher ->
             str.replace(matcher.groupValues[0], format(matcher.groupValues[1].replace("&", "")))
         }

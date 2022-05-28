@@ -17,6 +17,15 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.minecraft.guihelper.exceptions
+package me.gabytm.minecraft.guihelper.utils
 
-open class GUIHelperException : Exception()
+import me.gabytm.minecraft.guihelper.GUIHelper
+import org.bstats.bukkit.Metrics
+
+class BStats(plugin: GUIHelper) {
+
+    init {
+        val metrics = Metrics(plugin, 5497)
+    }
+
+}

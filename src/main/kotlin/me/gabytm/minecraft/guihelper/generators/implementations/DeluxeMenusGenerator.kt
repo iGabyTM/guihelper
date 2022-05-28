@@ -28,7 +28,7 @@ import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description
@@ -39,6 +39,7 @@ import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.FireworkEffectMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.PotionMeta
@@ -47,7 +48,7 @@ import kotlin.system.measureTimeMillis
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "DeluxeMenus",
-    override val pluginVersion: String = "1.13.3",
+    override val pluginVersion: String = "1.13.5",
     override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
 
@@ -98,6 +99,11 @@ class DeluxeMenusGenerator(
     }
 
     private fun setItemFlags(section: ConfigurationSection, flags: Set<ItemFlag>) {
+        if (defaults[Value.SETTINGS__SET_ITEM_FLAGS_AS_LIST]) {
+            section.setList("item_flags", flags.map { it.name })
+            return
+        }
+
         flags.forEach { flag ->
             when (flag) {
                 ItemFlag.HIDE_ATTRIBUTES -> "hide_attributes"
@@ -114,7 +120,7 @@ class DeluxeMenusGenerator(
             item.isLeatherArmor -> {
                 (meta as LeatherArmorMeta).color.ifNotDefault { section["rgb"] = it.asString() }
             }
-            VersionHelper.IS_LEGACY && item.isSpawnEgg -> {
+            ServerVersion.IS_LEGACY && item.isSpawnEgg -> {
                 section["data"] = item.spawnEggType.typeId
             }
             item.isShield || item.isBanner -> {
@@ -125,6 +131,9 @@ class DeluxeMenusGenerator(
             }
             item.isPlayerHead -> {
                 handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
+            }
+            item.isFireworkStar -> {
+                handFireworkStars(section, meta as FireworkEffectMeta)
             }
         }
     }
@@ -161,13 +170,21 @@ class DeluxeMenusGenerator(
         }
     }
 
+    private fun handFireworkStars(section: ConfigurationSection, meta: FireworkEffectMeta) {
+        if (!meta.hasEffect()) {
+            return
+        }
+
+        section["rgb"] = meta.effect!!.colors[0].asString()
+    }
+
     private class Defaults(name: String) : DefaultValues(name, Value::class.java)
 
     @Description(
         " ",
         "Default values that will be used in the config creation process",
         " ",
-        "▪ DeluxeMenus 1.13.3 by clip (https://spigotmc.org/resources/11734/)",
+        "▪ DeluxeMenus 1.13.5 by clip (https://spigotmc.org/resources/11734/)",
         "▪ Wiki: https://wiki.helpch.at/clips-plugins/deluxemenus",
         " "
     )
@@ -176,6 +193,10 @@ class DeluxeMenusGenerator(
         @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
         @Path("settings.heads")
         val SETTINGS__HEADS = create(Provider.BASE_64)
+
+        @Comment("Starting with version 1.13.4, ItemFlags can be written as a list, 'item_flags'")
+        @Path("settings.saveItemFlagsAsList")
+        val SETTINGS__SET_ITEM_FLAGS_AS_LIST = create(false)
 
     }
 

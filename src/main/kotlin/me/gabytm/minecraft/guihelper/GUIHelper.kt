@@ -25,7 +25,8 @@ import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
 import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.BStats
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
@@ -40,7 +41,7 @@ class GUIHelper : JavaPlugin() {
     lateinit var inventoryManager: InventoryManager private set
 
     override fun onEnable() {
-        if (VersionHelper.IS_EXTREMELY_OLD) {
+        if (ServerVersion.IS_EXTREMELY_OLD) {
             logger.severe("Versions older than 1.8 aren't supported.")
             logger.warning("If you are running a newer version and see this, report it to https://github.com/iGabyTM/GUIHelper/issues")
 
@@ -56,6 +57,7 @@ class GUIHelper : JavaPlugin() {
         this.inventoryManager = InventoryManager()
 
         CommandManager(this)
+        BStats(this)
 
         server.servicesManager.register(GeneratorsManager::class.java, generatorsManager, this, ServicePriority.Highest)
         server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager), this)

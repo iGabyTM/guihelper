@@ -19,6 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.items
 
+import me.gabytm.minecraft.guihelper.items.custom.CustomItemHandler
 import me.gabytm.minecraft.guihelper.items.edit.ItemEditHandler
 import me.gabytm.minecraft.guihelper.items.edit.editors.ItemEditor
 import me.gabytm.minecraft.guihelper.items.heads.HeadsIdHandler
@@ -26,12 +27,16 @@ import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider
 import me.gabytm.minecraft.guihelper.items.serialization.ItemSerializationHandler
 import me.gabytm.minecraft.guihelper.items.serialization.serializers.Serializer
 import org.bukkit.inventory.ItemStack
+import kotlin.reflect.KClass
 
 class ItemsManager {
 
-    private val headsIdHandler = HeadsIdHandler()
+    private val customItemHandler = CustomItemHandler()
     private val itemEditHandler = ItemEditHandler()
+    private val headsIdHandler = HeadsIdHandler()
     private val itemSerializerHandler = ItemSerializationHandler(this)
+
+    fun <T: Any> getCustomItem(type: KClass<T>, item: ItemStack): T? = customItemHandler.get(type, item)
 
     fun getItemEditor(editor: ItemEditor.Editor): ItemEditor? {
         return itemEditHandler[editor]

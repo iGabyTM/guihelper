@@ -1,11 +1,13 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'org.cadixdev.licenser' version '0.6.0'
 }
 
+def ver = new Version(major: 2, minor: 0, patch: 0)
+
 group 'me.gabytm.minecraft'
-version '2.0.0'
+version "$ver"
 
 // sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -33,7 +35,11 @@ repositories {
 
     maven {
         name 'Config'
-        url 'https://repo.mattstudios.me/artifactory/public/'
+        url 'https://repo.triumphteam.dev/snapshots'
+    }
+
+    maven {
+        url 'https://jitpack.io'
     }
 }
 
@@ -51,7 +57,13 @@ dependencies {
     // Heads
     compileOnly('com.arcaniax:HeadDatabase-API:1.3.1') { transitive = false }
 
+    // Custom items
+    compileOnly 'com.github.oraxen:oraxen:-SNAPSHOT' // https://spigotmc.org/resources/72448/
+    compileOnly 'com.github.LoneDev6:api-itemsadder:3.0.0' // https://spigotmc.org/resources/73355/
+
     implementation 'commons-cli:commons-cli:1.4' // https://commons.apache.org/proper/commons-cli/index.html
+
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
 }
 
 compileJava.options.encoding = "UTF-8"
@@ -70,7 +82,7 @@ license {
     header = project.file('headers/header.txt')
 
     properties {
-        year = new Date().format("yyyy")
+        year = '2021'
     }
 
     include '**/*.kt'
@@ -82,6 +94,7 @@ shadowJar {
 
     [
             'kotlin'                  : 'kt', // 'kt' to stop other plugins from loading it from my jar
+            'org.bstats'              : 'bstats',
             'me.mattstudios.config'   : 'defaults',
             'me.mattstudios.mf'       : 'commands',
             'de.tr7zw.changeme.nbtapi': 'nbtapi'
@@ -91,4 +104,21 @@ shadowJar {
 task copyJarToServer(type: Copy) {
     from shadowJar
     into "./server/plugins"
+}
+
+class Version {
+    String major, minor, patch
+    String build = ''
+
+    Version() {
+        if (System.getenv('BUILD_NUMBER')) {
+            build = "-${System.getenv('BUILD_NUMBER')}"
+        } else if (System.getProperty('BUILD_NUMBER')) {
+            build = "-${System.getProperty('BUILD_NUMBER')}"
+        }
+    }
+
+    String toString() {
+        "$major.$minor.$patch$build"
+    }
 }

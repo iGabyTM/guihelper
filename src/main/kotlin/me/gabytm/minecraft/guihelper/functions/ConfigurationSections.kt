@@ -105,7 +105,5 @@ fun ConfigurationSection.setList(path: String, setIfEmpty: Boolean, list: List<A
  */
 
 fun ConfigurationSection.setList(path: String, list: List<Any>) {
-    if (list.isNotEmpty()) {
-        this[path] = list
-    }
+    setList(path, false, list)
 }

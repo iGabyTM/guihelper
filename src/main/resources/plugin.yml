@@ -9,6 +9,9 @@ website: https://gabytm.me/
 
 softdepend:
   - HeadDatabase
+  # Custom items
+  - ItemsAdder
+  - Oraxen
 
 permissions:
   guihelper.use:

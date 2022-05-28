@@ -1,3 +1,22 @@
+/*
+ * Copyright 2021 GabyTM
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *  permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package me.gabytm.minecraft.guihelper.generators.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
@@ -8,7 +27,7 @@ import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import org.apache.commons.cli.CommandLine
 import org.bukkit.attribute.Attribute
 import org.bukkit.configuration.ConfigurationSection
@@ -62,7 +81,7 @@ class MythicMobsGenerator(
         section.setList("Hide", meta.itemFlags.map { it.name.replace("HIDE_", "") })
         section.set("Options.Unbreakable", item.isUnbreakable) { it }
 
-        if (VersionHelper.HAS_ATTRIBUTE && meta.hasAttributeModifiers()) {
+        if (ServerVersion.HAS_ATTRIBUTE && meta.hasAttributeModifiers()) {
             setAttributes(section.createSection("Attributes"), meta)
         }
 
@@ -99,7 +118,7 @@ class MythicMobsGenerator(
                 handlePlayerHeads(section.createSection("Options"), item, input.getHeadIdProvider())
             }
 
-            !VersionHelper.IS_ANCIENT && item.isPotion -> {
+            !ServerVersion.IS_ANCIENT && item.isPotion -> {
                 handlePotions(section, meta as PotionMeta)
             }
         }

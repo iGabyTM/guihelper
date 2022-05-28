@@ -21,6 +21,7 @@ package me.gabytm.minecraft.guihelper.utils
 
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.functions.component
+import me.gabytm.minecraft.guihelper.functions.send
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
@@ -73,9 +74,9 @@ enum class Message(var value: String) {
 
     fun send(receiver: CommandSender, vararg args: Any?) {
         if (args.isEmpty()) {
-            receiver.sendMessage(value)
+            component().send(receiver)
         } else {
-            receiver.sendMessage(value.format(*args))
+            component(*args).send(receiver)
         }
     }
 

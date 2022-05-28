@@ -25,10 +25,13 @@ import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.items.custom.providers.headdatabase.HeadDatabaseItem
+import me.gabytm.minecraft.guihelper.items.custom.providers.itemsadder.ItemsAdderItem
+import me.gabytm.minecraft.guihelper.items.custom.providers.oraxen.OraxenItem
 import me.gabytm.minecraft.guihelper.items.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.gabytm.minecraft.guihelper.utils.VersionHelper
+import me.gabytm.minecraft.guihelper.utils.ServerVersion
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description
@@ -45,7 +48,7 @@ import kotlin.system.measureTimeMillis
 class ShopGuiPlusGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "ShopGUIPlus",
-    override val pluginVersion: String = "1.62.2",
+    override val pluginVersion: String = "1.76.2",
     override val rgbFormat: (String) -> String = { "#$it" }
 ) : ConfigGenerator() {
 
@@ -102,6 +105,7 @@ class ShopGuiPlusGenerator(
 
         val meta = item.meta ?: return
 
+        checkForCustomItem(itemSection, item)
         itemSection.set("model", item.customModelData) { it > 0 }
         itemSection.set("unbreakable", item.isUnbreakable) { it }
         itemSection.set("name", meta::hasDisplayName) { item.displayName(rgbFormat) }
@@ -115,6 +119,30 @@ class ShopGuiPlusGenerator(
         if (defaults[Value.NBT]) {
             handleNbt(itemSection, item)
         }*/
+    }
+
+    private fun checkForCustomItem(section: ConfigurationSection, item: ItemStack) {
+        val manager = plugin.itemsManager
+
+        val headDatabaseItem = manager.getCustomItem(HeadDatabaseItem::class, item)
+
+        if (headDatabaseItem != null) {
+            section["headDatabase"] = headDatabaseItem.id
+            return
+        }
+
+        val itemsAdderItem = manager.getCustomItem(ItemsAdderItem::class, item)
+
+        if (itemsAdderItem != null) {
+            section["itemsAdder"] = itemsAdderItem.id
+            return
+        }
+
+        val oraxenItem = manager.getCustomItem(OraxenItem::class, item)
+
+        if (oraxenItem != null) {
+            section["oraxen"] = oraxenItem.id
+        }
     }
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
@@ -134,7 +162,7 @@ class ShopGuiPlusGenerator(
             item.isPlayerHead -> {
                 handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
             }
-            !VersionHelper.IS_ANCIENT && item.isPotion -> {
+            !ServerVersion.IS_ANCIENT && item.isPotion -> {
                 handlePotions(section.createSection("potion"), meta as PotionMeta)
             }
             item.isSpawnEgg -> {
@@ -146,7 +174,7 @@ class ShopGuiPlusGenerator(
     private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
         val (patterns, color) = item.patternsAndBaseColor(false)
 
-        if (VersionHelper.IS_LEGACY || item.isShield) {
+        if (ServerVersion.IS_LEGACY || item.isShield) {
             section["damage"] = null
             section["color"] = color?.name
         }
@@ -212,7 +240,7 @@ class ShopGuiPlusGenerator(
 
     // See https://docs.brcdev.net/#/item-meta?id=spawn-eggs
     private fun handleSpawnEggs(section: ConfigurationSection, item: ItemStack) {
-        if (VersionHelper.HAS_SPAWN_EGG_META) {
+        if (ServerVersion.HAS_SPAWN_EGG_META) {
             section["mob"] = item.spawnEggType.name
         } else {
             section["mob"] = item.spawnEggType.asString()
@@ -309,7 +337,7 @@ class ShopGuiPlusGenerator(
         " ",
         "Default values that will be used in the config creation process",
         " ",
-        "▪ ShopGUIPlus 1.59.2 by brc (https://spigotmc.org/resources/6515/)",
+        "▪ ShopGUIPlus 1.76.2 by brc (https://spigotmc.org/resources/6515/)",
         "▪ Wiki: https://docs.brcdev.net/#/shopgui/faq",
         " "
     )

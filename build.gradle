@@ -4,12 +4,8 @@ plugins {
     id 'org.cadixdev.licenser' version '0.6.0'
 }
 
-def ver = new Version(major: 2, minor: 0, patch: 0)
-
 group 'me.gabytm.minecraft'
-version "$ver"
-
-// sourceCompatibility = JavaVersion.VERSION_1_8
+version projectVersion(2, 0, 0)
 
 repositories {
     mavenCentral()
@@ -107,19 +103,12 @@ task copyJarToServer(type: Copy) {
     into "./server/plugins"
 }
 
-class Version {
-    String major, minor, patch
-    String build = ''
+private static String projectVersion(int major, int minor, int patch) {
+    def buildNumber = System.getenv('BUILD_NUMBER') ?: System.getProperty('BUILD_NUMBER')
 
-    Version() {
-        if (System.getenv('BUILD_NUMBER')) {
-            build = "-${System.getenv('BUILD_NUMBER')}"
-        } else if (System.getProperty('BUILD_NUMBER')) {
-            build = "-${System.getProperty('BUILD_NUMBER')}"
-        }
-    }
-
-    String toString() {
-        "$major.$minor.$patch$build"
+    if (buildNumber == null) {
+        return "$major.$minor.$patch"
+    } else {
+        return "$major.$minor.$patch-$buildNumber"
     }
 }

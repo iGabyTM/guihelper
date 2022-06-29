@@ -38,8 +38,7 @@ import org.bukkit.inventory.ItemStack
 abstract class ConfigGenerator {
 
     val options = Options()
-    lateinit var optionsMessage: Component
-        private set
+    lateinit var optionsMessage: Component private set
 
     abstract val pluginName: String
     abstract val pluginVersion: String

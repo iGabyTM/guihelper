@@ -84,11 +84,7 @@ processResources {
 }
 
 license {
-    header = project.file('headers/header.txt')
-
-    properties {
-        year = '2021'
-    }
+    header = project.file('LICENSE')
 
     include '**/*.kt'
     exclude '**/VersionHelper.kt'

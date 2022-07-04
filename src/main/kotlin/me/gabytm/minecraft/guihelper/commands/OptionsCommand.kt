@@ -19,6 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.commands
 
+import me.gabytm.minecraft.guihelper.functions.send
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.utils.Constants
 import me.gabytm.minecraft.guihelper.utils.Message

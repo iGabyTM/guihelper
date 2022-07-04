@@ -69,7 +69,7 @@ class ShopGuiPlusGenerator(
         options.addOption(createPageOption("The page where items will be set"))
     }
 
-    override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fShops items"
+    override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fShop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val page = input.getOrDefault('p', 1) { it.toIntOrNull() }

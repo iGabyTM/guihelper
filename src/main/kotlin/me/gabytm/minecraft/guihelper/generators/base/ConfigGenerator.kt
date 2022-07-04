@@ -21,10 +21,12 @@ package me.gabytm.minecraft.guihelper.generators.base
 
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.rayzr522.jsonmessage.JSONMessage
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.newline
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import org.bukkit.ChatColor
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -36,8 +38,7 @@ import org.bukkit.inventory.ItemStack
 abstract class ConfigGenerator {
 
     val options = Options()
-    lateinit var optionsMessage: JSONMessage
-        private set
+    lateinit var optionsMessage: Component private set
 
     abstract val pluginName: String
     abstract val pluginVersion: String
@@ -82,40 +83,43 @@ abstract class ConfigGenerator {
 
     internal fun createOptionsMessage() {
         if (options.options.isEmpty()) {
-            this.optionsMessage = JSONMessage.create(Message.NO_OPTIONS[pluginName])
+            this.optionsMessage = Message.NO_OPTIONS.component(pluginName)
             return
         }
 
-        val message = JSONMessage.create(Message.OPTIONS__HEADER[pluginName, pluginVersion])
-            .then(" (?)").color(ChatColor.GRAY).tooltip(Message.OPTIONS__HEADER_HOVER.get())
+        val message = text()
+            .append(Message.OPTIONS__HEADER.component(pluginName, pluginVersion))
+            .append(text(" (?)", NamedTextColor.GRAY).hoverEvent(Message.OPTIONS__HEADER_HOVER.component()))
 
         val (required, optional) = options.options.sortedBy { it.opt }.partition { it.isRequired }
 
         for (option in (required + optional)) {
-            message.newline()
+            message.append(newline())
 
-            if (option.hasLongOpt()) {
-                message.then("-${option.opt}, --${option.longOpt}")
+            val builder = text()
+            val optionString = if (option.hasLongOpt()) {
+                "-${option.opt}, --${option.longOpt}"
             } else {
-                message.then("-${option.opt}")
+                "-${option.opt}"
             }
 
-            message.color(if (option.isRequired) ChatColor.RED else ChatColor.GREEN)
+            builder.append(text(optionString, if (option.isRequired) NamedTextColor.RED else NamedTextColor.GREEN))
 
             if (option.hasArg()) {
-                if (option.hasOptionalArg()) {
-                    message.then(" (${option.argName})")
+                val argString = if (option.hasOptionalArg()) {
+                    " (${option.argName})"
                 } else {
-                    message.then(" [${option.argName}]")
+                    " [${option.argName}]"
                 }
 
-                message.color(if (option.isRequired) ChatColor.RED else ChatColor.GREEN)
+                builder.append(text(argString, if (option.isRequired) NamedTextColor.RED else NamedTextColor.GREEN))
             }
 
-            message.then(" (description)").color(ChatColor.GRAY).tooltip(option.description)
+            builder.append(text(" (description)", NamedTextColor.GRAY).hoverEvent(text(option.description)))
+            message.append(builder)
         }
 
-        this.optionsMessage = message
+        this.optionsMessage = message.build()
     }
 
 }

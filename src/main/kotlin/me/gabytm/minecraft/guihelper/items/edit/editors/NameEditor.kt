@@ -19,15 +19,10 @@
 
 package me.gabytm.minecraft.guihelper.items.edit.editors
 
-import me.gabytm.minecraft.guihelper.functions.addOption
-import me.gabytm.minecraft.guihelper.functions.color
-import me.gabytm.minecraft.guihelper.functions.displayName
-import me.gabytm.minecraft.guihelper.functions.meta
+import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.utils.Message
-import me.rayzr522.jsonmessage.JSONMessage
+import net.kyori.adventure.text.event.ClickEvent
 import org.apache.commons.cli.CommandLine
-import org.bukkit.ChatColor
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -76,7 +71,9 @@ class NameEditor : ItemEditor() {
 
             input.hasOption('g') -> {
                 with (item.displayName()) {
-                    JSONMessage.create(Message.EDIT__NAME__COPY[this]).copyText(this).send(executor)
+                    Message.EDIT__NAME__COPY.component(this)
+                        .clickEvent(ClickEvent.copyToClipboard(this))
+                        .send(executor)
                 }
             }
 

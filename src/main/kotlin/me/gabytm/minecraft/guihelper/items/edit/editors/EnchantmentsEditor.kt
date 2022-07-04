@@ -20,7 +20,7 @@
 package me.gabytm.minecraft.guihelper.items.edit.editors
 
 import me.gabytm.minecraft.guihelper.functions.*
-import me.rayzr522.jsonmessage.JSONMessage
+import net.kyori.adventure.text.Component.text
 import org.apache.commons.cli.CommandLine
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -28,9 +28,8 @@ import org.bukkit.inventory.ItemStack
 
 class EnchantmentsEditor : ItemEditor() {
 
-    private val enchantments = JSONMessage.create("hover").tooltip(
-        Enchantment.values().sortedBy { it.name }.joinToString("&7, &f") { it.name.lowercase() }.color()
-    )
+    private val enchantments = text("hover")
+        .hoverEvent(Enchantment.values().sortedBy { it.name }.joinToString("&7, &f") { it.name.lowercase() }.component())
 
     init {
         options.addOption('c') {

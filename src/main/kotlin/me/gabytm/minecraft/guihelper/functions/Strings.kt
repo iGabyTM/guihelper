@@ -22,9 +22,11 @@
 package me.gabytm.minecraft.guihelper.functions
 
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.ChatColor
 
-private val vanillaRgbRegex = Regex("&x((?:&[a-fA-F0-9]){6})")
+private val vanillaRgbRegex = Regex("&x((?:&[a-fA-F\\d]){6})")
 
 val NO_RGB_SUPPORT: (String) -> String = { "" }
 val SPIGOT_RGB_FORMAT: (String) -> String = { "&#$it" }
@@ -42,6 +44,8 @@ fun String.fixColors(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
         replaced
     }
 }
+
+fun String.component(): Component = LegacyComponentSerializer.legacyAmpersand().deserialize(color())
 
 fun String.ifNotEmpty(function: (String) -> Any) {
     if (this.isNotEmpty()) {

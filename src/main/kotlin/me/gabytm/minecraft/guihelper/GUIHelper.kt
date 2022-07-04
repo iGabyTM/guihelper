@@ -27,6 +27,7 @@ import me.gabytm.minecraft.guihelper.items.ItemsManager
 import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
 import me.gabytm.minecraft.guihelper.utils.BStats
 import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
@@ -34,6 +35,7 @@ import java.util.regex.Pattern
 
 class GUIHelper : JavaPlugin() {
 
+    lateinit var audiences: BukkitAudiences private set
     lateinit var itemsManager: ItemsManager private set
     lateinit var generatorsManager: GeneratorsManager private set
     lateinit var inventoryManager: InventoryManager private set
@@ -49,6 +51,7 @@ class GUIHelper : JavaPlugin() {
 
         sendLogo()
 
+        this.audiences = BukkitAudiences.create(this)
         this.itemsManager = ItemsManager()
         this.generatorsManager = GeneratorsManager(this)
         this.inventoryManager = InventoryManager()
@@ -57,7 +60,7 @@ class GUIHelper : JavaPlugin() {
         BStats(this)
 
         server.servicesManager.register(GeneratorsManager::class.java, generatorsManager, this, ServicePriority.Highest)
-        server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager), this)
+        server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager, this.audiences), this)
     }
 
     private fun sendLogo() {

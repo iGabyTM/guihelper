@@ -60,7 +60,7 @@ class GUIHelper : JavaPlugin() {
         BStats(this)
 
         server.servicesManager.register(GeneratorsManager::class.java, generatorsManager, this, ServicePriority.Highest)
-        server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager), this)
+        server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager, this.audiences), this)
     }
 
     private fun sendLogo() {

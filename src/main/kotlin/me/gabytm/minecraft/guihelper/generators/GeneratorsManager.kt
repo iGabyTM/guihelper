@@ -20,10 +20,12 @@
 package me.gabytm.minecraft.guihelper.generators
 
 import me.gabytm.minecraft.guihelper.GUIHelper
-import me.gabytm.minecraft.guihelper.functions.color
+import me.gabytm.minecraft.guihelper.functions.component
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.implementations.*
 import me.gabytm.minecraft.guihelper.utils.Constants.ALIAS
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.JoinConfiguration
 
 /**
  * Main point of interacting with generators
@@ -35,8 +37,7 @@ class GeneratorsManager(plugin: GUIHelper) {
     private val registeredGenerators = mutableMapOf<String, ConfigGenerator>()
     private val registeredGeneratorsIds = mutableSetOf<String>()
 
-    lateinit var listMessage: String
-        private set
+    lateinit var listMessage: Component private set
 
     init {
         sequenceOf(
@@ -58,11 +59,21 @@ class GeneratorsManager(plugin: GUIHelper) {
 
     private fun updateGeneratorsList() {
         registeredGeneratorsIds.addAll(registeredGenerators.keys)
-        this.listMessage = buildString {
-            append("&2&lGH &8| &aGenerators available:\n \n")
-            append(registeredGenerators.entries.sortedBy { it.key }.joinToString("\n") { it.value.getMessage() })
-            append("\n \n&fUsage: &2/$ALIAS create [type] &a(options)")
-        }.color()
+
+        this.listMessage = Component.text()
+            .append("&2&lGH &8| &aGenerators available:".component())
+            .append(Component.newline(), Component.newline())
+            .append(
+                Component.join(
+                    JoinConfiguration.newlines(),
+                    registeredGenerators.entries.sortedBy { it.key }.map { it.value.getMessage().component() }
+                )
+            )
+            .append(Component.newline(), Component.newline())
+            .append("&fUsage: &2/$ALIAS create [type] &a(options)".component())
+            .build()
+
+        registeredGenerators.entries.sortedBy { it.key }.map { it.value.getMessage().component() }
     }
 
     fun register(generator: ConfigGenerator, replaceIfPresent: Boolean = false) {

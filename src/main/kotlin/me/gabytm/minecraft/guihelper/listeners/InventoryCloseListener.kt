@@ -22,12 +22,13 @@ package me.gabytm.minecraft.guihelper.listeners
 import me.gabytm.minecraft.guihelper.functions.isNotEmpty
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventories.InventoryManager
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryCloseEvent
 
-class InventoryCloseListener(private val manager: GeneratorsManager) : Listener {
+class InventoryCloseListener(private val manager: GeneratorsManager, private val audiences: BukkitAudiences) : Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     fun InventoryCloseEvent.onEvent() {
@@ -36,7 +37,7 @@ class InventoryCloseListener(private val manager: GeneratorsManager) : Listener 
         }
 
         if (inventory.isNotEmpty) {
-            player.sendMessage(manager.listMessage)
+            audiences.sender(player).sendMessage(manager.listMessage)
         }
     }
 

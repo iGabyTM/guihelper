@@ -50,7 +50,7 @@ class MythicMobsGenerator(
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.PLAYER_NAME))
     }
 
-    override fun getMessage(): String = "TODO"
+    override fun getMessage(): String = "  &2$pluginName &av$pluginVersion &8- &fItems"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val config = Config(pluginName, plugin, true)

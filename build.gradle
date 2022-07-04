@@ -78,7 +78,7 @@ license {
     header = project.file('LICENSE')
 
     include '**/*.kt'
-    exclude '**/VersionHelper.kt'
+    exclude '**/ServerVersion.kt'
 }
 
 shadowJar {

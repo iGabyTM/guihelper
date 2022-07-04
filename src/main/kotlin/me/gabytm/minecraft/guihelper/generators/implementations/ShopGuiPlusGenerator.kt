@@ -38,7 +38,6 @@ import me.mattstudios.config.annotations.Description
 import me.mattstudios.config.annotations.Path
 import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
-import org.apache.commons.lang.WordUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
@@ -375,7 +374,7 @@ class ShopGuiPlusGenerator(
  * See the 'Minecraft 1.7-1.10' tab on [docs.brcdev.net/#/entity-types](https://docs.brcdev.net/#/entity-types)
  */
 private fun EntityType.asString(): String {
-    return WordUtils.capitalizeFully(name.replace('_', ' ')).replace(" ", "")
+	return name.split("_").joinToString(" ") { "${it.first()}${it.substring(1).lowercase()}" }
 }
 
 // TODO: add nbt support

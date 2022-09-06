@@ -17,7 +17,7 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.minecraft.guihelper.generators.base
+package me.gabytm.minecraft.guihelper.generator.base
 
 import me.gabytm.minecraft.guihelper.functions.error
 import me.gabytm.minecraft.guihelper.functions.isNotNull

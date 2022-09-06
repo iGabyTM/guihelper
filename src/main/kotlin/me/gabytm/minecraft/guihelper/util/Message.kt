@@ -22,7 +22,7 @@ package me.gabytm.minecraft.guihelper.util
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.functions.component
 import me.gabytm.minecraft.guihelper.functions.send
-import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 

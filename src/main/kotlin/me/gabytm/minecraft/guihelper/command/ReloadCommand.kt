@@ -19,7 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.command
 
-import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
+import me.gabytm.minecraft.guihelper.generator.GeneratorsManager
 import me.gabytm.minecraft.guihelper.util.Constants
 import me.mattstudios.mf.annotations.Alias
 import me.mattstudios.mf.annotations.Command

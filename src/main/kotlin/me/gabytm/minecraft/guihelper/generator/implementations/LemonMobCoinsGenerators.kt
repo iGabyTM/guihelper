@@ -17,40 +17,33 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.minecraft.guihelper.generators.implementations
+package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
-import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
-import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
+import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.item.serialization.serializers.Serializer
 import me.gabytm.minecraft.guihelper.util.Message
-import me.mattstudios.config.SettingsHolder
-import me.mattstudios.config.annotations.Description
-import me.mattstudios.config.annotations.Path
-import me.mattstudios.config.properties.Property
 import org.apache.commons.cli.CommandLine
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import kotlin.system.measureTimeMillis
 
-class ASkyBlockGenerator(
+class LemonMobCoinsGenerators(
     private val plugin: GUIHelper,
-    override val pluginName: String = "ASkyBlock",
-    override val pluginVersion: String = "3.0.9.4",
-    override val rgbFormat: (String) -> String = NO_RGB_SUPPORT
+    override val pluginName: String = "LemonMobCoins",
+    override val pluginVersion: String = "1.4"
 ) : ConfigGenerator() {
 
-    private val defaults = Defaults(pluginName)
-
-    override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
+    override fun getMessage(): String = "  &2$pluginName &av$pluginVersion &8- &fShop items"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val config = Config(pluginName, plugin, true)
 
         val duration = measureTimeMillis {
-            context.forEach { item, slot -> createItem(config.createSection("items.item${slot + 1}"), item, slot) }
+            context.forEach { item, slot -> createItem(config.createSection("item-$slot"), input, item, slot) }
         }
 
         config.save()
@@ -58,39 +51,18 @@ class ASkyBlockGenerator(
         return true
     }
 
-    override fun onReload() {
-        defaults.reload()
-    }
-
-    override fun createItem(section: ConfigurationSection, item: ItemStack, slot: Int) {
+    override fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int) {
         section["material"] = item.type.name
-        section["quantity"] = item.amount
-        section["price"] = defaults[Value.PRICE]
-        section["sellprice"] = defaults[Value.SELL_PRICE]
+        section["slot"] = slot
+        section["amount"] = item.amount
+        section["permission"] = false
+        section["price"] = 100
 
         val meta = item.meta ?: return
 
-        section.set("lore", meta::hasLore) { item.lore().joinToString("|") }
-    }
-
-    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
-
-    @Description(
-        " ",
-        "Default values that will be used in the config creation process",
-        " ",
-        "▪ ASkyBlock 3.0.9.4 by Tastybento (https://spigotmc.org/resources/1220/)",
-        "▪ Wiki: https://github.com/tastybento/askyblock/wiki",
-        " "
-    )
-    private object Value : SettingsHolder {
-
-        @Path("price")
-        val PRICE = Property.create(100)
-
-        @Path("sellprice")
-        val SELL_PRICE = Property.create(10)
-
+        section.set("displayname", meta::hasDisplayName, item::displayName)
+        section.set("lore", meta::hasLore, item::lore)
+        section["commands"] = listOf("give %player% ${plugin.itemsManager.serialize(item, Serializer.ESSENTIALSX)}")
     }
 
 }

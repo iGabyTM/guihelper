@@ -17,7 +17,7 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.minecraft.guihelper.generators.base
+package me.gabytm.minecraft.guihelper.generator.base
 
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
 import me.gabytm.minecraft.guihelper.util.Message
@@ -65,7 +65,7 @@ abstract class ConfigGenerator {
     /**
      * The message that is displayed for this generated on the [me.gabytm.minecraft.guihelper.command.ListCommand]
      * or when a GUI is closed ([me.gabytm.minecraft.guihelper.listener.InventoryCloseListener])
-     * @see [me.gabytm.minecraft.guihelper.generators.GeneratorsManager.getMessage]
+     * @see [me.gabytm.minecraft.guihelper.generator.GeneratorsManager.getMessage]
      */
     abstract fun getMessage(): String
 

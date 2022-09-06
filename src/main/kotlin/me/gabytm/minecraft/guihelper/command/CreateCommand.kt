@@ -21,8 +21,8 @@ package me.gabytm.minecraft.guihelper.command
 
 import me.gabytm.minecraft.guihelper.exception.GUIHelperException
 import me.gabytm.minecraft.guihelper.functions.isNotEmpty
-import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
-import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.generator.GeneratorsManager
+import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.inventory.InventoryManager
 import me.gabytm.minecraft.guihelper.util.Constants
 import me.gabytm.minecraft.guihelper.util.Message

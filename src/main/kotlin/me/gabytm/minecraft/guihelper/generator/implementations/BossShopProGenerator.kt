@@ -17,14 +17,14 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.minecraft.guihelper.generators.implementations
+package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
-import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
-import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
+import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
 import me.gabytm.minecraft.guihelper.util.Message
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment

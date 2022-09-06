@@ -20,7 +20,7 @@
 package me.gabytm.minecraft.guihelper.listener
 
 import me.gabytm.minecraft.guihelper.functions.isNotEmpty
-import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
+import me.gabytm.minecraft.guihelper.generator.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventory.InventoryManager
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.event.EventHandler

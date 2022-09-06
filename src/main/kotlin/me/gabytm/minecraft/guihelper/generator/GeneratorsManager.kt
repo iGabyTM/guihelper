@@ -17,12 +17,12 @@
  * THE SOFTWARE.
  */
 
-package me.gabytm.minecraft.guihelper.generators
+package me.gabytm.minecraft.guihelper.generator
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.functions.component
-import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
-import me.gabytm.minecraft.guihelper.generators.implementations.*
+import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
+import me.gabytm.minecraft.guihelper.generator.implementations.*
 import me.gabytm.minecraft.guihelper.util.Constants.ALIAS
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.JoinConfiguration

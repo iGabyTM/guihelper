@@ -21,7 +21,7 @@ package me.gabytm.minecraft.guihelper
 
 import me.gabytm.minecraft.guihelper.command.*
 import me.gabytm.minecraft.guihelper.functions.color
-import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
+import me.gabytm.minecraft.guihelper.generator.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventory.InventoryManager
 import me.gabytm.minecraft.guihelper.item.ItemsManager
 import me.gabytm.minecraft.guihelper.listener.InventoryCloseListener

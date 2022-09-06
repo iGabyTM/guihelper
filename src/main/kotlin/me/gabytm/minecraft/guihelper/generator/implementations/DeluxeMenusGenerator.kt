@@ -137,9 +137,6 @@ class DeluxeMenusGenerator(
             item.isLeatherArmor -> {
                 (meta as LeatherArmorMeta).color.ifNotDefault { section["rgb"] = it.asString() }
             }
-            ServerVersion.IS_LEGACY && item.isSpawnEgg -> {
-                section["data"] = item.spawnEggType.typeId
-            }
             item.isShield || item.isBanner -> {
                 handleBannersAndShields(section, item)
             }

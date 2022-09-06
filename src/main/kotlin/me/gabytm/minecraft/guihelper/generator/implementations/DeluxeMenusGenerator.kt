@@ -25,6 +25,7 @@ import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.item.custom.providers.itemsadder.ItemsAdderItem
 import me.gabytm.minecraft.guihelper.item.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.util.Message
@@ -48,7 +49,7 @@ import kotlin.system.measureTimeMillis
 class DeluxeMenusGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "DeluxeMenus",
-    override val pluginVersion: String = "1.13.5",
+    override val pluginVersion: String = "1.13.6",
     override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
 
@@ -89,14 +90,30 @@ class DeluxeMenusGenerator(
 
         val meta = item.meta ?: return
 
+		checkForCustomItem(section, input, item)
         section.set("display_name", meta::hasDisplayName) { item.displayName(rgbFormat) }
         section.set("lore", meta::hasLore) { item.lore(rgbFormat) }
-        section.set("nbt_int", item.customModelData, { it > 0}) { "CustomModelData:$it" }
-        section.set("unbreakable", item.isUnbreakable) { it }
+        section.set("model_data", item.customModelData) { it > 0 }
+		section.set("unbreakable", item.isUnbreakable) { it }
         setItemFlags(section, meta.itemFlags)
         section.setList("enchantments", item.enchants { enchant, level -> "${enchant.name};${level}" })
         setMetaSpecificValues(section, input, item, meta)
     }
+
+	private fun checkForCustomItem(section: ConfigurationSection, input: CommandLine, item: ItemStack) {
+		val manager = plugin.itemsManager
+
+		val itemsAdderItem = manager.getCustomItem(ItemsAdderItem::class, item)
+
+		if (itemsAdderItem != null) {
+			section["material"] = "itemsadder-${itemsAdderItem.namespace}"
+			return
+		}
+
+		if (item.isPlayerHead) {
+			handlePlayerHeads(section, item, input.getHeadIdProvider(default = settings[Setting.SETTINGS__HEADS]))
+		}
+	}
 
     private fun setItemFlags(section: ConfigurationSection, flags: Set<ItemFlag>) {
         if (settings[Setting.SETTINGS__SET_ITEM_FLAGS_AS_LIST]) {
@@ -129,12 +146,12 @@ class DeluxeMenusGenerator(
             item.isPotion -> {
                 handlePotions(section, meta as PotionMeta)
             }
-            item.isPlayerHead -> {
-                handlePlayerHeads(section, item, input.getHeadIdProvider(default = settings[Setting.SETTINGS__HEADS]))
-            }
             item.isFireworkStar -> {
                 handFireworkStars(section, meta as FireworkEffectMeta)
             }
+			item.isSpawnEgg -> {
+				section["entity_type"] = item.spawnEggType.name
+			}
         }
     }
 

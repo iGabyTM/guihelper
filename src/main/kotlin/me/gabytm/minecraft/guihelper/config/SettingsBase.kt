@@ -47,11 +47,9 @@ open class SettingsBase(name: String, settingsHolder: Class<out SettingsHolder>)
 			}
 
 			val defaults = dataFolder.resolve("defaults")
-			val settings = dataFolder.resolve("settings")
 
 			if (Files.exists(defaults)) {
-				Files.move(defaults, settings)
-				Files.delete(defaults)
+				Files.move(defaults, dataFolder.resolve("settings"))
 			}
 		}
 

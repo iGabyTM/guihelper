@@ -21,7 +21,7 @@ package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.DefaultValues
+import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
@@ -52,7 +52,7 @@ class DeluxeMenusGenerator(
     override val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 ) : ConfigGenerator() {
 
-    private val defaults = Defaults(pluginName)
+    private val settings = Settings(pluginName)
 
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
@@ -99,7 +99,7 @@ class DeluxeMenusGenerator(
     }
 
     private fun setItemFlags(section: ConfigurationSection, flags: Set<ItemFlag>) {
-        if (defaults[Value.SETTINGS__SET_ITEM_FLAGS_AS_LIST]) {
+        if (settings[Setting.SETTINGS__SET_ITEM_FLAGS_AS_LIST]) {
             section.setList("item_flags", flags.map { it.name })
             return
         }
@@ -130,7 +130,7 @@ class DeluxeMenusGenerator(
                 handlePotions(section, meta as PotionMeta)
             }
             item.isPlayerHead -> {
-                handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
+                handlePlayerHeads(section, item, input.getHeadIdProvider(default = settings[Setting.SETTINGS__HEADS]))
             }
             item.isFireworkStar -> {
                 handFireworkStars(section, meta as FireworkEffectMeta)
@@ -178,17 +178,17 @@ class DeluxeMenusGenerator(
         section["rgb"] = meta.effect!!.colors[0].asString()
     }
 
-    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+    private class Settings(name: String) : SettingsBase(name, Setting::class.java)
 
     @Description(
         " ",
-        "Default values that will be used in the config creation process",
+        "Settings that will be used in the config creation process",
         " ",
         "▪ DeluxeMenus 1.13.5 by clip (https://spigotmc.org/resources/11734/)",
         "▪ Wiki: https://wiki.helpch.at/clips-plugins/deluxemenus",
         " "
     )
-    private object Value : SettingsHolder {
+    private object Setting : SettingsHolder {
 
         @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
         @Path("settings.heads")

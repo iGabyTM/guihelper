@@ -25,16 +25,36 @@ import me.mattstudios.config.SettingsManager
 import me.mattstudios.config.properties.Property
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
-open class DefaultValues(name: String, settingsHolder: Class<out SettingsHolder>) {
+open class SettingsBase(name: String, settingsHolder: Class<out SettingsHolder>) {
 
     private val config = SettingsManager
-        .from(File(JavaPlugin.getProvidingPlugin(GUIHelper::class.java).dataFolder, "defaults/$name.yml"))
+        .from(File(JavaPlugin.getProvidingPlugin(GUIHelper::class.java).dataFolder, "settings/$name.yml"))
         .configurationData(settingsHolder)
         .create()
 
     fun reload() = config.reload()
 
     operator fun <T> get(property: Property<T>) = config[property]
+
+	companion object {
+
+		fun move(dataFolder: Path) {
+			if (!Files.exists(dataFolder)) {
+				Files.createDirectory(dataFolder)
+			}
+
+			val defaults = dataFolder.resolve("defaults")
+			val settings = dataFolder.resolve("settings")
+
+			if (Files.exists(defaults)) {
+				Files.move(defaults, settings)
+				Files.delete(defaults)
+			}
+		}
+
+	}
 
 }

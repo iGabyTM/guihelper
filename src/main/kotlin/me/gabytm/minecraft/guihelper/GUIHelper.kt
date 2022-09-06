@@ -20,6 +20,7 @@
 package me.gabytm.minecraft.guihelper
 
 import me.gabytm.minecraft.guihelper.command.*
+import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generator.GeneratorsManager
 import me.gabytm.minecraft.guihelper.inventory.InventoryManager
@@ -50,6 +51,7 @@ class GUIHelper : JavaPlugin() {
         }
 
         sendLogo()
+		SettingsBase.move(dataFolder.toPath())
 
         this.audiences = BukkitAudiences.create(this)
         this.itemsManager = ItemsManager()

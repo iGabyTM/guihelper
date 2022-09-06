@@ -21,7 +21,7 @@ package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.DefaultValues
+import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
@@ -51,7 +51,7 @@ class ShopGuiPlusGenerator(
     override val rgbFormat: (String) -> String = { "#$it" }
 ) : ConfigGenerator() {
 
-    private val defaults = Defaults(pluginName)
+    private val settings = Settings(pluginName)
     // TODO: add nbt support
     /*
     private val ignoredNbtTags = setOf(
@@ -97,10 +97,10 @@ class ShopGuiPlusGenerator(
 
         section["slot"] = slot
         section["page"] = page
-        section.set("unstack", defaults[Value.UNSTACK]) { it }
-        section.set("stacked", defaults[Value.STACKED]) { !it }
-        section["buyPrice"] = defaults[Value.BUY_PRICE]
-        section["sellPrice"] = defaults[Value.SELL_PRICE]
+        section.set("unstack", settings[Setting.UNSTACK]) { it }
+        section.set("stacked", settings[Setting.STACKED]) { !it }
+        section["buyPrice"] = settings[Setting.BUY_PRICE]
+        section["sellPrice"] = settings[Setting.SELL_PRICE]
 
         val meta = item.meta ?: return
 
@@ -159,7 +159,7 @@ class ShopGuiPlusGenerator(
                 (meta as LeatherArmorMeta).color.ifNotDefault { section["color"] = it.nameOrString() }
             }
             item.isPlayerHead -> {
-                handlePlayerHeads(section, item, input.getHeadIdProvider(default = defaults[Value.SETTINGS__HEADS]))
+                handlePlayerHeads(section, item, input.getHeadIdProvider(default = settings[Setting.SETTINGS__HEADS]))
             }
             !ServerVersion.IS_ANCIENT && item.isPotion -> {
                 handlePotions(section.createSection("potion"), meta as PotionMeta)
@@ -330,17 +330,17 @@ class ShopGuiPlusGenerator(
         }
     }
      */
-    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+    private class Settings(name: String) : SettingsBase(name, Setting::class.java)
 
     @Description(
         " ",
-        "Default values that will be used in the config creation process",
+        "Settings that will be used in the config creation process",
         " ",
         "▪ ShopGUIPlus 1.76.2 by brc (https://spigotmc.org/resources/6515/)",
         "▪ Wiki: https://docs.brcdev.net/#/shopgui/faq",
         " "
     )
-    private object Value : SettingsHolder {
+    private object Setting : SettingsHolder {
 
         @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
         @Path("settings.heads")

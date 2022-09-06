@@ -21,7 +21,7 @@ package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.DefaultValues
+import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
@@ -42,7 +42,7 @@ class CratesPlusGenerator(
     override val rgbFormat: (String) -> String = NO_RGB_SUPPORT
 ) : ConfigGenerator() {
 
-    private val defaults = Defaults(pluginName)
+    private val settings = Settings(pluginName)
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fCrate prizes"
 
@@ -61,7 +61,7 @@ class CratesPlusGenerator(
     }
 
     override fun onReload() {
-        defaults.reload()
+        settings.reload()
     }
 
     @Suppress("DEPRECATION")
@@ -69,7 +69,7 @@ class CratesPlusGenerator(
         section["Type"] = "ITEM"
         section["Item Type"] = item.type.name
         section.set("Item Data", item.durability) { it > 0 }
-        section["Percentage"] = defaults[Value.PERCENTAGE]
+        section["Percentage"] = settings[Setting.PERCENTAGE]
         section["Amount"] = item.amount
 
         val meta = item.meta ?: return
@@ -84,17 +84,17 @@ class CratesPlusGenerator(
         section.setList("Enchantments", item.enchants { enchantment, level -> "${enchantment.name}-$level" })
     }
 
-    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+    private class Settings(name: String) : SettingsBase(name, Setting::class.java)
 
     @Description(
         " ",
-        "Default values that will be used in the config creation process",
+        "Settings that will be used in the config creation process",
         " ",
         "▪ CratesPlus 4.5.3 by ConnorLinfoot (https://spigotmc.org/resources/5018/)",
         "▪ Wiki: https://github.com/ConnorLinfoot/CratesPlus/wiki",
         " "
     )
-    private object Value : SettingsHolder {
+    private object Setting : SettingsHolder {
 
         @Path("percentage")
         val PERCENTAGE = create(10.0)

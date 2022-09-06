@@ -21,7 +21,7 @@ package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.DefaultValues
+import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
@@ -45,7 +45,7 @@ class BossShopProGenerator(
     override val pluginVersion: String = "2.0.9",
 ) : ConfigGenerator() {
 
-    private val defaults = Defaults(pluginName)
+    private val settings = Settings(pluginName)
 
     init {
         options.addOption(createPageOption("The page where items will be set"))
@@ -74,18 +74,18 @@ class BossShopProGenerator(
 
         section["MenuItem"] = itemProperties
 
-        if (defaults[Value.SETTINGS__GIVE_ITEM]) {
+        if (settings[Setting.SETTINGS__GIVE_ITEM]) {
             section["RewardType"] = "ITEM"
             // I need to use #toList() to avoid YAML anchors since the same list is used on two places
             section["Reward"] = listOf(itemProperties.toList())
         }
 
-        section["PriceType"] = defaults[Value.PRICE_TYPE]
-        section["Price"] = defaults[Value.PRICE]
-        section.set("Message", defaults[Value.MESSAGE]) { it.isNotEmpty() }
-        section.set("ExtraPermission", defaults[Value.EXTRA_PERMISSION]) { it.isNotEmpty() }
+        section["PriceType"] = settings[Setting.PRICE_TYPE]
+        section["Price"] = settings[Setting.PRICE]
+        section.set("Message", settings[Setting.MESSAGE]) { it.isNotEmpty() }
+        section.set("ExtraPermission", settings[Setting.EXTRA_PERMISSION]) { it.isNotEmpty() }
         section["InventoryLocation"] = slot
-        section.setList("Condition", defaults[Value.CONDITION])
+        section.setList("Condition", settings[Setting.CONDITION])
     }
 
     @Suppress("SpellCheckingInspection")
@@ -151,17 +151,17 @@ class BossShopProGenerator(
         return properties
     }
 
-    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+    private class Settings(name: String) : SettingsBase(name, Setting::class.java)
 
     @Description(
         " ",
-        "Default values that will be used in the config creation process",
+        "Settings that will be used in the config creation process",
         " ",
         "▪ BossShopPro 2.0.9 by Blackixx (https://spigotmc.org/resources/222/)",
         "▪ Wiki: https://www.spigotmc.org/wiki/bossshoppro-configuration/",
         " "
     )
-    private object Value : SettingsHolder {
+    private object Setting : SettingsHolder {
 
         @Comment("Whether the MenuItem should be set as Reward as well")
         @Path("settings.giveItem")

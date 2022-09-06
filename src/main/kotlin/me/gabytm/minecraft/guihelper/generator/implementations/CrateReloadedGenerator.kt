@@ -21,7 +21,7 @@ package me.gabytm.minecraft.guihelper.generator.implementations
 
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
-import me.gabytm.minecraft.guihelper.config.DefaultValues
+import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.addOption
 import me.gabytm.minecraft.guihelper.functions.arg
 import me.gabytm.minecraft.guihelper.functions.getOrDefault
@@ -46,7 +46,7 @@ class CrateReloadedGenerator(
     override val rgbFormat: (String) -> String = { "{#$it}" }
 ) : ConfigGenerator() {
 
-    private val defaults = Defaults(pluginName)
+    private val settings = Settings(pluginName)
 
     init {
         options.addOption('c') {
@@ -75,44 +75,44 @@ class CrateReloadedGenerator(
 
     private fun createItem(input: CommandLine, item: ItemStack): String {
         val properties = mutableListOf<String>()
-        val chance = input.getOrDefault('c', defaults[Value.TAGS__CHANCE]) { it.toIntOrNull() }
+        val chance = input.getOrDefault('c', settings[Setting.TAGS__CHANCE]) { it.toIntOrNull() }
 
-        if (defaults[Value.TAGS__UNIQUE]) {
+        if (settings[Setting.TAGS__UNIQUE]) {
             properties.add("unique:()")
         }
 
-        if (defaults[Value.TAGS__ALWAYS]) {
+        if (settings[Setting.TAGS__ALWAYS]) {
             properties.add("always:()")
         }
 
         properties.add("chance:($chance)")
-        properties.add(defaults[Value.TAGS__COMMANDS]) { "cmd:($it)" }
-        properties.add(defaults[Value.TAGS__PERMISSIONS]) { "permission:($it)" }
+        properties.add(settings[Setting.TAGS__COMMANDS]) { "cmd:($it)" }
+        properties.add(settings[Setting.TAGS__PERMISSIONS]) { "permission:($it)" }
 
         with(plugin.itemsManager.serialize(item, Serializer.CRATE_RELOADED)) {
             properties.add("display:($this)")
 
-            if (defaults[Value.SETTINGS__GIVE_DISPLAY_ITEM]) {
+            if (settings[Setting.SETTINGS__GIVE_DISPLAY_ITEM]) {
                 properties.add("item:($this)")
             }
         }
 
-        properties.add(defaults[Value.TAGS__ITEMS]) { "item:($it)" }
+        properties.add(settings[Setting.TAGS__ITEMS]) { "item:($it)" }
         return properties.joinToString(", ")
     }
 
-    private class Defaults(name: String) : DefaultValues(name, Value::class.java)
+    private class Settings(name: String) : SettingsBase(name, Setting::class.java)
 
     @Description(
         " ",
-        "Default values that will be used in the config creation process",
+        "Settings that will be used in the config creation process",
         " ",
         "▪ CrateReloaded 2.0.23 by dinosaur (https://spigotmc.org/resources/861/)",
         "▪ CrateReloaded PRO 2.0.35 by dinosaur (https://spigotmc.org/resources/3663/)",
         "▪ Wiki: https://crates.hazebyte.com/#/",
         " "
     )
-    private object Value : SettingsHolder {
+    private object Setting : SettingsHolder {
 
         @Comment("Whether or not the display:() will be also used as item:()")
         @Path("settings.giveDisplayItem")

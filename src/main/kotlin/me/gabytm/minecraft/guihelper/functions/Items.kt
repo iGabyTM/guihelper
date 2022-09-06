@@ -39,8 +39,7 @@ import org.bukkit.potion.Potion
 import java.util.*
 import kotlin.jvm.Throws
 
-private val leatherArmor =
-    EnumSet.of(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS)
+private val leatherArmor = EnumSet.copyOf(Material.values().filter { it.name.startsWith("LEATHER_") }.toSet())
 
 private val potions = if (ServerVersion.IS_ANCIENT) {
     EnumSet.of(Material.POTION)
@@ -88,7 +87,7 @@ val ItemStack.isFireworkStar: Boolean
 
 /**
  * Whether the item is a piece of leather armor or not
- * @see Material.LEATHER_HELMET, [Material.LEATHER_CHESTPLATE], [Material.LEATHER_LEGGINGS], [Material.LEATHER_BOOTS]
+ * @see Material.LEATHER_HELMET, [Material.LEATHER_CHESTPLATE], [Material.LEATHER_LEGGINGS], [Material.LEATHER_BOOTS], [Material.LEATHER_HORSE_ARMOR]
  * @since 2.0.0
  */
 val ItemStack.isLeatherArmor: Boolean

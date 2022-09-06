@@ -201,7 +201,7 @@ class DeluxeMenusGenerator(
         " ",
         "Settings that will be used in the config creation process",
         " ",
-        "▪ DeluxeMenus 1.13.5 by clip (https://spigotmc.org/resources/11734/)",
+        "▪ DeluxeMenus 1.13.6 by clip (https://spigotmc.org/resources/11734/)",
         "▪ Wiki: https://wiki.helpch.at/clips-plugins/deluxemenus",
         " "
     )

@@ -19,4 +19,4 @@
 
 package me.gabytm.minecraft.guihelper.item.custom.providers.itemsadder
 
-data class ItemsAdderItem(val id: String)
+data class ItemsAdderItem(val id: String, val namespace: String)

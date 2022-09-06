@@ -27,7 +27,7 @@ class ItemsAdderCustomItemProvider : CustomItemProvider<ItemsAdderItem>() {
 
     override fun get(item: ItemStack): ItemsAdderItem? {
         val customStack = CustomStack.byItemStack(item) ?: return null
-        return ItemsAdderItem(customStack.id)
+        return ItemsAdderItem(customStack.id, customStack.namespace)
     }
 
 }

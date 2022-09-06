@@ -22,7 +22,7 @@
 package me.gabytm.minecraft.guihelper.functions
 
 import de.tr7zw.changeme.nbtapi.NBTItem
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.gabytm.minecraft.guihelper.util.ServerVersion
 import org.bukkit.Bukkit
 import org.bukkit.DyeColor
 import org.bukkit.Material

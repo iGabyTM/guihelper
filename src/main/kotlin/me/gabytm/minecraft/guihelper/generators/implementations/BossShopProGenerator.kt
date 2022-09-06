@@ -25,7 +25,7 @@ import me.gabytm.minecraft.guihelper.config.DefaultValues
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.utils.Message
+import me.gabytm.minecraft.guihelper.util.Message
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description

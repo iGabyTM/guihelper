@@ -19,7 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.functions
 
-import me.gabytm.minecraft.guihelper.items.heads.providers.HeadIdProvider.Provider
+import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider.Provider
 import org.apache.commons.cli.CommandLine
 
 fun <V> CommandLine.getOrDefault(opt: String, default: V, transformer: (String) -> V?): V {

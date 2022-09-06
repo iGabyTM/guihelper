@@ -24,8 +24,8 @@ import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generators.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generators.base.GeneratorContext
-import me.gabytm.minecraft.guihelper.items.serialization.serializers.Serializer
-import me.gabytm.minecraft.guihelper.utils.Message
+import me.gabytm.minecraft.guihelper.item.serialization.serializers.Serializer
+import me.gabytm.minecraft.guihelper.util.Message
 import org.apache.commons.cli.CommandLine
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack

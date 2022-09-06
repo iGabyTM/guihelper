@@ -17,38 +17,27 @@
  * THE SOFTWARE.
  */
 
-@file:JvmName("Strings")
-
-package me.gabytm.minecraft.guihelper.functions
+package me.gabytm.minecraft.guihelper.item.heads.providers
 
 import me.gabytm.minecraft.guihelper.util.ServerVersion
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.bukkit.ChatColor
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 
-private val vanillaRgbRegex = Regex("&x((?:&[a-fA-F\\d]){6})")
+class PlayerNameImplementation : HeadIdProvider() {
 
-val NO_RGB_SUPPORT: (String) -> String = { "" }
-val SPIGOT_RGB_FORMAT: (String) -> String = { "&#$it" }
+    override fun getId(item: ItemStack): String {
+        checkItem(item)
+        val meta = item.itemMeta as? SkullMeta ?: return ""
 
-fun String.color(): String = ChatColor.translateAlternateColorCodes('&', this)
-
-fun String.fixColors(format: ((String) -> String) = SPIGOT_RGB_FORMAT): String {
-    val replaced = replace(ChatColor.COLOR_CHAR, '&')
-
-    return if (ServerVersion.HAS_HEX && format != NO_RGB_SUPPORT) {
-        vanillaRgbRegex.findAll(replaced).fold(replaced) { str, matcher ->
-            str.replace(matcher.groupValues[0], format(matcher.groupValues[1].replace("&", "")))
+        if (!meta.hasOwner()) {
+            return DEFAULT
         }
-    } else {
-        replaced
-    }
-}
 
-fun String.component(): Component = LegacyComponentSerializer.legacyAmpersand().deserialize(color())
-
-fun String.ifNotEmpty(function: (String) -> Any) {
-    if (this.isNotEmpty()) {
-        function(this)
+        return if (ServerVersion.SKULL_META_HAS_OWNING_PLAYER) {
+            meta.owningPlayer?.name ?: DEFAULT
+        } else {
+            meta.owner ?: DEFAULT
+        }
     }
+
 }

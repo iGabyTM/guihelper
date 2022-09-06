@@ -19,14 +19,14 @@
 
 package me.gabytm.minecraft.guihelper
 
-import me.gabytm.minecraft.guihelper.commands.*
+import me.gabytm.minecraft.guihelper.command.*
 import me.gabytm.minecraft.guihelper.functions.color
 import me.gabytm.minecraft.guihelper.generators.GeneratorsManager
-import me.gabytm.minecraft.guihelper.inventories.InventoryManager
-import me.gabytm.minecraft.guihelper.items.ItemsManager
-import me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener
-import me.gabytm.minecraft.guihelper.utils.BStats
-import me.gabytm.minecraft.guihelper.utils.ServerVersion
+import me.gabytm.minecraft.guihelper.inventory.InventoryManager
+import me.gabytm.minecraft.guihelper.item.ItemsManager
+import me.gabytm.minecraft.guihelper.listener.InventoryCloseListener
+import me.gabytm.minecraft.guihelper.util.BStats
+import me.gabytm.minecraft.guihelper.util.ServerVersion
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority

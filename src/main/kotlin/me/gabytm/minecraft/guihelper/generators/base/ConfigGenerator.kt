@@ -20,7 +20,7 @@
 package me.gabytm.minecraft.guihelper.generators.base
 
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
-import me.gabytm.minecraft.guihelper.utils.Message
+import me.gabytm.minecraft.guihelper.util.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.newline
 import net.kyori.adventure.text.Component.text
@@ -45,7 +45,7 @@ abstract class ConfigGenerator {
     open val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
 
     /**
-     * Main method called when the [me.gabytm.minecraft.guihelper.commands.CreateCommand] is used
+     * Main method called when the [me.gabytm.minecraft.guihelper.command.CreateCommand] is used
      * @param context access to the [Player] who used the command or the [org.bukkit.inventory.Inventory]
      * @param input user's input
      * @return if the action was successful or not
@@ -63,8 +63,8 @@ abstract class ConfigGenerator {
      */
 
     /**
-     * The message that is displayed for this generated on the [me.gabytm.minecraft.guihelper.commands.ListCommand]
-     * or when a GUI is closed ([me.gabytm.minecraft.guihelper.listeners.InventoryCloseListener])
+     * The message that is displayed for this generated on the [me.gabytm.minecraft.guihelper.command.ListCommand]
+     * or when a GUI is closed ([me.gabytm.minecraft.guihelper.listener.InventoryCloseListener])
      * @see [me.gabytm.minecraft.guihelper.generators.GeneratorsManager.getMessage]
      */
     abstract fun getMessage(): String

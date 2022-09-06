@@ -19,11 +19,18 @@
 
 package me.gabytm.minecraft.guihelper.command
 
+import dev.triumphteam.gui.builder.item.ItemBuilder
+import dev.triumphteam.gui.components.util.GuiFiller
+import dev.triumphteam.gui.guis.Gui
+import dev.triumphteam.gui.guis.GuiItem
 import me.gabytm.minecraft.guihelper.item.ItemsManager
+import me.gabytm.minecraft.guihelper.item.edit.editor.general.NameEditor
 import me.gabytm.minecraft.guihelper.util.Constants
 import me.mattstudios.mf.annotations.*
 import me.mattstudios.mf.base.CommandBase
+import net.kyori.adventure.text.Component
 import org.apache.commons.cli.DefaultParser
+import org.bukkit.Material
 import org.bukkit.entity.Player
 
 @Command(Constants.COMMAND)
@@ -35,7 +42,15 @@ class EditCommand(private val itemsManager: ItemsManager) : CommandBase() {
     @Permission(Constants.PERMISSION)
     @SubCommand("edit")
     fun onCommand(sender: Player) {
+		val item = sender.inventory.itemInMainHand
+		val gui = Gui.gui()
+			.rows(3)
+			.title(Component.text("GH Editor"))
+			.disableAllInteractions()
+			.create()
 
+		gui.addItem(NameEditor().getIcon(item, gui))
+		gui.open(sender)
     }
 
     @CompleteFor("edit")

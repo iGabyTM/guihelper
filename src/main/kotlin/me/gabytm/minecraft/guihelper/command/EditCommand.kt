@@ -19,14 +19,11 @@
 
 package me.gabytm.minecraft.guihelper.command
 
-import me.gabytm.minecraft.guihelper.functions.hand
 import me.gabytm.minecraft.guihelper.item.ItemsManager
-import me.gabytm.minecraft.guihelper.item.edit.editors.ItemEditor
 import me.gabytm.minecraft.guihelper.util.Constants
 import me.mattstudios.mf.annotations.*
 import me.mattstudios.mf.base.CommandBase
 import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.ParseException
 import org.bukkit.entity.Player
 
 @Command(Constants.COMMAND)
@@ -37,32 +34,12 @@ class EditCommand(private val itemsManager: ItemsManager) : CommandBase() {
 
     @Permission(Constants.PERMISSION)
     @SubCommand("edit")
-    fun onCommand(sender: Player, args: Array<String>) {
-        if (args.size == 1) {
-            sender.sendMessage("wrong usage ...")
-            return
-        }
+    fun onCommand(sender: Player) {
 
-        val editor = itemsManager.getItemEditor(ItemEditor.Editor.getEditor(args[1]) ?: return) ?: return
-
-        if (args.size == 2) {
-            sender.sendMessage(editor.options.options.joinToString(", ") { it.opt })
-            return
-        }
-
-        try {
-            editor.edit(sender.hand, sender, commandParser.parse(editor.options, args.copyOfRange(2, args.size)))
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
     }
 
     @CompleteFor("edit")
     fun tabCompletion(args: List<String>, sender: Player): List<String> {
-        if (args.size == 1) { // /gh edit <tab>
-            return ItemEditor.Editor.VALUES
-        }
-
         return emptyList()
     }
 

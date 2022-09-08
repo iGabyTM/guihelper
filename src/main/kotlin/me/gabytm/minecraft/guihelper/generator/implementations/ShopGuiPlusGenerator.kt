@@ -87,6 +87,13 @@ class ShopGuiPlusGenerator(
 
     @Suppress("DEPRECATION")
     private fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int, page: Int) {
+		section["slot"] = slot
+		section["page"] = page
+
+		if (isSpecialItem(section, item)) {
+			return
+		}
+
         val itemSection = section.createSection("item")
 
         section["type"] = "item"
@@ -95,8 +102,6 @@ class ShopGuiPlusGenerator(
         itemSection.set("damage", item.durability) { it > 0 }
         itemSection["quantity"] = item.amount
 
-        section["slot"] = slot
-        section["page"] = page
         section.set("unstack", settings[Setting.UNSTACK]) { it }
         section.set("stacked", settings[Setting.STACKED]) { !it }
         section["buyPrice"] = settings[Setting.BUY_PRICE]
@@ -119,6 +124,24 @@ class ShopGuiPlusGenerator(
             handleNbt(itemSection, item)
         }*/
     }
+
+	private fun isSpecialItem(section: ConfigurationSection, item: ItemStack): Boolean {
+		val meta = item.meta ?: return false
+
+		if (!meta.hasDisplayName()) {
+			return false
+		}
+
+		val name = meta.displayName
+
+		if (name.startsWith("special: ")) {
+			return false
+		}
+
+		section["type"] = "special"
+		section["special"] = name.replace("special: ", "")
+		return true
+	}
 
     private fun checkForCustomItem(section: ConfigurationSection, item: ItemStack) {
         val manager = plugin.itemsManager

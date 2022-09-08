@@ -93,7 +93,7 @@ class ShopGuiPlusGenerator(
 
         itemSection["material"] = item.type.name
         itemSection.set("damage", item.durability) { it > 0 }
-        itemSection["amount"] = item.amount
+        itemSection["quantity"] = item.amount
 
         section["slot"] = slot
         section["page"] = page

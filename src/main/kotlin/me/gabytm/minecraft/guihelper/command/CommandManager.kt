@@ -37,7 +37,8 @@ class CommandManager(private val plugin: GUIHelper) {
                 EditCommand(itemsManager),
                 EmptyCommand(inventoryManager),
                 OptionsCommand(generatorsManager),
-                ReloadCommand(generatorsManager)
+                ReloadCommand(generatorsManager),
+				TestCommand()
             )
         }
     }

@@ -94,9 +94,8 @@ class ShopGuiPlusGenerator(
 			return
 		}
 
+		section["type"] = "item"
         val itemSection = section.createSection("item")
-
-        section["type"] = "item"
 
         itemSection["material"] = item.type.name
         itemSection.set("damage", item.durability) { it > 0 }

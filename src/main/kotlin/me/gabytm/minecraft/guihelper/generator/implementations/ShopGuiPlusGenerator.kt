@@ -134,7 +134,7 @@ class ShopGuiPlusGenerator(
 
 		val name = meta.displayName
 
-		if (name.startsWith("special: ")) {
+		if (!name.startsWith("special: ")) {
 			return false
 		}
 

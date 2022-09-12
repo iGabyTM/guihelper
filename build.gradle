@@ -41,6 +41,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
+	testCompileOnly 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.21'
 

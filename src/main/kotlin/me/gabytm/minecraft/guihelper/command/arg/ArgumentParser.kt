@@ -25,7 +25,7 @@ class ArgumentParser {
 						throw IllegalArgumentException("Expected value for argument ${arg.name} (${arg::class.simpleName})")
 					}
 
-					val value = arg.parseValue(split[1]) ?: arg.defaultValue ?: throw IllegalArgumentException("Value '${split[1]}' of argument '${arg.name}' is not a valid '${arg.getType().qualifiedName}'")
+					val value = arg.parseValue(split[1]) ?: arg.defaultValue ?: throw IllegalArgumentException("Value '${split[1]}' of argument '${arg.name}' is not a valid '${arg.valueClass.qualifiedName}'")
 					map[arg] = value
 					return@any true
 				}

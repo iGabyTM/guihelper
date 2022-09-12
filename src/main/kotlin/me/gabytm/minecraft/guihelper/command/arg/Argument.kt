@@ -5,12 +5,11 @@ import kotlin.reflect.KClass
 abstract class Argument<T : Any>(
 	val name: String,
 	val requireValue: Boolean,
+	val valueClass: KClass<T>,
 	val defaultValue: T?,
 	val isRequired: Boolean,
 	val suggestions: List<String>
 ) {
-
-	abstract fun getType(): KClass<T>
 
 	abstract fun parseValue(string: String): T?
 

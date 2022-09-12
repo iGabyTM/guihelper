@@ -1,7 +1,6 @@
 package me.gabytm.minecraft.guihelper.command.arg.impl
 
 import me.gabytm.minecraft.guihelper.command.arg.Argument
-import kotlin.reflect.KClass
 
 class IntegerArgument(
 	name: String,
@@ -12,12 +11,11 @@ class IntegerArgument(
 ) : Argument<Int>(
 	name,
 	requireValue,
+	Int::class,
 	defaultValue,
 	isRequired,
 	suggestions,
 ) {
-
-	override fun getType(): KClass<Int> = Int::class
 
 	override fun parseValue(string: String): Int? = string.toIntOrNull()
 

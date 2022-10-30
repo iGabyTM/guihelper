@@ -19,6 +19,8 @@
 
 package me.gabytm.minecraft.guihelper.generator.implementations
 
+import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.changeme.nbtapi.NBTType
 import me.gabytm.minecraft.guihelper.GUIHelper
 import me.gabytm.minecraft.guihelper.config.Config
 import me.gabytm.minecraft.guihelper.config.SettingsBase
@@ -98,6 +100,7 @@ class DeluxeMenusGenerator(
         setItemFlags(section, meta.itemFlags)
         section.setList("enchantments", item.enchants { enchant, level -> "${enchant.name};${level}" })
         setMetaSpecificValues(section, input, item, meta)
+		setNbt(section, item)
     }
 
 	private fun checkForCustomItem(section: ConfigurationSection, input: CommandLine, item: ItemStack) {
@@ -131,6 +134,28 @@ class DeluxeMenusGenerator(
             }?.let { section[it] = true }
         }
     }
+
+	private fun setNbt(section: ConfigurationSection, item: ItemStack) {
+		val nbt = NBTItem(item)
+
+		if (!nbt.hasNBTData()) {
+			return
+		}
+
+		val strings = mutableListOf<String>()
+		val ints = mutableListOf<String>()
+
+		for (key in nbt.keys) {
+			@Suppress("NON_EXHAUSTIVE_WHEN_STATEMENT")
+			when (nbt.getType(key)) {
+				NBTType.NBTTagString -> strings.add("$key:${nbt.getString(key)}")
+				NBTType.NBTTagInt -> ints.add("$key:${nbt.getInteger(key)}")
+			}
+		}
+
+		section.setList("nbt_strings", strings)
+		section.setList("nbt_ints", ints)
+	}
 
     private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
         when {

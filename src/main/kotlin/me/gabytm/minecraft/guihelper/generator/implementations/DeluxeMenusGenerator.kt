@@ -56,6 +56,9 @@ class DeluxeMenusGenerator(
 ) : ConfigGenerator() {
 
     private val settings = Settings(pluginName)
+	private val ignoredNbtKeys = listOf(
+		"CustomModelData"
+	)
 
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
@@ -145,7 +148,7 @@ class DeluxeMenusGenerator(
 		val strings = mutableListOf<String>()
 		val ints = mutableListOf<String>()
 
-		for (key in nbt.keys) {
+		for (key in nbt.keys.filter { !ignoredNbtKeys.contains(it) }) {
 			@Suppress("NON_EXHAUSTIVE_WHEN_STATEMENT")
 			when (nbt.getType(key)) {
 				NBTType.NBTTagString -> strings.add("$key:${nbt.getString(key)}")

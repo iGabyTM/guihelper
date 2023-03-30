@@ -146,9 +146,7 @@ class MythicMobsGenerator(
     }
 
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {
-        if (meta.hasColor()) {
-            meta.color?.let { section.set("Options.Color", it.asString()) }
-        }
+		meta.potionColor?.let { section["Options.Color"] = it.asString() }
 
         val effects = mutableListOf<String>()
 

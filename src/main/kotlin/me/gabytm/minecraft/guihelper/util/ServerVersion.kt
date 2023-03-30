@@ -68,6 +68,14 @@ object ServerVersion {
      */
     val HAS_SPAWN_EGG_META: Boolean = CURRENT >= 1_11_0
 
+	/**
+	 * Whether in the [CURRENT] version, [org.bukkit.inventory.meta.PotionMeta] has `color` methods (>= **1.11**)
+	 * @see org.bukkit.inventory.meta.PotionMeta.hasColor
+	 * @see org.bukkit.inventory.meta.PotionMeta.getColor
+	 * @see org.bukkit.inventory.meta.PotionMeta.setColor
+	 */
+	val POTION_META_HAS_COLOR: Boolean = CURRENT >= 1_11_0
+
     /**
      * Whether in the [CURRENT] version, [org.bukkit.inventory.meta.SkullMeta] has `owning player` (>= **1.12**)
      * @see org.bukkit.inventory.meta.SkullMeta.getOwningPlayer

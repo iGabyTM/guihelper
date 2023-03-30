@@ -254,9 +254,7 @@ class ShopGuiPlusGenerator(
             section["level"] = if (isUpgraded) 2 else 1
         }
 
-        if (meta.hasColor()) {
-            section["color"] = meta.color?.asString()
-        }
+		meta.potionColor?.let { section["color"] = it.asString() }
     }
 
     // See https://docs.brcdev.net/#/item-meta?id=spawn-eggs

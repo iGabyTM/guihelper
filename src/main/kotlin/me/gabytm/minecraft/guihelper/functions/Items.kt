@@ -24,6 +24,7 @@ package me.gabytm.minecraft.guihelper.functions
 import de.tr7zw.changeme.nbtapi.NBTItem
 import me.gabytm.minecraft.guihelper.util.ServerVersion
 import org.bukkit.Bukkit
+import org.bukkit.Color
 import org.bukkit.DyeColor
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -181,6 +182,19 @@ val ItemStack.skullTexture: String
         val owner = NBTItem(this).getCompound("SkullOwner") ?: return ""
         return owner.getCompound("Properties").getCompoundList("textures")[0].getString("Value")
     }
+
+/**
+ * Safe access to the Potion color that was introduced in 1.11
+ * @since 2.0.0
+ */
+val PotionMeta.potionColor: Color?
+	get() {
+		return if (ServerVersion.POTION_META_HAS_COLOR && this.hasColor()) {
+			this.color
+		} else {
+			null
+		}
+	}
 
 /**
  * Item's custom model data, if it has any and the feature is supposed by the server version

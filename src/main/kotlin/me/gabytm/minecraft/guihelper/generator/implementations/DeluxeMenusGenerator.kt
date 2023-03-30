@@ -196,7 +196,7 @@ class DeluxeMenusGenerator(
         }
 
         section["potion_effects"] = effects
-        section["rgb"] = (meta.color ?: Color.GREEN).asString()
+		meta.potionColor?.let { section["rgb"] = it.asString() }
     }
 
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {

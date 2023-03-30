@@ -19,7 +19,7 @@
 
 package me.gabytm.minecraft.guihelper.item.custom.providers.oraxen
 
-import io.th0rgal.oraxen.items.OraxenItems
+import io.th0rgal.oraxen.api.OraxenItems
 import me.gabytm.minecraft.guihelper.item.custom.providers.CustomItemProvider
 import org.bukkit.inventory.ItemStack
 

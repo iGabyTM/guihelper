@@ -59,7 +59,9 @@ enum class Message(var value: String) {
     /**
      * %s - user input for generator name
      */
-    UNKNOWN_GENERATOR("&4&lGH &8| &cUnknown generator &8'&c&n%s&8'&c.")
+    UNKNOWN_GENERATOR("&4&lGH &8| &cUnknown generator &8'&c&n%s&8'&c."),
+
+	RELOAD("&2&lGH &8| &fThe plugin was reloaded!")
     ;
 
     init {

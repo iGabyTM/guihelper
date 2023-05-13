@@ -21,6 +21,7 @@ package me.gabytm.minecraft.guihelper.command
 
 import me.gabytm.minecraft.guihelper.generator.GeneratorsManager
 import me.gabytm.minecraft.guihelper.util.Constants
+import me.gabytm.minecraft.guihelper.util.Message
 import me.mattstudios.mf.annotations.Alias
 import me.mattstudios.mf.annotations.Command
 import me.mattstudios.mf.annotations.Permission
@@ -34,6 +35,9 @@ class ReloadCommand(private val manager: GeneratorsManager) : CommandBase() {
 
     @Permission(Constants.PERMISSION)
     @SubCommand("reload")
-    fun onCommand(sender: CommandSender) = manager.reload()
+    fun onCommand(sender: CommandSender) {
+		manager.reload()
+		Message.RELOAD.send(sender)
+	}
 
 }

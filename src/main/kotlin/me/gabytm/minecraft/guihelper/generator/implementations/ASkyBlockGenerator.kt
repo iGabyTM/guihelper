@@ -46,6 +46,10 @@ class ASkyBlockGenerator(
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fIsland mini shop items"
 
+	override fun onReload() {
+		settings.reload()
+	}
+
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val config = Config(pluginName, plugin, true)
 

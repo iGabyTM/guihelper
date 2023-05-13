@@ -71,6 +71,10 @@ class DeluxeMenusGenerator(
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fExternal / local (config.yml) menus"
 
+	override fun onReload() {
+		settings.reload()
+	}
+
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val external = input.hasOption("external")
         val config = Config(if (external) "$pluginName/gui_menus" else pluginName, plugin, true)

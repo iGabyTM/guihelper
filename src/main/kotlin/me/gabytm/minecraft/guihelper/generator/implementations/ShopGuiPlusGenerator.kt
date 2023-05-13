@@ -70,6 +70,10 @@ class ShopGuiPlusGenerator(
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fShop items"
 
+	override fun onReload() {
+		settings.reload()
+	}
+
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val page = input.getOrDefault('p', 1) { it.toIntOrNull() }
         val config = Config(pluginName, plugin, true)

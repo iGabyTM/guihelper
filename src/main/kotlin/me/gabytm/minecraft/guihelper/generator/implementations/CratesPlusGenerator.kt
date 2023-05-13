@@ -46,6 +46,10 @@ class CratesPlusGenerator(
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fCrate prizes"
 
+	override fun onReload() {
+		settings.reload()
+	}
+
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val config = Config(pluginName, plugin, true)
 
@@ -58,10 +62,6 @@ class CratesPlusGenerator(
         config.save()
         Message.GENERATION_DONE.send(context, config.path, duration)
         return true
-    }
-
-    override fun onReload() {
-        settings.reload()
     }
 
     @Suppress("DEPRECATION")

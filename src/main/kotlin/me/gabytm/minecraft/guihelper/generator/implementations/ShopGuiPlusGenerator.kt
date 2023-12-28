@@ -48,6 +48,7 @@ class ShopGuiPlusGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "ShopGUIPlus",
     override val pluginVersion: String = "1.76.2",
+	override val configPath: String = "GUIHelper/generated-guis/$pluginName",
     override val rgbFormat: (String) -> String = { "#$it" }
 ) : ConfigGenerator() {
 
@@ -76,7 +77,9 @@ class ShopGuiPlusGenerator(
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val page = input.getOrDefault('p', 1) { it.toIntOrNull() }
-        val config = Config(pluginName, plugin, true)
+
+		val fileName = "${getConfigFileName(input)}-page-${page}"
+        val config = Config("$configPath/$fileName.yml", plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->

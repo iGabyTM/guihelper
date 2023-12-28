@@ -31,14 +31,12 @@ import me.gabytm.minecraft.guihelper.item.custom.providers.itemsadder.ItemsAdder
 import me.gabytm.minecraft.guihelper.item.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider.Provider
 import me.gabytm.minecraft.guihelper.util.Message
-import me.gabytm.minecraft.guihelper.util.ServerVersion
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
 import me.mattstudios.config.annotations.Description
 import me.mattstudios.config.annotations.Path
 import me.mattstudios.config.properties.Property.create
 import org.apache.commons.cli.CommandLine
-import org.bukkit.Color
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -77,7 +75,9 @@ class DeluxeMenusGenerator(
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val external = input.hasOption("external")
-        val config = Config(if (external) "$pluginName/gui_menus" else pluginName, plugin, true)
+
+		val filePath = settings[if (external) Setting.EXTERNAL_MENUS_PATH else Setting.INTERNAL_MENUS_PATH]
+        val config = Config("$filePath/${getConfigFileName(input)}.yml", plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->
@@ -235,6 +235,14 @@ class DeluxeMenusGenerator(
         " "
     )
     private object Setting : SettingsHolder {
+
+		@Comment("The location where internal menus (from config.yml) will be saved")
+		@Path("internalMenusLocation")
+		val INTERNAL_MENUS_PATH = create("GUIHelper/generated-guis/DeluxeMenus/internal")
+
+		@Comment("The location where external menus (from gui_menus) will be saved")
+		@Path("externalMenusLocation")
+		val EXTERNAL_MENUS_PATH = create("GUIHelper/generated-guis/DeluxeMenus/external")
 
         @Comment("Default format used for player heads, available options: BASE_64, HEAD_DATABASE, PLAYER_NAME")
         @Path("settings.heads")

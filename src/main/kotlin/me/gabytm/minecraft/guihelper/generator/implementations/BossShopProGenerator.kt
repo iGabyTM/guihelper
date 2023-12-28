@@ -43,6 +43,7 @@ class BossShopProGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "BossShopPro",
     override val pluginVersion: String = "2.0.9",
+	override val configPath: String = "GUIHelper/generated-guis/$pluginName",
 ) : ConfigGenerator() {
 
     private val settings = Settings(pluginName)
@@ -59,7 +60,9 @@ class BossShopProGenerator(
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
         val page = input.getOrDefault('p', 1) { it.toIntOrNull() }
-        val config = Config("$pluginName/shops", plugin, true)
+
+		val fileName = "${getConfigFileName(input)}-page-$page"
+        val config = Config("$configPath/$fileName.yml", plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->

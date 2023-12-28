@@ -43,6 +43,7 @@ class CrateReloadedGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "CrateReloaded",
     override val pluginVersion: String = "2.0.(23/35)",
+	override val configPath: String = "GUIHelper/generated-guis/$pluginName",
     override val rgbFormat: (String) -> String = { "{#$it}" }
 ) : ConfigGenerator() {
 
@@ -63,7 +64,7 @@ class CrateReloadedGenerator(
 	}
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val config = Config(pluginName, plugin, true)
+        val config = Config("$configPath/${getConfigFileName(input)}.yml", plugin, true)
 
         val duration = measureTimeMillis {
             val rewards = mutableListOf<String>()

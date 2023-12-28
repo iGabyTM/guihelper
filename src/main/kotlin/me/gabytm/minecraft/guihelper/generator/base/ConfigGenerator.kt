@@ -20,6 +20,8 @@
 package me.gabytm.minecraft.guihelper.generator.base
 
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
+import me.gabytm.minecraft.guihelper.functions.addOption
+import me.gabytm.minecraft.guihelper.functions.arg
 import me.gabytm.minecraft.guihelper.util.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.newline
@@ -42,7 +44,21 @@ abstract class ConfigGenerator {
 
     abstract val pluginName: String
     abstract val pluginVersion: String
+	/**
+	 * The location where the config is created. For most plugins it is `GUIHelper/generated-guis/$pluginName`
+	 */
+	open val configPath: String = "not used"
     open val rgbFormat: (String) -> String = SPIGOT_RGB_FORMAT
+
+	init {
+	    options.addOption('f') {
+			longOpt("fileName")
+			arg(String::class, 1, "name")
+			desc("The name of the file without the .yml extension, default: GUIHelper-<current time>")
+		}
+	}
+
+	protected fun getConfigFileName(input: CommandLine): String = input.getOptionValue("fileName", "GUIHelper-${System.currentTimeMillis()}")
 
     /**
      * Main method called when the [me.gabytm.minecraft.guihelper.command.CreateCommand] is used
@@ -65,7 +81,7 @@ abstract class ConfigGenerator {
     /**
      * The message that is displayed for this generated on the [me.gabytm.minecraft.guihelper.command.ListCommand]
      * or when a GUI is closed ([me.gabytm.minecraft.guihelper.listener.InventoryCloseListener])
-     * @see [me.gabytm.minecraft.guihelper.generator.GeneratorsManager.getMessage]
+     * @see [me.gabytm.minecraft.guihelper.generator.GeneratorsManager.listMessage]
      */
     abstract fun getMessage(): String
 

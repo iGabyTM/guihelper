@@ -43,6 +43,7 @@ class MythicMobsGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "MythicMobs",
     override val pluginVersion: String = "5.0.0",
+	override val configPath: String = "GUIHelper/generated-guis/$pluginName",
     override val rgbFormat: (String) -> String = { "<#$it>" }
 ) : ConfigGenerator() {
 
@@ -53,7 +54,7 @@ class MythicMobsGenerator(
     override fun getMessage(): String = "  &2$pluginName &av$pluginVersion &8- &fItems"
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val config = Config(pluginName, plugin, true)
+		val config = Config("$configPath/${getConfigFileName(input)}.yml", plugin, true)
         val duration = measureTimeMillis {
             context.forEach { item, slot -> createItem(config.createSection("item_$slot"), input, item, slot) }
         }

@@ -29,15 +29,9 @@ import java.io.IOException
 @Suppress("MemberVisibilityCanBePrivate")
 class Config(filePath: String, plugin: Plugin, empty: Boolean = false) {
 
-    private var file: File = if (filePath.endsWith(".yml")) {
-        File(plugin.dataFolder, filePath)
-    } else {
-        File(plugin.dataFolder.parentFile, "$filePath/GUIHelper.yml")
-    }
-
+    private var file: File = File(plugin.dataFolder.parentFile, filePath)
     val path: String = file.path
-    var yaml: YamlConfiguration
-        private set
+    private var yaml: YamlConfiguration
 
     init {
         file.parentFile.mkdirs()

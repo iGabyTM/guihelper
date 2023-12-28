@@ -39,6 +39,7 @@ class CratesPlusGenerator(
     private val plugin: GUIHelper,
     override val pluginName: String = "CratesPlus",
     override val pluginVersion: String = "4.5.3",
+	override val configPath: String = "GUIHelper/generated-guis/$pluginName",
     override val rgbFormat: (String) -> String = NO_RGB_SUPPORT
 ) : ConfigGenerator() {
 
@@ -51,7 +52,7 @@ class CratesPlusGenerator(
 	}
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val config = Config(pluginName, plugin, true)
+        val config = Config("$configPath/${getConfigFileName(input)}.yml", plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->

@@ -180,7 +180,7 @@ val ItemStack.spawnEggType: EntityType
 val ItemStack.skullTexture: String
     get() {
         val owner = NBTItem(this).getCompound("SkullOwner") ?: return ""
-        return owner.getCompound("Properties").getCompoundList("textures")[0].getString("Value")
+        return owner.getCompound("Properties")?.getCompoundList("textures")?.get(0)?.getString("Value") ?: return ""
     }
 
 /**

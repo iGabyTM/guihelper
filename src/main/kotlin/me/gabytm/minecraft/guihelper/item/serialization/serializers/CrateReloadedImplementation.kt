@@ -26,81 +26,93 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.Potion
-import org.bukkit.potion.PotionData
 
 @Suppress("DEPRECATION")
 class CrateReloadedImplementation : ItemSerializer() {
 
-    private val rgbFormat: (String) -> String = { "{#$it}" }
+	private val rgbFormat: (String) -> String = { "{#$it}" }
 
-    override fun serialize(item: ItemStack): String {
-        checkItem(item)
+	override fun serialize(item: ItemStack): String {
+		checkItem(item)
 
-        return buildString {
-            append(item.type.name)
-            item.durability.ifNotZero { append(':').append(it) }
-            append(' ').append(item.amount)
+		return buildString {
+			append(item.type.name)
+			item.durability.ifNotZero { append(':').append(it) }
+			append(' ').append(item.amount)
 
-            val meta = item.meta ?: return@buildString
+			val meta = item.meta ?: return@buildString
 
-            if (meta.hasDisplayName()) {
-                append(" name:").append(item.displayName(rgbFormat).removeSpace())
-            }
+			if (meta.hasDisplayName()) {
+				append(" name:").append(item.displayName(rgbFormat).removeSpace())
+			}
 
-            if (meta.hasLore()) {
-                append(" lore:").append(item.lore().joinToString("|").removeSpace())
-            }
+			if (meta.hasLore()) {
+				append(" lore:").append(item.lore().joinToString("|").removeSpace())
+			}
 
-            item.isUnbreakable.takeIf { it }?.let { append(" unbreakable:true") }
+			item.customModelData.ifNotZero { append("custommodeldata:$it") }
+			item.isUnbreakable.takeIf { it }?.let { append(" unbreakable:true") }
 
-            item.enchants { enchantment, level -> "${enchantment.name.lowercase()}:$level" }
-                .ifNotEmpty { append(it.joinToString(" ", " ")) }
+			item.enchants { enchantment, level -> "${enchantment.name}:$level" }
+				.ifNotEmpty { append(it.joinToString(" ", " ")) }
 
-            meta.itemFlags.ifNotEmpty { append(it.joinToString(",", " flag:")) }
-            appendMetaSpecificValues(this, item, meta)
-        }
-    }
+			meta.itemFlags.ifNotEmpty { append(it.joinToString(",", " flag:")) }
+			appendMetaSpecificValues(this, item, meta)
+		}
+	}
 
-    private fun appendMetaSpecificValues(builder: StringBuilder, item: ItemStack, meta: ItemMeta) {
-        when {
-            item.isLeatherArmor -> {
-                (meta as LeatherArmorMeta).color.ifNotDefault { builder.append(" color:").append(it.asString()) }
-            }
-            item.isPlayerHead -> {
-                builder.append(" skull:").append(item.skullTexture)
-            }
-            item.isPotion -> {
-                if (ServerVersion.IS_ANCIENT) {
-                    builder.appendPotion(Potion.fromItemStack(item))
-                } else {
-                    builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)
-                }
-            }
-        }
-    }
+	private fun appendMetaSpecificValues(builder: StringBuilder, item: ItemStack, meta: ItemMeta) {
+		when {
+			item.isLeatherArmor -> {
+				(meta as LeatherArmorMeta).color.ifNotDefault { builder.append(" color:").append(it.asString()) }
+			}
+
+			item.isPlayerHead -> {
+				builder.append(" skull:").append(item.skullTexture)
+			}
+
+			item.isPotion -> {
+				if (ServerVersion.IS_ANCIENT) {
+					builder.appendPotion(Potion.fromItemStack(item))
+				} else {
+					builder.appendPotion(meta as PotionMeta, item.isSplashPotion)
+				}
+			}
+		}
+	}
 
 }
 
 private fun StringBuilder.appendPotion(potion: Potion) {
-    if (potion.type.effectType == null) {
-        return
-    }
+	if (potion.type.effectType == null) {
+		return
+	}
 
-    this.append(" effect:").append(potion.type.effectType?.name)
-        .append(" power:").append(potion.level)
-        .append(" duration:").append(potion.effects.first().duration)
-        .append(" splash:").append(potion.isSplash)
+	this.append(" effect:").append(potion.type.effectType?.name)
+		.append(" power:").append(potion.level)
+		.append(" duration:").append(potion.effects.first().duration)
+		.append(" splash:").append(potion.isSplash)
 }
 
-private fun StringBuilder.appendPotion(potion: PotionData, splash: Boolean) {
-    if (potion.type.effectType == null) {
-        return
-    }
+private fun StringBuilder.appendPotion(potionMeta: PotionMeta, splash: Boolean) {
+	val basePotionData = potionMeta.basePotionData
 
-    this.append(" effect:").append(potion.type.effectType?.name)
-        .append(" power:").append(if (potion.isUpgraded) 2 else 1)
-        .append(" duration:1") // TODO: Find a way to get the duration of a potion
-        .append(" splash:").append(splash)
+	if (basePotionData.type.effectType != null) {
+		append(" effect:").append(basePotionData.type.effectType?.name)
+		append(" power:").append(if (basePotionData.isUpgraded) 2 else 1)
+	}
+
+	if (potionMeta.hasCustomEffects()) {
+		potionMeta.customEffects.forEach { customEffect ->
+			append(" effect:").append(customEffect.type.name)
+			customEffect.amplifier.ifNotZero { append(" power:").append(it) }
+			append(" duration:").append(customEffect.duration.ticksToSeconds()) // The time is in ticks and CR uses seconds
+		}
+	}
+
+	if (splash) {
+		append(" splash:true")
+	}
 }
 
 private fun String.removeSpace() = this.replace(' ', '_')

@@ -19,6 +19,8 @@
 
 package me.gabytm.minecraft.guihelper.functions
 
+import net.kyori.adventure.util.Ticks
+
 /**
  * Run code only if the number is greater than 0
  * @param function function to run
@@ -38,3 +40,23 @@ fun Short.ifNotZero(function: (Short) -> Unit) {
         function(this)
     }
 }
+
+/**
+ * Convert from seconds to ticks
+ */
+fun Int.secondsToTicks(): Int = this * Ticks.TICKS_PER_SECOND
+
+/**
+ * Convert from seconds to ticks
+ */
+fun Long.secondsToTicks(): Long = this * Ticks.TICKS_PER_SECOND
+
+/**
+ * Convert from ticks to seconds
+ */
+fun Int.ticksToSeconds(): Int = this / Ticks.TICKS_PER_SECOND
+
+/**
+ * Convert from ticks to seconds
+ */
+fun Long.ticksToSeconds(): Long = this / Ticks.TICKS_PER_SECOND

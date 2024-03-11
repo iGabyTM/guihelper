@@ -25,6 +25,7 @@ import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.item.ItemsManager
 import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider
 import me.gabytm.minecraft.guihelper.util.ServerVersion
+import net.kyori.adventure.util.Ticks
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Material
@@ -140,7 +141,7 @@ private fun StringBuilder.appendPotion(potion: Potion) {
 
 private fun StringBuilder.appendPotion(potion: PotionData, splash: Boolean) {
     with (potion) {
-        appendPotion(splash, type.name, if (isExtended) 1 else 0, 20)
+        appendPotion(splash, type.name, if (isExtended) 1 else 0, Ticks.TICKS_PER_SECOND)
     }
 }
 
@@ -148,7 +149,7 @@ private fun StringBuilder.appendPotion(splash: Boolean, effect: String, amplifie
     this.append(" splash:").append(splash)
         .append(" effect:").append(effect.lowercase())
         .append(" power:").append(amplifier)
-        .append(" duration:").append(duration / 20)
+        .append(" duration:").append(duration.ticksToSeconds())
 }
 
 private fun StringBuilder.appendShieldOrBanner(item: ItemStack) {

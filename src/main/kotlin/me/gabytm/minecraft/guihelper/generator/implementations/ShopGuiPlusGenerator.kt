@@ -242,12 +242,14 @@ class ShopGuiPlusGenerator(
 
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
         try {
-            when (provider) {
+            val configKey = when (provider) {
                 Provider.BASE_64 -> "skin"
                 Provider.HEAD_DATABASE -> "headDatabase"
                 Provider.PLAYER_NAME -> "skullOwner"
                 else -> throw HeadIdProviderNotSupportByPluginException(provider, pluginName)
-            }.let { section[it] = plugin.itemsManager.getHeadId(item, provider) }
+            }
+
+			plugin.itemsManager.getHeadId(item, provider).let { id -> section[configKey] = id }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

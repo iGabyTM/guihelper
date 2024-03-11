@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack
 
 class Base64Implementation : HeadIdProvider() {
 
-    override fun getId(item: ItemStack): String {
+    override fun getId(item: ItemStack): String? {
         checkItem(item)
         return item.skullTexture
     }

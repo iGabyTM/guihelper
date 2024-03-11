@@ -19,23 +19,34 @@
 
 package me.gabytm.minecraft.guihelper.item.heads.providers
 
+import me.gabytm.minecraft.guihelper.functions.meta
 import me.gabytm.minecraft.guihelper.functions.skullTexture
+import me.gabytm.minecraft.guihelper.util.ServerVersion
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import java.util.*
 
-class TextureImplementation(pattern: String) : HeadIdProvider() {
+class TextureImplementation(private val extractTextureId: Boolean) : HeadIdProvider() {
 
-    private val regex = Regex(pattern)
+	//language=RegExp
+    private val regex = Regex(if (extractTextureId) "texture/(\\w+)" else "((?:http|https)://textures\\.minecraft\\.net/texture/\\w+)")
 
-    override fun getId(item: ItemStack): String {
+    override fun getId(item: ItemStack): String? {
         checkItem(item)
-        val texture = item.skullTexture
 
-        if (texture == DEFAULT) {
-            return DEFAULT
-        }
+		if (ServerVersion.HAS_PROFILE_API) {
+			val profile = (item.meta as SkullMeta).ownerProfile ?: return null
+			val textureUrl = profile.textures.skin?.toString() ?: return null
 
-        val matcher = regex.find(String(Base64.getDecoder().decode(texture))) ?: return DEFAULT
+			return if (extractTextureId) {
+				textureUrl.substring(textureUrl.lastIndexOf('/') + 1)
+			} else {
+				textureUrl
+			}
+		}
+
+        val texture = item.skullTexture ?: return null
+        val matcher = regex.find(String(Base64.getDecoder().decode(texture))) ?: return null
         return matcher.groupValues[1]
     }
 

@@ -85,9 +85,7 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             }
 
             item.isPlayerHead -> {
-                itemsManager.getHeadId(item, HeadIdProvider.Provider.PLAYER_NAME)
-                    .takeIf { it != HeadIdProvider.DEFAULT }
-                    ?.let { builder.append(" player:").append(it) }
+                itemsManager.getHeadId(item, HeadIdProvider.Provider.PLAYER_NAME).let { id -> builder.append(" player:$id") }
             }
 
             item.isPotion -> {

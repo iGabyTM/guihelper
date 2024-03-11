@@ -38,7 +38,7 @@ abstract class HeadIdProvider {
         }
     }
 
-    abstract fun getId(item: ItemStack): String
+    abstract fun getId(item: ItemStack): String?
 
     companion object {
 

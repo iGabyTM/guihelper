@@ -205,12 +205,14 @@ class DeluxeMenusGenerator(
 
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
         try {
-            when (provider) {
+            val name = when (provider) {
                 Provider.BASE_64 -> "basehead"
                 Provider.HEAD_DATABASE -> "hdb"
                 Provider.PLAYER_NAME -> "player"
                 else -> throw HeadIdProviderNotSupportByPluginException(provider, pluginName)
-            }.let { section["material"] = "$it-${plugin.itemsManager.getHeadId(item, provider)}" }
+            }
+
+			plugin.itemsManager.getHeadId(item, provider)?.let { id -> section["material"] = "$name-$id}" }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

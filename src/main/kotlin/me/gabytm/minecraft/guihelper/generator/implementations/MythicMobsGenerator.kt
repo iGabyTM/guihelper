@@ -139,11 +139,13 @@ class MythicMobsGenerator(
     }
 
     private fun handlePlayerHeads(section: ConfigurationSection, item: ItemStack, provider: Provider) {
-        when (provider) {
+        val configKey = when (provider) {
             Provider.BASE_64 -> "SkinTexture"
             Provider.PLAYER_NAME -> "Player"
             else -> throw HeadIdProviderNotSupportByPluginException(provider, pluginName)
-        }.let { section[it] = plugin.itemsManager.getHeadId(item, provider) }
+        }
+
+		plugin.itemsManager.getHeadId(item, provider)?.let { id -> section[configKey] = id }
     }
 
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {

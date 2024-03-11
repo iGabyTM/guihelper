@@ -25,6 +25,7 @@ import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider
 import me.gabytm.minecraft.guihelper.util.Message
 import me.mattstudios.config.SettingsHolder
 import me.mattstudios.config.annotations.Comment
@@ -151,7 +152,7 @@ class BossShopProGenerator(
             }
 
             item.isPlayerHead -> {
-                properties.add("customskull:${plugin.itemsManager.getHeadId(item)}")
+				plugin.itemsManager.getHeadId(item, HeadIdProvider.Provider.BASE_64)?.let { id -> properties.add("customskull:$id") }
             }
         }
 

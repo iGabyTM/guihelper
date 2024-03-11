@@ -68,7 +68,7 @@ class CrateReloadedImplementation : ItemSerializer() {
 			}
 
 			item.isPlayerHead -> {
-				builder.append(" skull:").append(item.skullTexture)
+				item.skullTexture?.let { texture -> builder.append(" skull:$texture") }
 			}
 
 			item.isPotion -> {

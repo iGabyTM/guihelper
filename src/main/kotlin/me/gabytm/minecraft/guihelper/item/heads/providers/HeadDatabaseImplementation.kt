@@ -26,9 +26,9 @@ class HeadDatabaseImplementation : HeadIdProvider() {
 
     private val api = HeadDatabaseAPI()
 
-    override fun getId(item: ItemStack): String {
+    override fun getId(item: ItemStack): String? {
         checkItem(item)
-        return api.getItemID(item) ?: DEFAULT
+        return api.getItemID(item)
     }
 
 }

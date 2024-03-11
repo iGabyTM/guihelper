@@ -177,10 +177,17 @@ val ItemStack.spawnEggType: EntityType
  * The texture of a skull. Don't use this before checking if the item [isPlayerHead]
  * @since 2.0.0
  */
-val ItemStack.skullTexture: String
+val ItemStack.skullTexture: String?
     get() {
-        val owner = NBTItem(this).getCompound("SkullOwner") ?: return ""
-        return owner.getCompound("Properties")?.getCompoundList("textures")?.get(0)?.getString("Value") ?: return ""
+		if (ServerVersion.HAS_PROFILE_API) {
+			val profile = (meta as SkullMeta).ownerProfile ?: return null
+			val textureUrl = profile.textures.skin ?: return null
+			val json = "{\"textures\":{\"SKIN\":{\"url\":\"$textureUrl\"}}}"
+			return Base64.getEncoder().encodeToString(json.encodeToByteArray())
+		}
+
+        val owner = NBTItem(this).getCompound("SkullOwner") ?: return null
+        return owner.getCompound("Properties")?.getCompoundList("textures")?.get(0)?.getString("Value") ?: return null
     }
 
 /**

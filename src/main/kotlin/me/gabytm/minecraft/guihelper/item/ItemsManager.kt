@@ -42,7 +42,7 @@ class ItemsManager {
         return itemEditHandler[editor]
     }
 
-    fun getHeadId(item: ItemStack, provider: HeadIdProvider.Provider = HeadIdProvider.Provider.BASE_64): String {
+    fun getHeadId(item: ItemStack, provider: HeadIdProvider.Provider): String? {
         return headsIdHandler[item, provider]
     }
 

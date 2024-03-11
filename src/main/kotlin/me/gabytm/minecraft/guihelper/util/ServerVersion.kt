@@ -96,6 +96,11 @@ object ServerVersion {
      */
     val HAS_HEX: Boolean = CURRENT >= 1_15_2
 
+	/**
+	 * Whether the [CURRENT] version has [org.bukkit.profile] API (>= **1.19**)
+	 */
+	val HAS_PROFILE_API: Boolean = CURRENT >= 1_19_0
+
     /**
      * Gets the current server version
      *

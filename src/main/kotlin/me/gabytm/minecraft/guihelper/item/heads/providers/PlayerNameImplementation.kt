@@ -25,18 +25,18 @@ import org.bukkit.inventory.meta.SkullMeta
 
 class PlayerNameImplementation : HeadIdProvider() {
 
-    override fun getId(item: ItemStack): String {
+    override fun getId(item: ItemStack): String? {
         checkItem(item)
-        val meta = item.itemMeta as? SkullMeta ?: return ""
+        val meta = item.itemMeta as? SkullMeta ?: return null
 
         if (!meta.hasOwner()) {
-            return DEFAULT
+            return null
         }
 
         return if (ServerVersion.SKULL_META_HAS_OWNING_PLAYER) {
-            meta.owningPlayer?.name ?: DEFAULT
+            meta.owningPlayer?.name
         } else {
-            meta.owner ?: DEFAULT
+            meta.owner
         }
     }
 

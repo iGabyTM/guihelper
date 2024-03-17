@@ -55,7 +55,8 @@ class DeluxeMenusGenerator(
 
     private val settings = Settings(pluginName)
 	private val ignoredNbtKeys = listOf(
-		"CustomModelData"
+		"CustomModelData",
+		"HideFlags"
 	)
 
     init {

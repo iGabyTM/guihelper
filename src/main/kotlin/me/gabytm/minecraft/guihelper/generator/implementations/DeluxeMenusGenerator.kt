@@ -178,7 +178,7 @@ class DeluxeMenusGenerator(
             item.isFireworkStar -> {
                 handFireworkStars(section, meta as FireworkEffectMeta)
             }
-			item.isSpawnEgg -> {
+			settings[Setting.SETTINGS__SET_ENTITY_TYPE_FOR_SPAWN_EGGS] && item.isSpawnEgg -> {
 				section["entity_type"] = item.spawnEggType.name
 			}
         }
@@ -253,6 +253,10 @@ class DeluxeMenusGenerator(
         @Comment("Starting with version 1.13.4, ItemFlags can be written as a list, 'item_flags'")
         @Path("settings.saveItemFlagsAsList")
         val SETTINGS__SET_ITEM_FLAGS_AS_LIST = create(false)
+
+		@Comment("Starting with version 1.14.0, the option 'entity_type' is no longer required because each spawn egg has a different material")
+		@Path("settings.setEntityTypeForSpawnEggs")
+		val SETTINGS__SET_ENTITY_TYPE_FOR_SPAWN_EGGS = create(false)
 
     }
 

@@ -51,6 +51,17 @@ private val potions = if (ServerVersion.IS_ANCIENT) {
 private val fireworkRocket = if (ServerVersion.IS_LEGACY) Material.valueOf("FIREWORK") else Material.FIREWORK_ROCKET
 private val fireworkStar = if (ServerVersion.IS_LEGACY) Material.valueOf("FIREWORK_CHARGE") else Material.FIREWORK_STAR
 
+private val entityTypeByMaterial = if (ServerVersion.IS_LEGACY) {
+	emptyMap<Material, EntityType>()
+} else {
+	Material.values()
+		.filter { material -> material.name.endsWith("_SPAWN_EGG") }
+		.associateWith { material ->
+			@Suppress("DEPRECATION")
+			EntityType.fromName(material.name.replace("_SPAWN_EGG", ""))
+		}
+}
+
 /**
  * Gets a copy of the item the player is currently holding using the right method for each version
  * @since 2.0.0
@@ -162,15 +173,19 @@ val ItemStack.meta: ItemMeta?
 @Suppress("DEPRECATION")
 val ItemStack.spawnEggType: EntityType
     get() {
-        return if (ServerVersion.HAS_SPAWN_EGG_META) {
-            if (!hasItemMeta()) {
-                return EntityType.UNKNOWN
-            }
+		return when {
+			!ServerVersion.IS_LEGACY -> entityTypeByMaterial[this.type]
 
-            (itemMeta as SpawnEggMeta).spawnedType ?: EntityType.UNKNOWN
-        } else {
-            (data as SpawnEgg).spawnedType
-        }
+			ServerVersion.HAS_SPAWN_EGG_META -> {
+				if (!hasItemMeta()) {
+					return EntityType.UNKNOWN
+				}
+
+				(this.itemMeta as SpawnEggMeta).spawnedType
+			}
+
+			else -> (this.data as SpawnEgg).spawnedType
+		} ?: EntityType.UNKNOWN
     }
 
 /**

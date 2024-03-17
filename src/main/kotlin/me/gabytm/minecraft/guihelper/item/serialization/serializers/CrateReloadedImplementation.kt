@@ -83,35 +83,40 @@ class CrateReloadedImplementation : ItemSerializer() {
 
 }
 
+const val EFFECT: String = " effect:"
+const val POWER: String = " power:"
+const val DURATION: String = " duration:"
+const val SPLASH: String = " splash:"
+
 private fun StringBuilder.appendPotion(potion: Potion) {
 	if (potion.type.effectType == null) {
 		return
 	}
 
-	this.append(" effect:").append(potion.type.effectType?.name)
-		.append(" power:").append(potion.level)
-		.append(" duration:").append(potion.effects.first().duration)
-		.append(" splash:").append(potion.isSplash)
+	this.append(EFFECT).append(potion.type.effectType?.name)
+		.append(POWER).append(potion.level)
+		.append(DURATION).append(potion.effects.first().duration.ticksToSeconds())
+		.append(SPLASH).append(potion.isSplash)
 }
 
 private fun StringBuilder.appendPotion(potionMeta: PotionMeta, splash: Boolean) {
 	val basePotionData = potionMeta.basePotionData
 
 	if (basePotionData.type.effectType != null) {
-		append(" effect:").append(basePotionData.type.effectType?.name)
-		append(" power:").append(if (basePotionData.isUpgraded) 2 else 1)
+		append(EFFECT).append(basePotionData.type.effectType?.name)
+		append(POWER).append(if (basePotionData.isUpgraded) 2 else 1)
 	}
 
 	if (potionMeta.hasCustomEffects()) {
 		potionMeta.customEffects.forEach { customEffect ->
-			append(" effect:").append(customEffect.type.name)
-			customEffect.amplifier.ifNotZero { append(" power:").append(it) }
-			append(" duration:").append(customEffect.duration.ticksToSeconds()) // The time is in ticks and CR uses seconds
+			append(EFFECT).append(customEffect.type.name)
+			customEffect.amplifier.ifNotZero { power -> append(POWER).append(power) }
+			append(DURATION).append(customEffect.duration.ticksToSeconds())
 		}
 	}
 
 	if (splash) {
-		append(" splash:true")
+		append(SPLASH).append(true)
 	}
 }
 

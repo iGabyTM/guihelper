@@ -61,9 +61,9 @@ class DeluxeMenusGenerator(
     init {
         options.addOption(createHeadsOption(Provider.BASE_64, Provider.HEAD_DATABASE, Provider.PLAYER_NAME))
 
-        options.addOption('e') {
-            longOpt("external")
-            desc("Whether the menu is external ($pluginName/gui_menus/) or internal (config.yml)")
+        options.addOption('i') {
+            longOpt("internal")
+            desc("Whether the menu is internal (config.yml) or external ($pluginName/gui_menus/)")
         }
     }
 
@@ -74,14 +74,14 @@ class DeluxeMenusGenerator(
 	}
 
     override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val external = input.hasOption("external")
+        val internal = input.hasOption("internal")
 
-		val filePath = settings[if (external) Setting.EXTERNAL_MENUS_PATH else Setting.INTERNAL_MENUS_PATH]
+		val filePath = settings[if (internal) Setting.INTERNAL_MENUS_PATH else Setting.EXTERNAL_MENUS_PATH]
         val config = Config("$filePath/${getConfigFileName(input)}.yml", plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->
-                val path = if (external) "items.$slot" else "gui_menus.GUIHelper.items.$slot"
+                val path = if (internal) "gui_menus.GUIHelper.items.$slot" else "items.$slot"
                 createItem(config.createSection(path), input, item, slot)
             }
         }
@@ -133,10 +133,10 @@ class DeluxeMenusGenerator(
 
         flags.forEach { flag ->
             when (flag) {
-                ItemFlag.HIDE_ATTRIBUTES -> "hide_attributes"
+                ItemFlag.HIDE_ATTRIBUTES -> flag.name.lowercase()
                 ItemFlag.HIDE_ENCHANTS -> "hide_enchantments"
                 ItemFlag.HIDE_POTION_EFFECTS -> "hide_effects"
-                ItemFlag.HIDE_UNBREAKABLE -> "hide_unbreakable"
+                ItemFlag.HIDE_UNBREAKABLE -> flag.name.lowercase()
                 else -> null
             }?.let { section[it] = true }
         }

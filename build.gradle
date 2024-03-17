@@ -93,9 +93,9 @@ shadowJar {
     ].each { relocate(it.key, 'me.gabytm.minecraft.guihelper.libs.' + it.value) }
 }
 
-task copyJarToServer(type: Copy) {
-    from shadowJar
-    into "./server/plugins"
+tasks.register('copyJarToServer', Copy) {
+	from shadowJar
+	into "./testServer/plugins"
 }
 
 private static String projectVersion(int major, int minor, int patch) {

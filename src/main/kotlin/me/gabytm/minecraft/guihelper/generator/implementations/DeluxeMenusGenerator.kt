@@ -212,7 +212,7 @@ class DeluxeMenusGenerator(
                 else -> throw HeadIdProviderNotSupportByPluginException(provider, pluginName)
             }
 
-			plugin.itemsManager.getHeadId(item, provider)?.let { id -> section["material"] = "$name-$id}" }
+			plugin.itemsManager.getHeadId(item, provider)?.let { id -> section["material"] = "$name-$id" }
         } catch (e: IllegalArgumentException) {
             plugin.logger.warning(e.message)
         }

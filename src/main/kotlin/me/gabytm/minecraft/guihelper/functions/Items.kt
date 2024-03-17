@@ -51,14 +51,15 @@ private val potions = if (ServerVersion.IS_ANCIENT) {
 private val fireworkRocket = if (ServerVersion.IS_LEGACY) Material.valueOf("FIREWORK") else Material.FIREWORK_ROCKET
 private val fireworkStar = if (ServerVersion.IS_LEGACY) Material.valueOf("FIREWORK_CHARGE") else Material.FIREWORK_STAR
 
+private const val materialSpawnEggPrefix = "_SPAWN_EGG"
 private val entityTypeByMaterial = if (ServerVersion.IS_LEGACY) {
 	emptyMap<Material, EntityType>()
 } else {
 	Material.values()
-		.filter { material -> material.name.endsWith("_SPAWN_EGG") }
+		.filter(Material::isSpawnEgg)
 		.associateWith { material ->
 			@Suppress("DEPRECATION")
-			EntityType.fromName(material.name.replace("_SPAWN_EGG", ""))
+			EntityType.fromName(material.name.replace(materialSpawnEggPrefix, ""))
 		}
 }
 
@@ -75,6 +76,13 @@ val Player.hand: ItemStack
             inventory.itemInMainHand
         }
     }
+
+/**
+ * Whether the material is a spawn egg (1.13+)
+ * @since 2.0.0
+ */
+val Material.isSpawnEgg: Boolean
+	get() = name.endsWith(materialSpawnEggPrefix)
 
 /**
  * Whether the item is a banner or not
@@ -138,7 +146,7 @@ val ItemStack.isShield: Boolean
  * @since 2.0.0
  */
 val ItemStack.isSpawnEgg: Boolean
-    get() = if (ServerVersion.IS_LEGACY) type.name == "MONSTER_EGG" else type.name.endsWith("_SPAWN_EGG")
+    get() = if (ServerVersion.IS_LEGACY) type.name == "MONSTER_EGG" else type.isSpawnEgg
 
 /**
  * Whether the item is a splash potion or not

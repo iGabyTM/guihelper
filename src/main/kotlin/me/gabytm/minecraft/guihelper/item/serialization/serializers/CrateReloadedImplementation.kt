@@ -25,7 +25,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.PotionMeta
-import org.bukkit.potion.Potion
 
 @Suppress("DEPRECATION")
 class CrateReloadedImplementation : ItemSerializer() {
@@ -71,13 +70,14 @@ class CrateReloadedImplementation : ItemSerializer() {
 				item.skullTexture?.let { texture -> builder.append(" skull:$texture") }
 			}
 
-			item.isPotion -> {
+			//TODO update potion API
+			/*item.isPotion -> {
 				if (ServerVersion.IS_ANCIENT) {
 					builder.appendPotion(Potion.fromItemStack(item))
 				} else {
 					builder.appendPotion(meta as PotionMeta, item.isSplashPotion)
 				}
-			}
+			}*/
 		}
 	}
 
@@ -88,7 +88,8 @@ const val POWER: String = " power:"
 const val DURATION: String = " duration:"
 const val SPLASH: String = " splash:"
 
-private fun StringBuilder.appendPotion(potion: Potion) {
+//TODO update potion API
+/*private fun StringBuilder.appendPotion(potion: Potion) {
 	if (potion.type.effectType == null) {
 		return
 	}
@@ -118,6 +119,6 @@ private fun StringBuilder.appendPotion(potionMeta: PotionMeta, splash: Boolean) 
 	if (splash) {
 		append(SPLASH).append(true)
 	}
-}
+}*/
 
 private fun String.removeSpace() = this.replace(' ', '_')

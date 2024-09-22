@@ -133,11 +133,10 @@ class DeluxeMenusGenerator(
         }
 
         flags.forEach { flag ->
-            when (flag) {
-                ItemFlag.HIDE_ATTRIBUTES -> flag.name.lowercase()
-                ItemFlag.HIDE_ENCHANTS -> "hide_enchantments"
-                ItemFlag.HIDE_POTION_EFFECTS -> "hide_effects"
-                ItemFlag.HIDE_UNBREAKABLE -> flag.name.lowercase()
+            when (flag.name) {
+                "HIDE_ATTRIBUTES", "HIDE_UNBREAKABLE" -> flag.name.lowercase()
+                "HIDE_ENCHANTS" -> "hide_enchantments"
+                "HIDE_POTION_EFFECTS" -> "hide_effects"
                 else -> null
             }?.let { section[it] = true }
         }
@@ -188,13 +187,19 @@ class DeluxeMenusGenerator(
     private fun handleBannersAndShields(section: ConfigurationSection, item: ItemStack) {
         section.setList(
             "banner_meta",
-                item.patternsAndBaseColor(false).first.map { "${it.color.name};${it.pattern.name}" }
+                item.patternsAndBaseColor(false).first.map { pattern -> "${pattern.color};${pattern.pattern}" }
         )
     }
 
-    private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {
+    @Suppress("DEPRECATION", "removal")
+	private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {
+		// TODO switch to getBasePotionType() as suggested in the deprecation notice
         val base = meta.basePotionData
-        val effects = mutableListOf("${base.type.name};1;${if (base.isUpgraded) 1 else 0}") // TODO: Find a way to add the base effect
+		val effects = mutableListOf<String>()
+
+		if (base != null) {
+			effects += "${base.type.name};1;${if (base.isUpgraded) 1 else 0}" // TODO: Find a way to add the base effect
+		}
 
         if (meta.hasCustomEffects()) {
             effects.addAll(meta.customEffects.map { "${it.type.name};${it.duration};${it.amplifier}" })

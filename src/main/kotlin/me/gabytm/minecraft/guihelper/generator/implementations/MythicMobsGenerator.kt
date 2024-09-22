@@ -153,11 +153,12 @@ class MythicMobsGenerator(
 
         val effects = mutableListOf<String>()
 
-        with (meta.basePotionData) {
+		// TODO update potion api
+        /*with (meta.basePotionData) {
             if (type.effectType != null) {
                 effects.add("${type.effectType} -1 ${if (isUpgraded) 1 else 0}")
             }
-        }
+        }*/
 
         if (meta.hasCustomEffects()) {
             effects.addAll(meta.customEffects.map { "${it.type.name} ${it.duration} ${it.amplifier + 1}" })

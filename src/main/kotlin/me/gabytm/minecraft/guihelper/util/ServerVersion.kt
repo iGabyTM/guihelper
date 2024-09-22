@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("removal")
+
 package me.gabytm.minecraft.guihelper.util
 
 import org.bukkit.Bukkit
@@ -46,15 +48,15 @@ object ServerVersion {
      */
     val IS_ANCIENT: Boolean = CURRENT < 1_9_0
 
+	/**
+	 * Whether the [CURRENT] version is *legacy* (< **1.13**)
+	 */
+	val IS_LEGACY: Boolean = CURRENT < 1_13_0
+
     /**
      * Whether the [CURRENT] version has [org.bukkit.attribute.Attribute] (>= **1.13.2**)
      */
     val HAS_ATTRIBUTE: Boolean = CURRENT >= 1_13_2
-
-    /**
-     * Whether the [CURRENT] version is *legacy* (< **1.13**)
-     */
-    val IS_LEGACY: Boolean = CURRENT < 1_13_0
 
     /**
      * Whether in the [CURRENT] version, [org.bukkit.inventory.meta.ItemMeta] has `unbreakable` methods (>= **1.11**)
@@ -100,6 +102,11 @@ object ServerVersion {
 	 * Whether the [CURRENT] version has [org.bukkit.profile] API (>= **1.19**)
 	 */
 	val HAS_PROFILE_API: Boolean = CURRENT >= 1_19_0
+
+	/**
+	 * Whether in the [CURRENT] version [org.bukkit.potion.PotionData] is deprecated or removed (>= **1.20.5**)
+	 */
+	val POTION_DATA_IS_DEPRECATED: Boolean = CURRENT >= 1_20_5
 
     /**
      * Gets the current server version

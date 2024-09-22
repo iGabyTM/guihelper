@@ -22,12 +22,9 @@
 package me.gabytm.minecraft.guihelper.functions
 
 import de.tr7zw.changeme.nbtapi.NBTItem
+import me.gabytm.minecraft.guihelper.util.Reflections
 import me.gabytm.minecraft.guihelper.util.ServerVersion
-import org.bukkit.Bukkit
-import org.bukkit.Color
-import org.bukkit.DyeColor
-import org.bukkit.Material
-import org.bukkit.Tag
+import org.bukkit.*
 import org.bukkit.block.Banner
 import org.bukkit.block.banner.Pattern
 import org.bukkit.enchantments.Enchantment
@@ -36,9 +33,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.*
 import org.bukkit.material.SpawnEgg
-import org.bukkit.potion.Potion
 import java.util.*
-import kotlin.jvm.Throws
 
 private val leatherArmor = EnumSet.copyOf(Material.values().filter { it.name.startsWith("LEATHER_") }.toSet())
 
@@ -60,6 +55,16 @@ private val entityTypeByMaterial = if (ServerVersion.IS_LEGACY) {
 		.associateWith { material ->
 			@Suppress("DEPRECATION")
 			EntityType.fromName(material.name.replace(materialSpawnEggPrefix, ""))
+		}
+}
+
+private val dyeColorByMaterial: Map<Material, DyeColor> = if (ServerVersion.IS_LEGACY) {
+	emptyMap()
+} else {
+	Material.values()
+		.filter(Tag.ITEMS_BANNERS::isTagged)
+		.associateWith { material ->
+			DyeColor.valueOf(material.name.removeSuffix("_BANNER"))
 		}
 }
 
@@ -152,9 +157,8 @@ val ItemStack.isSpawnEgg: Boolean
  * Whether the item is a splash potion or not
  * @since 2.0.0
  */
-@Suppress("DEPRECATION")
 val ItemStack.isSplashPotion: Boolean
-    get() = if (ServerVersion.IS_ANCIENT) Potion.fromItemStack(this).isSplash else type == Material.SPLASH_POTION
+    get() = if (ServerVersion.IS_ANCIENT) Reflections.isSplashPotion(this) else type == Material.SPLASH_POTION
 
 /**
  * Whether the item is unbreakable or not
@@ -301,7 +305,6 @@ fun ItemStack.lore(format: ((rgb: String) -> String) = SPIGOT_RGB_FORMAT): List<
     return itemMeta?.lore?.map { it.fixColors(format) }?.toList() ?: emptyList()
 }
 
-@Suppress("DEPRECATION")
 @Throws(java.lang.IllegalArgumentException::class)
 fun ItemStack.patternsAndBaseColor(check: Boolean): Pair<List<Pattern>, DyeColor?> {
     if (check && (!isShield && !isBanner)) {
@@ -315,11 +318,16 @@ fun ItemStack.patternsAndBaseColor(check: Boolean): Pair<List<Pattern>, DyeColor
     val meta = itemMeta ?: return Pair(emptyList(), null)
 
     // https://github.com/EssentialsX/Essentials/pull/745#issuecomment-234843795
-    return if (isShield) {
+    if (isShield) {
         val state = (meta as BlockStateMeta).blockState as Banner
-        state.patterns to state.baseColor
-    } else {
-        meta as BannerMeta
-        meta.patterns to meta.baseColor
+        return state.patterns to state.baseColor
     }
+
+	meta as BannerMeta
+
+	return if (ServerVersion.IS_LEGACY) {
+		meta.patterns to Reflections.bannerMetaGetBaseColor(meta)
+	} else {
+		meta.patterns to dyeColorByMaterial[this.type]
+	}
 }

@@ -210,7 +210,7 @@ class ShopGuiPlusGenerator(
         for ((index, pattern) in patterns.withIndex()) {
             val patternSection = section.createSection("patterns.${index + 1}")
 
-            patternSection["type"] = pattern.pattern.name
+            patternSection["type"] = pattern.pattern.toString()
             patternSection["color"] = pattern.color.name
         }
     }
@@ -257,11 +257,12 @@ class ShopGuiPlusGenerator(
 
     // See https://docs.brcdev.net/#/item-meta?id=_19-116
     private fun handlePotions(section: ConfigurationSection, meta: PotionMeta) {
-        with (meta.basePotionData) {
+		// TODO update potion API
+        /*with (meta.basePotionData) {
             section["type"] = type.name
             section["extended"] = isExtended
             section["level"] = if (isUpgraded) 2 else 1
-        }
+        }*/
 
 		meta.potionColor?.let { section["color"] = it.asString() }
     }

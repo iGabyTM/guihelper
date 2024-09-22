@@ -19,17 +19,25 @@
 
 package me.gabytm.minecraft.guihelper.item.serialization
 
+import me.gabytm.minecraft.guihelper.functions.info
 import me.gabytm.minecraft.guihelper.item.ItemsManager
 import me.gabytm.minecraft.guihelper.item.serialization.serializers.*
+import org.bukkit.Bukkit
 import org.bukkit.inventory.ItemStack
 
-class ItemSerializationHandler(itemsManager: ItemsManager) {
+class ItemSerializationHandler {
 
     private val serializers = mutableMapOf(
         Serializer.CRATE_RELOADED to CrateReloadedImplementation(),
-        Serializer.ESSENTIALSX to EssentialsXImplementation(itemsManager),
         Serializer.VANILLA to VanillaImplementation()
     )
+
+	init {
+	    if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+			serializers[Serializer.ESSENTIALSX] = EssentialsXImplementation()
+			info("Hooked into EssentialsX API for item serialization")
+		}
+	}
 
     fun serialize(item: ItemStack, serializer: Serializer = Serializer.VANILLA): String {
         return serializers[serializer]?.serialize(item) ?: ItemSerializer.DEFAULT

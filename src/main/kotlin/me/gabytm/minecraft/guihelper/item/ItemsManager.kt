@@ -34,7 +34,7 @@ class ItemsManager {
     private val customItemHandler = CustomItemHandler()
     private val itemEditHandler = ItemEditHandler()
     private val headsIdHandler = HeadsIdHandler()
-    private val itemSerializerHandler = ItemSerializationHandler(this)
+    private val itemSerializerHandler = ItemSerializationHandler()
 
     fun <T: Any> getCustomItem(type: KClass<T>, item: ItemStack): T? = customItemHandler.get(type, item)
 

@@ -12,6 +12,8 @@ softdepend:
   # Custom items
   - ItemsAdder
   - Oraxen
+  # Other plugins
+  - Essentials # for item serialization
 
 permissions:
   guihelper.use:

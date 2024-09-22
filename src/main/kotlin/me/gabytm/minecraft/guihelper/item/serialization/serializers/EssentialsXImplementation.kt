@@ -21,25 +21,23 @@
 
 package me.gabytm.minecraft.guihelper.item.serialization.serializers
 
-import me.gabytm.minecraft.guihelper.functions.*
-import me.gabytm.minecraft.guihelper.item.ItemsManager
-import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider
-import me.gabytm.minecraft.guihelper.util.ServerVersion
-import net.kyori.adventure.util.Ticks
-import org.bukkit.Color
-import org.bukkit.FireworkEffect
-import org.bukkit.Material
+import com.earth2me.essentials.Essentials
+import org.bukkit.Bukkit
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.*
-import org.bukkit.potion.Potion
-import org.bukkit.potion.PotionData
+import org.bukkit.plugin.java.JavaPlugin
 
-class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSerializer() {
+class EssentialsXImplementation : ItemSerializer() {
 
-    @Suppress("DEPRECATION")
     override fun serialize(item: ItemStack): String {
         checkItem(item)
-        return buildString {
+
+		if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+			return JavaPlugin.getPlugin(Essentials::class.java).itemDb.serialize(item)
+		} else {
+			throw RuntimeException("EssentialsX is not enabled, can not serialize items without it")
+		}
+
+        /*return buildString {
             append(item.type)
             item.durability.ifNotZero { append(':').append(it) }
             append(' ').append(item.amount)
@@ -66,10 +64,10 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
             }
 
             appendMetaSpecificValues(this, item, meta)
-        }
+        }*/
     }
 
-    @Suppress("DEPRECATION")
+    /*@Suppress("DEPRECATION")
     private fun appendMetaSpecificValues(builder: StringBuilder, item: ItemStack, meta: ItemMeta) {
         when {
             item.isFirework -> {
@@ -88,12 +86,21 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
                 itemsManager.getHeadId(item, HeadIdProvider.Provider.PLAYER_NAME).let { id -> builder.append(" player:$id") }
             }
 
+			// https://github.com/EssentialsX/Essentials/blob/6157668a631ed9c53468831e6007a3ba49f31edb/Essentials/src/main/java/com/earth2me/essentials/items/AbstractItemDb.java#L286
             item.isPotion -> {
-                if (ServerVersion.IS_ANCIENT) {
-                    builder.appendPotion(Potion.fromItemStack(item))
-                } else {
-                    builder.appendPotion((meta as PotionMeta).basePotionData, item.isSplashPotion)
-                }
+				when {
+					ServerVersion.IS_ANCIENT -> builder.appendPotion(Reflections.potionFromItemStack(item))
+					ServerVersion.POTION_DATA_IS_DEPRECATED -> {
+						val base = (meta as PotionMeta).basePotionType ?: return
+						val amplifier = if (base.name.startsWith("LONG_")) 1 else 0
+						builder.appendPotion(item.isSplashPotion, base.name, amplifier, Ticks.TICKS_PER_SECOND)
+					}
+					else -> {
+						val base = (meta as PotionMeta).basePotionData ?: return
+						val amplifier = if (base.isExtended) 1 else 0
+						builder.appendPotion(item.isSplashPotion, base.type.name, amplifier, Ticks.TICKS_PER_SECOND)
+					}
+				}
             }
 
             item.isShield || item.isBanner -> {
@@ -104,11 +111,11 @@ class EssentialsXImplementation(private val itemsManager: ItemsManager) : ItemSe
                 builder.appendWrittenBook(meta as BookMeta)
             }
         }
-    }
+    }*/
 
 }
 
-private val colorStringFormat: (Color) -> String = { "#${it.asHex()}" }
+/*private val colorStringFormat: (Color) -> String = { "#${it.asHex()}" }
 
 private fun StringBuilder.appendFirework(firework: FireworkMeta) {
     if (firework.hasEffects()) {
@@ -130,16 +137,12 @@ private fun StringBuilder.appendFireworkEffect(effect: FireworkEffect) {
     }
 }
 
-@Suppress("DEPRECATION")
-private fun StringBuilder.appendPotion(potion: Potion) {
-    potion.effects.forEach {
-        appendPotion(potion.isSplash, it.type.name, it.amplifier, it.duration)
-    }
-}
+@Suppress("DEPRECATION") // only used in OLD versions where PotionType.name() exists
+private fun StringBuilder.appendPotion(potion: Any) {
+	val isSplash = Reflections.potionIsSplash(potion)
 
-private fun StringBuilder.appendPotion(potion: PotionData, splash: Boolean) {
-    with (potion) {
-        appendPotion(splash, type.name, if (isExtended) 1 else 0, Ticks.TICKS_PER_SECOND)
+    Reflections.potionGetEffects(potion).forEach {
+        appendPotion(isSplash, it.type.name, it.amplifier, it.duration)
     }
 }
 
@@ -171,4 +174,4 @@ private fun StringBuilder.appendWrittenBook(book: BookMeta) {
     }
 }
 
-private fun String.removeSpace() = this.replace(' ', '_')
+private fun String.removeSpace() = this.replace(' ', '_')*/

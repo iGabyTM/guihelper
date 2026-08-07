@@ -1,2 +1,8 @@
-rootProject.name = "guihelper"
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+		mavenCentral()
+	}
+}
 
+rootProject.name = "guihelper"

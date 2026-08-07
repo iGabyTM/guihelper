@@ -157,6 +157,7 @@ class DeluxeMenusGenerator(
 			when (nbt.getType(key)) {
 				NBTType.NBTTagString -> strings.add("$key:${nbt.getString(key)}")
 				NBTType.NBTTagInt -> ints.add("$key:${nbt.getInteger(key)}")
+				else -> { }
 			}
 		}
 

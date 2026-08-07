@@ -169,19 +169,6 @@ class MythicMobsGenerator(
 
 }
 
-private fun Attribute.name(): String? {
-    return when (this) {
-        Attribute.GENERIC_ATTACK_SPEED -> "AttackSpeed"
-        Attribute.GENERIC_ARMOR_TOUGHNESS -> "ArmorToughness"
-        Attribute.GENERIC_ATTACK_DAMAGE -> "Damage"
-        Attribute.GENERIC_MAX_HEALTH -> "Health"
-        Attribute.GENERIC_KNOCKBACK_RESISTANCE -> "KnockbackResistance"
-        Attribute.GENERIC_LUCK -> "Luck"
-        Attribute.GENERIC_MOVEMENT_SPEED -> "MovementSpeed"
-        else -> null
-    }
-}
-
 private fun EquipmentSlot.name(): String? {
     return when (this) {
         EquipmentSlot.HEAD -> "Head"

@@ -72,7 +72,7 @@ class NameEditor : ItemEditor() {
             input.hasOption('g') -> {
                 with (item.displayName()) {
                     Message.EDIT__NAME__COPY.component(this)
-                        .clickEvent(ClickEvent.copyToClipboard(this))
+                        .clickEvent(ClickEvent.copyToClipboard(this.toString()))
                         .send(executor)
                 }
             }

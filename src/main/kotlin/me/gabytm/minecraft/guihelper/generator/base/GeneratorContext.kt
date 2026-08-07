@@ -36,7 +36,7 @@ class GeneratorContext(val player: Player, val inventory: Inventory) {
     fun forEach(function: (item: ItemStack, slot: Int) -> Unit) {
         inventory.contents.withIndex()
             .filter { it.value.isNotNull() }
-            .forEach { function(it.value, it.index) }
+            .forEach { function(it.value!!, it.index) }
     }
 
     /**
@@ -56,7 +56,7 @@ class GeneratorContext(val player: Player, val inventory: Inventory) {
 
             inventory.contents.withIndex()
                 .filter { it.index < max && it.value.isNotNull() }
-                .forEach { function(it.value, it.index) }
+                .forEach { function(it.value!!, it.index) }
         } catch (e: IllegalArgumentException) {
             error("", e)
         }

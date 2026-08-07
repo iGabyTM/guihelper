@@ -76,9 +76,9 @@ enum class Message(var value: String) {
 
     fun send(receiver: CommandSender, vararg args: Any?) {
         if (args.isEmpty()) {
-            component().send(receiver)
+			receiver.sendMessage(get())
         } else {
-            component(*args).send(receiver)
+			receiver.sendMessage(get(*args))
         }
     }
 

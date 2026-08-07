@@ -71,7 +71,7 @@ class ASkyBlockGenerator(
 
         val meta = item.meta ?: return
 
-        section.set("lore", meta::hasLore) { item.lore().joinToString("|") }
+        section.set("lore", meta::hasLore) { item.lore?.joinToString("|") }
     }
 
     private class Settings(name: String) : SettingsBase(name, Setting::class.java)

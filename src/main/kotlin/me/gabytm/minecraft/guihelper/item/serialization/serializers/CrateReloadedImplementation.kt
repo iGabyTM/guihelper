@@ -46,7 +46,7 @@ class CrateReloadedImplementation : ItemSerializer() {
 			}
 
 			if (meta.hasLore()) {
-				append(" lore:").append(item.lore().joinToString("|").removeSpace())
+				append(" lore:").append(item.lore?.joinToString("|")?.removeSpace())
 			}
 
 			item.customModelData.ifNotZero { append("custommodeldata:$it") }

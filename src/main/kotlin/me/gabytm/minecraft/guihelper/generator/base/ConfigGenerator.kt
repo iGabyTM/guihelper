@@ -22,6 +22,8 @@ package me.gabytm.minecraft.guihelper.generator.base
 import me.gabytm.minecraft.guihelper.functions.SPIGOT_RGB_FORMAT
 import me.gabytm.minecraft.guihelper.functions.addOption
 import me.gabytm.minecraft.guihelper.functions.arg
+import me.gabytm.minecraft.guihelper.functions.getOrDefault
+import me.gabytm.minecraft.guihelper.generator.flag.GeneratorFlag
 import me.gabytm.minecraft.guihelper.util.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.newline
@@ -32,6 +34,7 @@ import org.apache.commons.cli.Options
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.incendo.cloud.parser.flag.FlagContext
 
 /**
  * Base class for all config generators
@@ -39,6 +42,7 @@ import org.bukkit.inventory.ItemStack
  */
 abstract class ConfigGenerator {
 
+	val flags = mutableListOf<GeneratorFlag>()
     val options = Options()
     lateinit var optionsMessage: Component private set
 
@@ -56,9 +60,13 @@ abstract class ConfigGenerator {
 			arg(String::class, 1, "name")
 			desc("The name of the file without the .yml extension, default: GUIHelper-<current time>")
 		}
+
+		flags.add(GeneratorFlag.fileNameFlag())
 	}
 
 	protected fun getConfigFileName(input: CommandLine): String = input.getOptionValue("fileName", "GUIHelper-${System.currentTimeMillis()}")
+
+	protected fun getConfigFileName(flagsContext: FlagContext): String = flagsContext.getOrDefault("fileName", "GUIHelper-${System.currentTimeMillis()}")
 
     /**
      * Main method called when the [me.gabytm.minecraft.guihelper.command.CreateCommand] is used
@@ -66,7 +74,9 @@ abstract class ConfigGenerator {
      * @param input user's input
      * @return if the action was successful or not
      */
-    abstract fun generate(context: GeneratorContext, input: CommandLine): Boolean
+    open fun generate(context: GeneratorContext, input: CommandLine): Boolean = true
+
+	open fun generate(context: GeneratorContext, flagContext: FlagContext): Boolean = true
 
     /*
     /**
@@ -94,6 +104,8 @@ abstract class ConfigGenerator {
     open fun createItem(section: ConfigurationSection, item: ItemStack, slot: Int) {}
 
     open fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int) {}
+
+	open fun createItem(section: ConfigurationSection, flagContext: FlagContext, item: ItemStack, slot: Int) {}
 
     open fun onReload() {}
 

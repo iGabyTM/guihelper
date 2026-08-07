@@ -63,6 +63,7 @@ class GUIHelper : JavaPlugin() {
 
         server.servicesManager.register(GeneratorsManager::class.java, generatorsManager, this, ServicePriority.Highest)
         server.pluginManager.registerEvents(InventoryCloseListener(generatorsManager, this.audiences), this)
+		CloudTest(this, generatorsManager, inventoryManager)
     }
 
     private fun sendLogo() {

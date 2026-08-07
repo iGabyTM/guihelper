@@ -27,6 +27,7 @@ import me.gabytm.minecraft.guihelper.config.SettingsBase
 import me.gabytm.minecraft.guihelper.functions.*
 import me.gabytm.minecraft.guihelper.generator.base.ConfigGenerator
 import me.gabytm.minecraft.guihelper.generator.base.GeneratorContext
+import me.gabytm.minecraft.guihelper.generator.flag.GeneratorFlag
 import me.gabytm.minecraft.guihelper.item.custom.providers.itemsadder.ItemsAdderItem
 import me.gabytm.minecraft.guihelper.item.heads.exceptions.HeadIdProviderNotSupportByPluginException
 import me.gabytm.minecraft.guihelper.item.heads.providers.HeadIdProvider.Provider
@@ -44,6 +45,8 @@ import org.bukkit.inventory.meta.FireworkEffectMeta
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.PotionMeta
+import org.incendo.cloud.parser.flag.FlagContext
+import org.incendo.cloud.parser.standard.IntegerParser
 import kotlin.system.measureTimeMillis
 
 class DeluxeMenusGenerator(
@@ -66,6 +69,23 @@ class DeluxeMenusGenerator(
             longOpt("internal")
             desc("Whether the menu is internal (config.yml) or external ($pluginName/gui_menus/)")
         }
+
+		flags.add(GeneratorFlag(
+			listOf("internal"),
+			"Whether the menu is internal (config.yml) or external ($pluginName/gui_menus/)",
+			false
+		))
+
+		//TODO remove flag
+		flags.add(
+			GeneratorFlag(
+				listOf("required"),
+				"Test required",
+				true,
+				"test",
+				IntegerParser.integerParser()
+			)
+		)
     }
 
     override fun getMessage() = "  &2$pluginName &av$pluginVersion &8- &fExternal / local (config.yml) menus"
@@ -74,16 +94,16 @@ class DeluxeMenusGenerator(
 		settings.reload()
 	}
 
-    override fun generate(context: GeneratorContext, input: CommandLine): Boolean {
-        val internal = input.hasOption("internal")
+    override fun generate(context: GeneratorContext, flagContext: FlagContext): Boolean {
+        val internal = flagContext.hasFlag("internal")
 
 		val filePath = settings[if (internal) Setting.INTERNAL_MENUS_PATH else Setting.EXTERNAL_MENUS_PATH]
-        val config = Config("$filePath/${getConfigFileName(input)}.yml", plugin, true)
+        val config = Config("$filePath/${getConfigFileName(flagContext)}.yml", plugin, true)
 
         val duration = measureTimeMillis {
             context.forEach { item, slot ->
                 val path = if (internal) "gui_menus.GUIHelper.items.$slot" else "items.$slot"
-                createItem(config.createSection(path), input, item, slot)
+                createItem(config.createSection(path), flagContext, item, slot)
             }
         }
 
@@ -92,7 +112,7 @@ class DeluxeMenusGenerator(
         return true
     }
 
-    override fun createItem(section: ConfigurationSection, input: CommandLine, item: ItemStack, slot: Int) {
+    override fun createItem(section: ConfigurationSection, flagContext: FlagContext, item: ItemStack, slot: Int) {
         section["material"] = item.type.name
         section.set("data", item.durability) { it > 0 }
         section.set("amount", item.amount) { it > 1 }
@@ -100,18 +120,18 @@ class DeluxeMenusGenerator(
 
         val meta = item.meta ?: return
 
-		checkForCustomItem(section, input, item)
+		checkForCustomItem(section, flagContext, item)
         section.set("display_name", meta::hasDisplayName) { item.displayName(rgbFormat) }
         section.set("lore", meta::hasLore) { item.lore(rgbFormat) }
         section.set("model_data", item.customModelData) { it > 0 }
 		section.set("unbreakable", item.isUnbreakable) { it }
         setItemFlags(section, meta.itemFlags)
         section.setList("enchantments", item.enchants { enchant, level -> "${enchant.name};${level}" })
-        setMetaSpecificValues(section, input, item, meta)
+        setMetaSpecificValues(section, flagContext, item, meta)
 		setNbt(section, item)
     }
 
-	private fun checkForCustomItem(section: ConfigurationSection, input: CommandLine, item: ItemStack) {
+	private fun checkForCustomItem(section: ConfigurationSection, flagContext: FlagContext, item: ItemStack) {
 		val manager = plugin.itemsManager
 
 		val itemsAdderItem = manager.getCustomItem(ItemsAdderItem::class, item)
@@ -122,7 +142,7 @@ class DeluxeMenusGenerator(
 		}
 
 		if (item.isPlayerHead) {
-			handlePlayerHeads(section, item, input.getHeadIdProvider(default = settings[Setting.SETTINGS__HEADS]))
+			handlePlayerHeads(section, item, flagContext.getOrDefault("heads", settings[Setting.SETTINGS__HEADS]))
 		}
 	}
 
@@ -164,7 +184,7 @@ class DeluxeMenusGenerator(
 		section.setList("nbt_ints", ints)
 	}
 
-    private fun setMetaSpecificValues(section: ConfigurationSection, input: CommandLine, item: ItemStack, meta: ItemMeta) {
+    private fun setMetaSpecificValues(section: ConfigurationSection, flagContext: FlagContext, item: ItemStack, meta: ItemMeta) {
         when {
             item.isLeatherArmor -> {
                 (meta as LeatherArmorMeta).color.ifNotDefault { section["rgb"] = it.asString() }

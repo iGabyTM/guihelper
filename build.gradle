@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.21'
 
     implementation 'me.mattstudios.utils:matt-framework:1.4.6' // Commands - https://mf.mattstudios.me/mf/mf-1
+	implementation 'org.incendo:cloud-paper:2.0.0-beta.10'
     implementation 'me.mattstudios:triumph-config:1.0.5-SNAPSHOT'
 
     implementation 'de.tr7zw:item-nbt-api:2.13.2' // https://spigotmc.org/resources/7939/

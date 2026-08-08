@@ -41,6 +41,7 @@ class GeneratorsManager(plugin: GUIHelper) {
 
     init {
         sequenceOf(
+			AdvancedCratesGenerator(plugin),
             ASkyBlockGenerator(plugin),
             BossShopProGenerator(plugin),
             CrateReloadedGenerator(plugin),
